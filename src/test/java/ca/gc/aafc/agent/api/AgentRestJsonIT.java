@@ -94,6 +94,28 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
     response.then().statusCode(HttpStatus.NOT_FOUND_404);
   }
 
+  @Test
+  public void delete_PeresistedAgent_ReturnsNoConentAndDeletes() {
+    Agent persistedAgent = TestUtils.generateAgent();
+    String id =  postAgent(persistedAgent.getDisplayName(), persistedAgent.getEmail())
+      .body()
+      .jsonPath()
+      .get("data.id");
+
+    Response response = sendDelete(id);
+    response.then().statusCode(HttpStatus.NO_CONTENT_204);
+
+    Response getResponse = sendGet(id);
+    getResponse.then().statusCode(HttpStatus.NOT_FOUND_404);
+  }
+
+  private Response sendDelete(String id) {
+    return given()
+      .header("crnk-compact", "true")
+      .when()
+      .delete(API_BASE_PATH + "/agent/" + id);
+  }
+
   private Response sendGet(String id) {
     return given()
       .header("crnk-compact", "true")
