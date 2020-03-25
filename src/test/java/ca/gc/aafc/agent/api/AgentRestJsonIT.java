@@ -71,6 +71,30 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
       .body("data.id", Matchers.notNullValue());
   }
 
+  @Test
+  public void get_PersistedAgent_ReturnsOkayAndBody() {
+    Agent persistedAgent = TestUtils.generateAgent();
+    String id =  postAgent(persistedAgent.getDisplayName(), persistedAgent.getEmail())
+      .body()
+      .jsonPath()
+      .get("data.id");
+
+    Response response = sendGet(id);
+
+    response.then()
+      .statusCode(HttpStatus.OK_200)
+      .body("data.attributes.displayName", Matchers.equalTo(persistedAgent.getDisplayName()))
+      .body("data.attributes.email", Matchers.equalTo(persistedAgent.getEmail()))
+      .body("data.id", Matchers.equalTo(id));
+  }
+
+  private Response sendGet(String id) {
+    return given()
+      .header("crnk-compact", "true")
+      .when()
+      .get(API_BASE_PATH + "/agent/" + id);
+  }
+
   private Response postAgent(String displayName, String email) {
     return given()
       .header("crnk-compact", "true")
