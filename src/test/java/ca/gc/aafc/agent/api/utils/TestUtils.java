@@ -1,8 +1,12 @@
 package ca.gc.aafc.agent.api.utils;
 
 import java.util.Map;
+import java.util.UUID;
 
 import com.google.common.collect.ImmutableMap;
+
+import ca.gc.aafc.agent.api.entities.Agent;
+import ca.gc.aafc.dina.testsupport.factories.TestableEntityFactory;
 
 public class TestUtils {
 
@@ -31,4 +35,13 @@ public class TestUtils {
 
     return ImmutableMap.of("data", bldr.build());
   }
+
+  public static Agent generateAgent() {
+    return Agent.builder()
+      .displayName(TestableEntityFactory.generateRandomNameLettersOnly(10))
+      .uuid(UUID.randomUUID())
+      .email(TestableEntityFactory.generateRandomNameLettersOnly(5))
+      .build();
+  }
+
 }
