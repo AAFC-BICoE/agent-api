@@ -88,6 +88,12 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
       .body("data.id", Matchers.equalTo(id));
   }
 
+  @Test
+  public void get_InvalidAgent_ReturnsResourceNotFound() {
+    Response response = sendGet("a8098c1a-f86e-11da-bd1a-00112444be1e");
+    response.then().statusCode(HttpStatus.NOT_FOUND_404);
+  }
+
   private Response sendGet(String id) {
     return given()
       .header("crnk-compact", "true")
