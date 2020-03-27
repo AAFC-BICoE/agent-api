@@ -27,6 +27,7 @@ import ca.gc.aafc.dina.testsupport.DBBackedIntegrationTest;
 import io.crnk.core.engine.http.HttpStatus;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import io.restassured.response.ValidatableResponse;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -64,10 +65,7 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
 
     Response response = postAgent(displayName, email);
 
-    response.then()
-      .statusCode(HttpStatus.CREATED_201)
-      .body("data.attributes.displayName", Matchers.equalTo(displayName))
-      .body("data.attributes.email", Matchers.equalTo(email))
+    assertValidResponseBodyAndCode(response, displayName, email, HttpStatus.CREATED_201)
       .body("data.id", Matchers.notNullValue());
   }
 
@@ -86,11 +84,7 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
 
     Response response = sendGet(id);
 
-    response.then()
-      .statusCode(HttpStatus.OK_200)
-      .body("data.attributes.displayName", Matchers.equalTo(newName))
-      .body("data.attributes.email", Matchers.equalTo(newEmail))
-      .body("data.id", Matchers.notNullValue());
+    assertValidResponseBodyAndCode(response, newName, newEmail, HttpStatus.OK_200);
   }
 
   @Test
@@ -103,11 +97,12 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
 
     Response response = sendGet(id);
 
-    response.then()
-      .statusCode(HttpStatus.OK_200)
-      .body("data.attributes.displayName", Matchers.equalTo(persistedAgent.getDisplayName()))
-      .body("data.attributes.email", Matchers.equalTo(persistedAgent.getEmail()))
-      .body("data.id", Matchers.equalTo(id));
+    assertValidResponseBodyAndCode(
+        response,
+        persistedAgent.getDisplayName(),
+        persistedAgent.getEmail(),
+        HttpStatus.OK_200
+      ).body("data.id", Matchers.equalTo(id));
   }
 
   @Test
@@ -161,6 +156,18 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
       .body(getPostBody(displayName, email))
       .when()
       .post(API_BASE_PATH + "/agent");
+  }
+
+  private static ValidatableResponse assertValidResponseBodyAndCode(
+      Response response,
+      String expectedName,
+      String expectedEmail,
+      int httpCode
+  ) {
+    return response.then()
+      .statusCode(httpCode)
+      .body("data.attributes.displayName", Matchers.equalTo(expectedName))
+      .body("data.attributes.email", Matchers.equalTo(expectedEmail));
   }
 
   private static Map<String, Object> getPostBody(String displayName, String email) {
