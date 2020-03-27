@@ -72,6 +72,28 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
   }
 
   @Test
+  public void Patch_UpdateAgent_ReturnsOkayAndBody() {
+    Agent persistedAgent = TestUtils.generateAgent();
+    String id =  postAgent(persistedAgent.getDisplayName(), persistedAgent.getEmail())
+      .body()
+      .jsonPath()
+      .get("data.id");
+
+    String newName="Updated Name";
+    String newEmail = "Updated@yahoo.nz";
+
+    patchAgent(newName,newEmail,id);
+
+    Response response = sendGet(id);
+
+    response.then()
+      .statusCode(HttpStatus.OK_200)
+      .body("data.attributes.displayName", Matchers.equalTo(newName))
+      .body("data.attributes.email", Matchers.equalTo(newEmail))
+      .body("data.id", Matchers.notNullValue());
+  }
+
+  @Test
   public void get_PersistedAgent_ReturnsOkayAndBody() {
     Agent persistedAgent = TestUtils.generateAgent();
     String id =  postAgent(persistedAgent.getDisplayName(), persistedAgent.getEmail())
@@ -121,6 +143,15 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
       .header("crnk-compact", "true")
       .when()
       .get(API_BASE_PATH + "/agent/" + id);
+  }
+
+  private Response patchAgent(String newDisplayName, String newEmail, String id) {
+    return given()
+      .header("crnk-compact", "true")
+      .contentType(JSON_API_CONTENT_TYPE)
+      .body(getPostBody(newDisplayName, newEmail))
+      .when()
+      .patch(API_BASE_PATH + "/agent/" + id);
   }
 
   private Response postAgent(String displayName, String email) {
