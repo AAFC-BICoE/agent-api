@@ -38,7 +38,7 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
   @LocalServerPort
   protected int testPort;
 
-  public static final String API_BASE_PATH = "/api/v1";
+  public static final String API_BASE_PATH = "/api/v1/agent/";
 
   public static final String JSON_API_CONTENT_TYPE = "application/vnd.api+json";
 
@@ -130,14 +130,14 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
     return given()
       .header("crnk-compact", "true")
       .when()
-      .delete(API_BASE_PATH + "/agent/" + id);
+      .delete(API_BASE_PATH + id);
   }
 
   private Response sendGet(String id) {
     return given()
       .header("crnk-compact", "true")
       .when()
-      .get(API_BASE_PATH + "/agent/" + id);
+      .get(API_BASE_PATH + id);
   }
 
   private Response patchAgent(String newDisplayName, String newEmail, String id) {
@@ -146,7 +146,7 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
       .contentType(JSON_API_CONTENT_TYPE)
       .body(getPostBody(newDisplayName, newEmail))
       .when()
-      .patch(API_BASE_PATH + "/agent/" + id);
+      .patch(API_BASE_PATH + id);
   }
 
   private Response postAgent(String displayName, String email) {
@@ -155,7 +155,7 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
       .contentType(JSON_API_CONTENT_TYPE)
       .body(getPostBody(displayName, email))
       .when()
-      .post(API_BASE_PATH + "/agent");
+      .post(API_BASE_PATH);
   }
 
   private static ValidatableResponse assertValidResponseBodyAndCode(
