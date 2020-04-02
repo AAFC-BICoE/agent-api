@@ -24,6 +24,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ca.gc.aafc.agent.api.entities.Agent;
 import ca.gc.aafc.agent.api.utils.TestUtils;
 import ca.gc.aafc.dina.testsupport.DBBackedIntegrationTest;
+import ca.gc.aafc.dina.testsupport.factories.TestableEntityFactory;
 import io.crnk.core.engine.http.HttpStatus;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
@@ -71,36 +72,28 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
 
   @Test
   public void Patch_UpdateAgent_ReturnsOkayAndBody() {
-    Agent persistedAgent = TestUtils.generateAgent();
-    String id =  postAgent(persistedAgent.getDisplayName(), persistedAgent.getEmail())
-      .body()
-      .jsonPath()
-      .get("data.id");
+    String id = persistAgent("agent", "agent@agen.ca");
 
-    String newName="Updated Name";
+    String newName = "Updated Name";
     String newEmail = "Updated@yahoo.nz";
-
-    patchAgent(newName,newEmail,id);
+    patchAgent(newName, newEmail, id);
 
     Response response = sendGet(id);
-
     assertValidResponseBodyAndCode(response, newName, newEmail, HttpStatus.OK_200);
   }
 
   @Test
   public void get_PersistedAgent_ReturnsOkayAndBody() {
-    Agent persistedAgent = TestUtils.generateAgent();
-    String id =  postAgent(persistedAgent.getDisplayName(), persistedAgent.getEmail())
-      .body()
-      .jsonPath()
-      .get("data.id");
+    String displayName = TestableEntityFactory.generateRandomNameLettersOnly(10);
+    String email = TestableEntityFactory.generateRandomNameLettersOnly(5);
+    String id = persistAgent(displayName, email);
 
     Response response = sendGet(id);
 
     assertValidResponseBodyAndCode(
         response,
-        persistedAgent.getDisplayName(),
-        persistedAgent.getEmail(),
+        displayName,
+        email,
         HttpStatus.OK_200
       ).body("data.id", Matchers.equalTo(id));
   }
@@ -113,11 +106,7 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
 
   @Test
   public void delete_PeresistedAgent_ReturnsNoConentAndDeletes() {
-    Agent persistedAgent = TestUtils.generateAgent();
-    String id =  postAgent(persistedAgent.getDisplayName(), persistedAgent.getEmail())
-      .body()
-      .jsonPath()
-      .get("data.id");
+    String id = persistAgent("agent", "agent@agen.ca");
 
     Response response = sendDelete(id);
     response.then().statusCode(HttpStatus.NO_CONTENT_204);
@@ -177,4 +166,11 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
     return TestUtils.toJsonAPIMap("agent", objAttribMap.build(), null);
   }
 
+  private String persistAgent(String name, String email) {
+    String id =  postAgent(name, email)
+      .body()
+      .jsonPath()
+      .get("data.id");
+    return id;
+  }
 }
