@@ -22,6 +22,10 @@ import ca.gc.aafc.dina.testsupport.DBBackedIntegrationTest;
 import ca.gc.aafc.dina.testsupport.factories.TestableEntityFactory;
 import io.crnk.core.queryspec.QuerySpec;
 
+/**
+ * Test suite to validate the {@link AgentResourceRepository} correctly handles
+ * CRUD operations for the {@link Agent} Entity.
+ */
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @Transactional

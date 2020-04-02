@@ -16,6 +16,9 @@ import org.springframework.test.context.ActiveProfiles;
 import ca.gc.aafc.dina.testsupport.DBBackedIntegrationTest;
 import ca.gc.aafc.dina.testsupport.factories.TestableEntityFactory;
 
+/**
+ * Test suite to validate {@link Agent} performs as a valid Hibernate Entity.
+ */
 @SpringBootTest
 @Transactional
 @ActiveProfiles("test")

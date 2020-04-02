@@ -30,6 +30,10 @@ import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 
+/**
+ * Test suite to validate correct HTTP and JSON API responses for {@link Agent}
+ * Endpoints.
+ */
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
@@ -48,6 +52,9 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
     RestAssured.port = testPort;
   }
 
+  /**
+   * Remove database entries after each test.
+   */
   @AfterEach
   public void tearDown() {
     runInNewTransaction(em -> {
@@ -115,6 +122,12 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
     getResponse.then().statusCode(HttpStatus.NOT_FOUND_404);
   }
 
+  /**
+   * Send a HTTP DELETE request to the agent endpoint with a given id
+   *
+   * @param id - id of the entity
+   * @return - response of the request
+   */
   private Response sendDelete(String id) {
     return given()
       .header("crnk-compact", "true")
@@ -122,6 +135,12 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
       .delete(API_BASE_PATH + id);
   }
 
+  /**
+   * Send a HTTP GET request to the agent endpoint with a given id
+   *
+   * @param id - id of the entity
+   * @return - response of the request
+   */
   private Response sendGet(String id) {
     return given()
       .header("crnk-compact", "true")
@@ -129,6 +148,15 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
       .get(API_BASE_PATH + id);
   }
 
+  /**
+   * Send a HTTP PATCH request to the agent endpoint with a given id, name, and
+   * email.
+   *
+   * @param newDisplayName - new name for the agent
+   * @param newEmail       - new email for the agent
+   * @param id             - id of the entity
+   * @return - response of the request
+   */
   private Response patchAgent(String newDisplayName, String newEmail, String id) {
     return given()
       .header("crnk-compact", "true")
@@ -138,6 +166,13 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
       .patch(API_BASE_PATH + id);
   }
 
+  /**
+   * Send a HTTP POST request to the agent endpoint with a given name and email.
+   *
+   * @param displayName - name for the agent
+   * @param email       - email for the agent
+   * @return - response of the request
+   */
   private Response postAgent(String displayName, String email) {
     return given()
       .header("crnk-compact", "true")
@@ -147,6 +182,16 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
       .post(API_BASE_PATH);
   }
 
+  /**
+   * Assert a given response contains the correct name, email, and HTTP return
+   * code as given.
+   *
+   * @param response      - response to validate
+   * @param expectedName  - expected name in the response body
+   * @param expectedEmail - expected email in the response body
+   * @param httpCode      - expected HTTP response code
+   * @return - A validatable response from the request.
+   */
   private static ValidatableResponse assertValidResponseBodyAndCode(
       Response response,
       String expectedName,
@@ -159,6 +204,13 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
       .body("data.attributes.email", Matchers.equalTo(expectedEmail));
   }
 
+  /**
+   * Returns a serializable JSON API Map for use with POSTED request bodies.
+   *
+   * @param displayName - name for the post body
+   * @param email       - email for the post body
+   * @return - serializable JSON API map
+   */
   private static Map<String, Object> getPostBody(String displayName, String email) {
     ImmutableMap.Builder<String, Object> objAttribMap = new ImmutableMap.Builder<>();
     objAttribMap.put("displayName", displayName);
@@ -166,6 +218,13 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
     return TestUtils.toJsonAPIMap("agent", objAttribMap.build(), null);
   }
 
+  /**
+   * Helper method to persist an Agent with a given name and email.
+   *
+   * @param name  - name for the agent
+   * @param email - email for the agent
+   * @return - id of the persisted agent
+   */
   private String persistAgent(String name, String email) {
     String id =  postAgent(name, email)
       .body()
