@@ -18,7 +18,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import ca.gc.aafc.agent.api.dto.AgentDto;
 import ca.gc.aafc.agent.api.entities.Agent;
-import ca.gc.aafc.agent.api.utils.TestUtils;
 import ca.gc.aafc.dina.testsupport.DBBackedIntegrationTest;
 import ca.gc.aafc.dina.testsupport.factories.TestableEntityFactory;
 import io.crnk.core.queryspec.QuerySpec;
@@ -36,7 +35,7 @@ public class AgentResourceRepositoryIT extends DBBackedIntegrationTest {
 
   @BeforeEach
   public void setup() {
-    agentUnderTest = TestUtils.generateAgent();
+    agentUnderTest = generateAgent();
     save(agentUnderTest);
   }
 
@@ -95,5 +94,13 @@ public class AgentResourceRepositoryIT extends DBBackedIntegrationTest {
     assertNotNull(find(Agent.class, agentUnderTest.getId()));
     agentResourceRepository.delete(persistedAgent.getUuid());
     assertNull(find(Agent.class, agentUnderTest.getId()));
+  }
+
+  public static Agent generateAgent() {
+    return Agent.builder()
+      .displayName(TestableEntityFactory.generateRandomNameLettersOnly(10))
+      .uuid(UUID.randomUUID())
+      .email(TestableEntityFactory.generateRandomNameLettersOnly(5))
+      .build();
   }
 }
