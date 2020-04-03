@@ -2,6 +2,8 @@ package ca.gc.aafc.agent.api;
 
 import static io.restassured.RestAssured.given;
 
+import java.io.StringReader;
+import java.net.URISyntaxException;
 import java.util.Map;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -11,6 +13,7 @@ import javax.transaction.Transactional;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.apache.http.client.utils.URIBuilder;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,6 +25,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import ca.gc.aafc.agent.api.entities.Agent;
+import ca.gc.aafc.agent.api.utils.JsonSchemaAssertions;
 import ca.gc.aafc.agent.api.utils.TestUtils;
 import ca.gc.aafc.dina.testsupport.DBBackedIntegrationTest;
 import ca.gc.aafc.dina.testsupport.factories.TestableEntityFactory;
@@ -29,6 +33,7 @@ import io.crnk.core.engine.http.HttpStatus;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Test suite to validate correct HTTP and JSON API responses for {@link Agent}
@@ -38,14 +43,15 @@ import io.restassured.response.ValidatableResponse;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
 @ActiveProfiles("test")
+@Log4j2
 public class AgentRestJsonIT extends DBBackedIntegrationTest {
 
   @LocalServerPort
   protected int testPort;
 
   public static final String API_BASE_PATH = "/api/v1/agent/";
-
   public static final String JSON_API_CONTENT_TYPE = "application/vnd.api+json";
+  private static final String SCHEMA_NAME = "getOneAgentSchema.json";
 
   @BeforeEach
   public void setup() {
@@ -75,6 +81,7 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
 
     assertValidResponseBodyAndCode(response, displayName, email, HttpStatus.CREATED_201)
       .body("data.id", Matchers.notNullValue());
+    validateJsonSchema(response.body().asString());
   }
 
   @Test
@@ -87,6 +94,7 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
 
     Response response = sendGet(id);
     assertValidResponseBodyAndCode(response, newName, newEmail, HttpStatus.OK_200);
+    validateJsonSchema(response.body().asString());
   }
 
   @Test
@@ -103,6 +111,7 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
         email,
         HttpStatus.OK_200
       ).body("data.id", Matchers.equalTo(id));
+    validateJsonSchema(response.body().asString());
   }
 
   @Test
@@ -231,5 +240,28 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
       .jsonPath()
       .get("data.id");
     return id;
+  }
+
+  /**
+   * Validates a given JSON response body matches the schema defined in
+   * {@link AgentRestJsonIT#SCHEMA_NAME}
+   *
+   * @param responseJson The response json from service
+   */
+  private void validateJsonSchema(String responseJson) {
+    try {
+      URIBuilder uriBuilder = new URIBuilder();
+      uriBuilder.setScheme("http");
+      uriBuilder.setHost("localhost");
+      uriBuilder.setPath(SCHEMA_NAME);
+      uriBuilder.setPort(testPort);
+      log.info(
+        "Validating {} schema against the following response: {}",
+        () -> SCHEMA_NAME,
+        () -> responseJson);
+      JsonSchemaAssertions.assertJsonSchema(uriBuilder.build(), new StringReader(responseJson));
+    } catch (URISyntaxException e) {
+      log.error(e);
+    }
   }
 }
