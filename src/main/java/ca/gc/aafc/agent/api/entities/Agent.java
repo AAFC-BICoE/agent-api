@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.NaturalId;
@@ -42,8 +43,11 @@ public class Agent {
   @NotNull
   @Column(name = "uuid", unique = true)
   private UUID uuid;
-  
+
+  @NotBlank
   private String displayName;
+
+  @NotBlank
   private String email;
 
   @PrePersist
