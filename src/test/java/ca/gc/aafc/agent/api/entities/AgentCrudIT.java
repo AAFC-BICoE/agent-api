@@ -4,8 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import java.util.UUID;
-
 import javax.transaction.Transactional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -13,8 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import ca.gc.aafc.agent.api.testsupport.factories.AgentFactory;
 import ca.gc.aafc.dina.testsupport.DBBackedIntegrationTest;
-import ca.gc.aafc.dina.testsupport.factories.TestableEntityFactory;
 
 /**
  * Test suite to validate {@link Agent} performs as a valid Hibernate Entity.
@@ -28,13 +26,13 @@ public class AgentCrudIT extends DBBackedIntegrationTest {
 
   @BeforeEach
   public void setup() {
-    agentUnderTest = generateAgent();
+    agentUnderTest = AgentFactory.newAgent().build();
     save(agentUnderTest);
   }
 
   @Test
   public void testSave() {
-    Agent agent = generateAgent();
+    Agent agent = AgentFactory.newAgent().build();
     assertNull(agent.getId());
     save(agent);
     assertNotNull(agent.getId());
@@ -56,11 +54,4 @@ public class AgentCrudIT extends DBBackedIntegrationTest {
     assertNull(find(Agent.class, id));
   }
 
-  private static Agent generateAgent() {
-    return Agent.builder()
-      .displayName(TestableEntityFactory.generateRandomNameLettersOnly(10))
-      .uuid(UUID.randomUUID())
-      .email(TestableEntityFactory.generateRandomNameLettersOnly(5))
-      .build();
-  }
 }
