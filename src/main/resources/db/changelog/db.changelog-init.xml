@@ -22,6 +22,19 @@
 				<constraints nullable="false" unique="true" />
 			</column>
 		</createTable>
+
+		<!-- Add check to prevent trailing whitespace for agent fields -->
+		<sql>
+			ALTER TABLE agent
+			ADD CONSTRAINT agent_check_trimmed_white_space
+			CHECK ((trim(display_name) = display_name) AND (trim(email) = email));
+		</sql>
+
+		<!-- Alter unquie constraint for agent to be case insensitive-->
+		<sql>
+			CREATE UNIQUE INDEX agent_unique_name_and_email
+			ON agent ((lower(display_name)), (lower(email)));
+		</sql>
 	</changeSet>
 
 </databaseChangeLog>
