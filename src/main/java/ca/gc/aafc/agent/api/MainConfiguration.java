@@ -33,7 +33,7 @@ public class MainConfiguration {
     Map<Class<?>, Class<?>> entitiesMap = new HashMap<>();
     entitiesMap.put(AgentDto.class, Agent.class);
 
-    return new JpaDtoMapper(entitiesMap, customFieldResolvers, selectionHandler, baseDAO);
+    return new JpaDtoMapper(entitiesMap, customFieldResolvers, selectionHandler);
   }
 
 }
