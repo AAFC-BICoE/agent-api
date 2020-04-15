@@ -6,6 +6,7 @@ spring:
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-master.xml
     contexts: schema-change
+    liquibase-schema: agent
   jpa:
     open-in-view: false
 crnk:
