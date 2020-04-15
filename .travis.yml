@@ -9,7 +9,7 @@ cache:
 
 before_script:
   - psql -c "CREATE DATABASE agent_test;" -U postgres
-  - psql -f src/test/resources/init-agent-module.sql -U postgres
+  - psql -f src/test/resources/init-agent-module.sql agent_test -U postgres
 
 script: 
   - mvn verify -Dspring.datasource.url=jdbc:postgresql://localhost/agent_test -Dspring.datasource.username=web_user -Dspring.datasource.password=test checkstyle:check com.github.spotbugs:spotbugs-maven-plugin:check jacoco:check
