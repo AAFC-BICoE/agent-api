@@ -26,7 +26,7 @@ cp local/docker-compose.yml.example docker-compose.yml
 cp local/.env.example .env
 ```
 
-Start the app:
+Start the app (default port is 8082):
 ```
 docker-compose up --build
 ```
