@@ -5,4 +5,5 @@
 .factorypath
 .vscode
 docker-compose.yml
+.env
 /bin
