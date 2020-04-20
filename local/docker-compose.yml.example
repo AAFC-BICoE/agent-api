@@ -5,9 +5,8 @@ services:
     image: postgres:9.6.15-alpine
     restart: always
     environment:
-      POSTGRES_DB: agent_module_test
-      POSTGRES_USER: brf
-      POSTGRES_PASSWORD: brf
+      POSTGRES_DB: agent_test
+      POSTGRES_PASSWORD: password
     volumes:
       - ./src/test/resources/init-agent-module.sql:/docker-entrypoint-initdb.d/1-init-schema.sql
 
@@ -17,11 +16,10 @@ services:
     ports:
       - "8080:8080"
     environment:
-      spring.datasource.url: jdbc:postgresql://database/agent_module_test?currentSchema=agent
-      spring.datasource.username: brf
-      spring.datasource.password: brf
-      spring.liquibase.user: brf
-      spring.liquibase.password: brf
-
+      spring.datasource.url: jdbc:postgresql://database/agent_test?currentSchema=agent
+      spring.datasource.username: web_user
+      spring.datasource.password: test
+      spring.liquibase.user: migration_user
+      spring.liquibase.password: test
 # Start with: docker-compose up --build --force-recreate --no-deps
 # Stop with: docker-compose down
