@@ -54,8 +54,7 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
 
   public static final String API_BASE_PATH = "/api/v1/agent/";
   public static final String JSON_API_CONTENT_TYPE = "application/vnd.api+json";
-  private static final String SCHEMA_NAME = "getOneAgentSchema.json";
-  private static final String AGENT_SCHEMA_NAME = "Agent";
+  private static final String SCHEMA_NAME = "Agent";
 
   @BeforeEach
   public void setup() {
@@ -254,16 +253,15 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
    */
   private void validateJsonSchema(String responseJson) {
     try {
-      URIBuilder uriBuilder = new URIBuilder();
-      uriBuilder.setScheme("http");
-      uriBuilder.setHost("localhost");
-      uriBuilder.setPath(SCHEMA_NAME);
-      uriBuilder.setPort(testPort);
+        URIBuilder uriBuilder = new URIBuilder();
+        uriBuilder.setScheme("https");
+        uriBuilder.setHost("raw.githubusercontent.com");
+        uriBuilder.setPath("DINA-Web/agent-specs/master/schema/agent.yaml");
       log.info(
         "Validating {} schema against the following response: {}",
         () -> SCHEMA_NAME,
         () -> responseJson);
-      OpenAPI3Assertions.assertSchema(uriBuilder.build().toURL(), AGENT_SCHEMA_NAME, new StringReader(responseJson).toString()); 
+      OpenAPI3Assertions.assertSchema(uriBuilder.build().toURL(), SCHEMA_NAME, responseJson); 
     } catch (URISyntaxException | MalformedURLException e) {
       log.error(e);
     }
