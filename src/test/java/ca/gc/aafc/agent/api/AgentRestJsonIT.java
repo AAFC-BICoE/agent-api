@@ -3,6 +3,7 @@ package ca.gc.aafc.agent.api;
 import static io.restassured.RestAssured.given;
 
 import java.io.StringReader;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.Map;
 
@@ -29,6 +30,8 @@ import ca.gc.aafc.agent.api.utils.JsonSchemaAssertions;
 import ca.gc.aafc.agent.api.utils.TestUtils;
 import ca.gc.aafc.dina.testsupport.DBBackedIntegrationTest;
 import ca.gc.aafc.dina.testsupport.factories.TestableEntityFactory;
+import ca.gc.aafc.dina.testsupport.specs.OpenAPI3Assertions;
+//import ca.gc.aafc.dina.testsupport.specs.OpenAPI3Assertions;
 import io.crnk.core.engine.http.HttpStatus;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
@@ -52,6 +55,7 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
   public static final String API_BASE_PATH = "/api/v1/agent/";
   public static final String JSON_API_CONTENT_TYPE = "application/vnd.api+json";
   private static final String SCHEMA_NAME = "getOneAgentSchema.json";
+  private static final String AGENT_SCHEMA_NAME = "Agent";
 
   @BeforeEach
   public void setup() {
@@ -259,8 +263,8 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
         "Validating {} schema against the following response: {}",
         () -> SCHEMA_NAME,
         () -> responseJson);
-      JsonSchemaAssertions.assertJsonSchema(uriBuilder.build(), new StringReader(responseJson));
-    } catch (URISyntaxException e) {
+      OpenAPI3Assertions.assertSchema(uriBuilder.build().toURL(), AGENT_SCHEMA_NAME, new StringReader(responseJson).toString()); 
+    } catch (URISyntaxException | MalformedURLException e) {
       log.error(e);
     }
   }
