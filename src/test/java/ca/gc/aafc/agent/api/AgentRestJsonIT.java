@@ -26,12 +26,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import ca.gc.aafc.agent.api.entities.Agent;
-import ca.gc.aafc.agent.api.utils.JsonSchemaAssertions;
 import ca.gc.aafc.agent.api.utils.TestUtils;
 import ca.gc.aafc.dina.testsupport.DBBackedIntegrationTest;
 import ca.gc.aafc.dina.testsupport.factories.TestableEntityFactory;
 import ca.gc.aafc.dina.testsupport.specs.OpenAPI3Assertions;
-//import ca.gc.aafc.dina.testsupport.specs.OpenAPI3Assertions;
 import io.crnk.core.engine.http.HttpStatus;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;

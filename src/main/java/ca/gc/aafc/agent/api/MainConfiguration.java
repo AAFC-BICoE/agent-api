@@ -16,7 +16,6 @@ import ca.gc.aafc.dina.DinaBaseApiAutoConfiguration;
 import ca.gc.aafc.dina.dto.RelatedEntity;
 import ca.gc.aafc.dina.jpa.BaseDAO;
 import ca.gc.aafc.dina.mapper.JpaDtoMapper;
-import ca.gc.aafc.dina.repository.SelectionHandler;
 import ca.gc.aafc.dina.util.ClassAnnotationHelper;
 
 @Configuration
