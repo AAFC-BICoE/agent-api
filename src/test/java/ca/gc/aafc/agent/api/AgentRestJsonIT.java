@@ -53,7 +53,9 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
   protected int testPort;
 
   public static final String API_BASE_PATH = "/api/v1/agent/";
-  public static final String JSON_API_CONTENT_TYPE = "application/vnd.api+json";
+  public static final String JSON_API_CONTENT_TYPE = "application/vnd.api+json";  
+  private static final String SPEC_HOST = "raw.githubusercontent.com";
+  private static final String SPEC_PATH = "DINA-Web/agent-specs/master/schema/agent.yaml";  
   private static final String SCHEMA_NAME = "Agent";
 
   @BeforeEach
@@ -253,10 +255,10 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
    */
   private void validateJsonSchema(String responseJson) {
     try {
-        URIBuilder uriBuilder = new URIBuilder();
-        uriBuilder.setScheme("https");
-        uriBuilder.setHost("raw.githubusercontent.com");
-        uriBuilder.setPath("DINA-Web/agent-specs/master/schema/agent.yaml");
+      URIBuilder uriBuilder = new URIBuilder();
+      uriBuilder.setScheme("https");
+      uriBuilder.setHost(SPEC_HOST);
+      uriBuilder.setPath(SPEC_PATH);
       log.info(
         "Validating {} schema against the following response: {}",
         () -> SCHEMA_NAME,
