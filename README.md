@@ -18,12 +18,10 @@ The single HTML page will be available at `target/generated-docs/index.html`
 
 For testing purpose or local development a [Docker Compose](https://docs.docker.com/compose/) and `.env` file are available in the `local` folder.
 
-> Please note that the jar running in the container will be the jar currently available in the `target` folder.
-
 Create a new `docker-compose` and `.env` file from the example:
 ```
 cp local/docker-compose.yml.example docker-compose.yml
-cp local/.env.example .env
+cp local/*.env .
 ```
 
 Start the app (default port is 8082):
@@ -31,3 +29,9 @@ Start the app (default port is 8082):
 docker-compose up --build
 ```
 
+Once the services have started you can access the endpoints at http://localhost:8082/api/v1/agent
+
+Cleanup:
+```
+docker-compose down
+```
