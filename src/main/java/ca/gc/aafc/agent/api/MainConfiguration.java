@@ -15,6 +15,7 @@ import ca.gc.aafc.agent.api.dto.AgentDto;
 import ca.gc.aafc.dina.DinaBaseApiAutoConfiguration;
 import ca.gc.aafc.dina.dto.RelatedEntity;
 import ca.gc.aafc.dina.jpa.BaseDAO;
+import ca.gc.aafc.dina.mapper.CustomFieldResolverSpec;
 import ca.gc.aafc.dina.mapper.JpaDtoMapper;
 import ca.gc.aafc.dina.util.ClassAnnotationHelper;
 
@@ -30,7 +31,7 @@ public class MainConfiguration {
    */
   @Bean
   public JpaDtoMapper dtoJpaMapper(BaseDAO baseDAO) {
-    Map<Class<?>, List<JpaDtoMapper.CustomFieldResolverSpec<?>>> customFieldResolvers = new HashMap<>();
+    Map<Class<?>, List<CustomFieldResolverSpec<?>>> customFieldResolvers = new HashMap<>();
 
     // Map all DTOs to their related Entities.
     Map<Class<?>, Class<?>> entitiesMap = ClassAnnotationHelper

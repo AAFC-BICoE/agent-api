@@ -21,5 +21,23 @@ crnk:
   jpa.enabled: false
 logging:
   level:
+    Root: INFO
     # Reduce the logging from the rsql-jpa library, which is otherwise too excessive:
     com.github.tennaito.rsql: ERROR
+keycloak:
+  enabled: true
+  realm: dina
+  auth-server-url: http://${KEYCLOAK_HOST_IP}:8080/auth
+  ssl-required: none
+  resource: agent
+  public-client: true
+  bearer-only: true
+  principal-attribute: preferred_username
+
+  # All endpoints require a logged-in user with the "user" role.
+  security-constraints:
+    - auth-roles:
+      - user
+      security-collections:
+        - patterns:
+          - /*
