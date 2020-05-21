@@ -19,6 +19,7 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -75,7 +76,12 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
     });
   }
 
+  /**
+   * Test depends on externally avaialble schema. It Can be skipped if issue getting to the  
+   * resource. Set the system property: disable.schema.dependent.tests to true'
+   */
   @Test
+  @DisabledIfSystemProperty(named = "disable.schema.dependent.tests", matches = "true")
   public void post_NewAgent_ReturnsOkayAndBody() {
     String displayName = "Albert";
     String email = "Albert@yahoo.com";
@@ -87,7 +93,12 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
     validateJsonSchema(response.body().asString());
   }
 
+  /**
+   * Test depends on externally avaialble schema. It Can be skipped if issue getting to the 
+   * resource. Set the system property: disable.schema.dependent.tests to true'
+   */ 
   @Test
+  @DisabledIfSystemProperty(named = "disable.schema.dependent.tests", matches = "true")
   public void Patch_UpdateAgent_ReturnsOkayAndBody() {
     String id = persistAgent("agent", "agent@agen.ca");
 
@@ -100,7 +111,12 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
     validateJsonSchema(response.body().asString());
   }
 
+  /**
+   * Test depends on externally avaialble schema. It Can be skipped if issue getting to the 
+   * resource. Set the system property: disable.schema.dependent.tests to true'
+   */
   @Test
+  @DisabledIfSystemProperty(named = "disable.schema.dependent.tests", matches = "true")
   public void get_PersistedAgent_ReturnsOkayAndBody() {
     String displayName = TestableEntityFactory.generateRandomNameLettersOnly(10);
     String email = TestableEntityFactory.generateRandomNameLettersOnly(5);
