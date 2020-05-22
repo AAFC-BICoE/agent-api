@@ -266,6 +266,11 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
       } catch (URISyntaxException | MalformedURLException e) {
         log.error(e);
       }
+    } else {
+      log.warn(
+        "Skipping schema validation." + 
+        "System property testing.skip-external-schema-validation set to true. "
+        );
     }
   }
 }
