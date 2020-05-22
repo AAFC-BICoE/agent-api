@@ -19,7 +19,6 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -76,12 +75,7 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
     });
   }
 
-  /**
-   * Test depends on externally avaialble schema. It Can be skipped if issue getting to the  
-   * resource. Set the system property: disable.schema.dependent.tests to true'
-   */
   @Test
-  @DisabledIfSystemProperty(named = "disable.schema.dependent.tests", matches = "true")
   public void post_NewAgent_ReturnsOkayAndBody() {
     String displayName = "Albert";
     String email = "Albert@yahoo.com";
@@ -93,12 +87,7 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
     validateJsonSchema(response.body().asString());
   }
 
-  /**
-   * Test depends on externally avaialble schema. It Can be skipped if issue getting to the 
-   * resource. Set the system property: disable.schema.dependent.tests to true'
-   */ 
   @Test
-  @DisabledIfSystemProperty(named = "disable.schema.dependent.tests", matches = "true")
   public void Patch_UpdateAgent_ReturnsOkayAndBody() {
     String id = persistAgent("agent", "agent@agen.ca");
 
@@ -111,12 +100,7 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
     validateJsonSchema(response.body().asString());
   }
 
-  /**
-   * Test depends on externally avaialble schema. It Can be skipped if issue getting to the 
-   * resource. Set the system property: disable.schema.dependent.tests to true'
-   */
   @Test
-  @DisabledIfSystemProperty(named = "disable.schema.dependent.tests", matches = "true")
   public void get_PersistedAgent_ReturnsOkayAndBody() {
     String displayName = TestableEntityFactory.generateRandomNameLettersOnly(10);
     String email = TestableEntityFactory.generateRandomNameLettersOnly(5);
@@ -268,18 +252,20 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
    * @param responseJson The response json from service
    */
   private void validateJsonSchema(String responseJson) {
-    try {
-      URIBuilder uriBuilder = new URIBuilder();
-      uriBuilder.setScheme("https");
-      uriBuilder.setHost(SPEC_HOST);
-      uriBuilder.setPath(SPEC_PATH);
-      log.info(
-        "Validating {} schema against the following response: {}",
-        () -> SCHEMA_NAME,
-        () -> responseJson);
-      OpenAPI3Assertions.assertSchema(uriBuilder.build().toURL(), SCHEMA_NAME, responseJson); 
-    } catch (URISyntaxException | MalformedURLException e) {
-      log.error(e);
+    if (!Boolean.valueOf(System.getProperty("testing.skip-external-schema-validation"))) {
+      try {
+        URIBuilder uriBuilder = new URIBuilder();
+        uriBuilder.setScheme("https");
+        uriBuilder.setHost(SPEC_HOST);
+        uriBuilder.setPath(SPEC_PATH);
+        log.info(
+          "Validating {} schema against the following response: {}",
+          () -> SCHEMA_NAME,
+          () -> responseJson);
+        OpenAPI3Assertions.assertSchema(uriBuilder.build().toURL(), SCHEMA_NAME, responseJson);
+      } catch (URISyntaxException | MalformedURLException e) {
+        log.error(e);
+      }
     }
   }
 }

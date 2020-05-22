@@ -39,7 +39,7 @@ docker-compose down
 ## Testing
 
 Some integration tests rely on a schema file available on a shared GitHub repo. If there are issues accessing this file, 
-the dependent tests can be disabled by setting the `disable.schema.dependent.tests` system property to `true`.  E.g.
+the schema validation can be skipped by setting the `testing.skip-external-schema-validation` system property to `true`.  E.g.
 ```
-mvn verify -Dspring.datasource.url=jdbc:postgresql://localhost/agent_test?currentSchema=agent -Dspring.datasource.username=web_user -Dspring.datasource.password=test -Dspring.liquibase.user=migration_user -Dspring.liquibase.password=test -Ddisable.schema.dependent.tests=true checkstyle:check com.github.spotbugs:spotbugs-maven-plugin:check jacoco:check
+mvn verify -Dspring.datasource.url=jdbc:postgresql://localhost/agent_test?currentSchema=agent -Dspring.datasource.username=web_user -Dspring.datasource.password=test -Dspring.liquibase.user=migration_user -Dspring.liquibase.password=test -Dtesting.skip-external-schema-validation=true checkstyle:check com.github.spotbugs:spotbugs-maven-plugin:check jacoco:check
 ```
