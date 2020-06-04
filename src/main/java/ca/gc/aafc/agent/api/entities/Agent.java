@@ -64,13 +64,6 @@ public class Agent implements DinaEntity {
   @PrePersist
   public void initUuid() {
     this.uuid = UUID.randomUUID();
-
-    KeycloakAuthenticationToken token =
-        (KeycloakAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-
-    if (token != null) {
-      this.createdBy = token.getName();
-    }
   }
 
 }

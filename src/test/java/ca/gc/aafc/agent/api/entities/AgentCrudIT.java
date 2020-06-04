@@ -8,11 +8,7 @@ import javax.transaction.Transactional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
-import org.mockito.Answers;
-import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 
 import ca.gc.aafc.agent.api.testsupport.factories.AgentFactory;
@@ -21,7 +17,7 @@ import ca.gc.aafc.dina.testsupport.DBBackedIntegrationTest;
 /**
  * Test suite to validate {@link Agent} performs as a valid Hibernate Entity.
  */
-@SpringBootTest(properties = "keycloak.enabled: true")
+@SpringBootTest
 @Transactional
 @ActiveProfiles("test")
 public class AgentCrudIT extends DBBackedIntegrationTest {
@@ -40,26 +36,6 @@ public class AgentCrudIT extends DBBackedIntegrationTest {
     assertNull(agent.getId());
     save(agent);
     assertNotNull(agent.getId());
-  }
-
-  @Test
-  public void save_KeyCloakUserEnabled_SetsCreatedBy() {
-    KeycloakAuthenticationToken mockToken =
-        Mockito.mock(KeycloakAuthenticationToken.class, Answers.RETURNS_DEEP_STUBS);
-
-    // Mock the needed fields on the keycloak token:
-    Mockito.when(mockToken.getName()).thenReturn("test-user");
-    Mockito.when(mockToken.getAccount().getKeycloakSecurityContext().getToken().getOtherClaims()
-        .get("agent-identifier")).thenReturn("a2cef694-10f1-42ec-b403-e0f8ae9d2ae6");
-
-    SecurityContextHolder.getContext().setAuthentication(mockToken);
-
-    Agent agent = AgentFactory.newAgent().build();
-    save(agent);
-
-    Agent fetchedAgent = find(Agent.class, agent.getId());
-    assertNotNull(fetchedAgent.getCreatedBy());
-    assertEquals(mockToken.getName(), fetchedAgent.getCreatedBy());
   }
 
   @Test
