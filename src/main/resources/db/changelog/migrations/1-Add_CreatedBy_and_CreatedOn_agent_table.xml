@@ -9,9 +9,7 @@
   <changeSet context="schema-change" id="1-Add_CreatedBy_and_CreatedOn_agent_table" author="jonathan Keyuk">
 
     <addColumn tableName="agent">
-      <column name="created_by" type="varchar(255)">
-        <constraints nullable="false" />
-      </column>
+      <column name="created_by" type="varchar(255)"/>
       <column name="created_on" type="timestamptz" defaultValueComputed="current_timestamp"/>
     </addColumn>
 
