@@ -14,6 +14,8 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.NaturalIdCache;
+import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import ca.gc.aafc.dina.entity.DinaEntity;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -62,6 +64,13 @@ public class Agent implements DinaEntity {
   @PrePersist
   public void initUuid() {
     this.uuid = UUID.randomUUID();
+
+    KeycloakAuthenticationToken token =
+        (KeycloakAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+
+    if (token != null) {
+      this.createdBy = token.getName();
+    }
   }
 
 }
