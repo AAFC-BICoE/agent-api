@@ -45,6 +45,7 @@ public class AgentCrudIT extends DBBackedIntegrationTest {
     assertEquals(agentUnderTest.getDisplayName(), fetchedAgent.getDisplayName());
     assertEquals(agentUnderTest.getEmail(), fetchedAgent.getEmail());
     assertEquals(agentUnderTest.getUuid(), fetchedAgent.getUuid());
+    assertNotNull(fetchedAgent.getCreatedOn());
   }
 
   @Test
