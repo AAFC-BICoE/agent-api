@@ -52,7 +52,6 @@ public class Agent implements DinaEntity {
   @NotBlank
   private String email;
 
-  @NotBlank
   @Column(name = "created_by")
   private String createdBy;
 
