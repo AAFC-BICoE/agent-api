@@ -12,9 +12,7 @@
       <column name="created_by" type="varchar(255)">
         <constraints nullable="false" />
       </column>
-      <column name="created_on" type="timestamptz">
-        <constraints nullable="false" />
-      </column>
+      <column name="created_on" type="timestamptz" defaultValueComputed="current_timestamp"/>
     </addColumn>
 
   </changeSet>
