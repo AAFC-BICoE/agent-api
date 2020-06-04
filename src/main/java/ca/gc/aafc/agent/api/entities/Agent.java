@@ -1,5 +1,6 @@
 package ca.gc.aafc.agent.api.entities;
 
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -50,6 +51,14 @@ public class Agent implements DinaEntity {
 
   @NotBlank
   private String email;
+
+  @NotBlank
+  @Column(name = "created_by")
+  private String createdBy;
+
+
+  @Column(name = "created_on", insertable = false, updatable = false)
+  private OffsetDateTime createdOn;
 
   @PrePersist
   public void initUuid() {

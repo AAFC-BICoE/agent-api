@@ -1,5 +1,6 @@
 package ca.gc.aafc.agent.api.dto;
 
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import ca.gc.aafc.agent.api.entities.Agent;
@@ -20,5 +21,6 @@ public class AgentDto {
 
   private String displayName;
   private String email;
-
+  private String createdBy;
+  private OffsetDateTime createdOn;
 }
