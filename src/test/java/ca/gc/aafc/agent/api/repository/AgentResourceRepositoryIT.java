@@ -1,8 +1,8 @@
 package ca.gc.aafc.agent.api.repository;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.UUID;
 
@@ -15,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import ca.gc.aafc.agent.api.KeycloakTestConfiguration;
 import ca.gc.aafc.agent.api.dto.AgentDto;
 import ca.gc.aafc.agent.api.entities.Agent;
 import ca.gc.aafc.agent.api.testsupport.factories.AgentFactory;
@@ -54,6 +55,7 @@ public class AgentResourceRepositoryIT extends DBBackedIntegrationTest {
     assertEquals(agentDto.getDisplayName(), result.getDisplayName());
     assertEquals(agentDto.getEmail(), result.getEmail());
     assertEquals(uuid, result.getUuid());
+    assertEquals(KeycloakTestConfiguration.USER_NAME, result.getCreatedBy());
   }
 
   @Test

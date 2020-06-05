@@ -11,10 +11,11 @@ import ca.gc.aafc.dina.security.DinaAuthenticatedUser;
  */
 @Configuration
 public class KeycloakTestConfiguration {
+  public static final String USER_NAME = "test_user";
   @Bean
   public DinaAuthenticatedUser dinaAuthenticatedUser() {
     DinaAuthenticatedUser testUser = DinaAuthenticatedUser.builder()
-    .username("test_user")
+    .username(USER_NAME)
     .build();
     return testUser;
   }
