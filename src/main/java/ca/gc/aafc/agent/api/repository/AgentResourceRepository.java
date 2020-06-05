@@ -10,15 +10,19 @@ import ca.gc.aafc.dina.filter.SimpleFilterHandler;
 import ca.gc.aafc.dina.repository.JpaDtoRepository;
 import ca.gc.aafc.dina.repository.JpaResourceRepository;
 import ca.gc.aafc.dina.repository.meta.JpaMetaInformationProvider;
+import ca.gc.aafc.dina.security.DinaAuthenticatedUser;
 
 @Repository
 public class AgentResourceRepository extends JpaResourceRepository<AgentDto> {
+
+  private DinaAuthenticatedUser authenticatedUser;
 
   public AgentResourceRepository(
     JpaDtoRepository dtoRepository,
     SimpleFilterHandler simpleFilterHandler,
     RsqlFilterHandler rsqlFilterHandler,
-    JpaMetaInformationProvider metaInformationProvider
+    JpaMetaInformationProvider metaInformationProvider,
+    DinaAuthenticatedUser authenticatedUser
   ) {
     super(
       AgentDto.class,
@@ -26,6 +30,13 @@ public class AgentResourceRepository extends JpaResourceRepository<AgentDto> {
       Arrays.asList(simpleFilterHandler, rsqlFilterHandler),
       metaInformationProvider
     );
+    this.authenticatedUser = authenticatedUser;
+  }
+
+  @Override
+  public <S extends AgentDto> S create(S resource) {
+    resource.setCreatedBy(authenticatedUser.getUsername());
+    return super.create(resource);
   }
 
 }

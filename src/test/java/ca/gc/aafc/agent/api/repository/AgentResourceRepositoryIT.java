@@ -13,7 +13,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import ca.gc.aafc.agent.api.dto.AgentDto;
@@ -30,7 +29,6 @@ import io.crnk.core.queryspec.QuerySpec;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @Transactional
-@ActiveProfiles("test")
 public class AgentResourceRepositoryIT extends DBBackedIntegrationTest {
 
   @Inject
