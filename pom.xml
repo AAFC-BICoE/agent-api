@@ -38,6 +38,7 @@
     <junit-platform-launcher.version>1.4.0</junit-platform-launcher.version>
     <hibernate-types-52.version>2.9.5</hibernate-types-52.version>
     <dina-base-api.version>0.28</dina-base-api.version>
+    <spring-boot-maven-plugin.fork>false</spring-boot-maven-plugin.fork>
   </properties>
   <repositories>
     <!-- dina-base-api binstray repository -->
@@ -188,7 +189,7 @@
         <artifactId>spring-boot-maven-plugin</artifactId>
         <configuration>
           <includeSystemScope>true</includeSystemScope>
-          <fork>false</fork>
+          <fork>${spring-boot-maven-plugin.fork}</fork>
         </configuration>
       </plugin>
       <plugin>
