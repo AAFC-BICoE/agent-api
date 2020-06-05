@@ -2,6 +2,7 @@ package ca.gc.aafc.agent.api.repository;
 
 import java.util.Arrays;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import ca.gc.aafc.agent.api.dto.AgentDto;
@@ -15,14 +16,14 @@ import ca.gc.aafc.dina.security.DinaAuthenticatedUser;
 @Repository
 public class AgentResourceRepository extends JpaResourceRepository<AgentDto> {
 
+  @Autowired(required = false) // Bean does not exist with keycloak disabled.
   private DinaAuthenticatedUser authenticatedUser;
 
   public AgentResourceRepository(
     JpaDtoRepository dtoRepository,
     SimpleFilterHandler simpleFilterHandler,
     RsqlFilterHandler rsqlFilterHandler,
-    JpaMetaInformationProvider metaInformationProvider,
-    DinaAuthenticatedUser authenticatedUser
+    JpaMetaInformationProvider metaInformationProvider
   ) {
     super(
       AgentDto.class,
@@ -30,12 +31,13 @@ public class AgentResourceRepository extends JpaResourceRepository<AgentDto> {
       Arrays.asList(simpleFilterHandler, rsqlFilterHandler),
       metaInformationProvider
     );
-    this.authenticatedUser = authenticatedUser;
   }
 
   @Override
   public <S extends AgentDto> S create(S resource) {
-    resource.setCreatedBy(authenticatedUser.getUsername());
+    if (authenticatedUser != null) {
+      resource.setCreatedBy(authenticatedUser.getUsername());
+    }
     return super.create(resource);
   }
 
