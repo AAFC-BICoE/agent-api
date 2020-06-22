@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -50,6 +51,7 @@ public class Agent implements DinaEntity {
   private String displayName;
 
   @NotBlank
+  @Email(message = "is invalid, please use format: <user>@<site>.com.")
   private String email;
 
   @Column(name = "created_by")
