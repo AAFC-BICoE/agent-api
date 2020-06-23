@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import ca.gc.aafc.agent.api.dto.AgentDto;
+import ca.gc.aafc.agent.api.dto.PersonDto;
 import ca.gc.aafc.dina.DinaBaseApiAutoConfiguration;
 import ca.gc.aafc.dina.dto.RelatedEntity;
 import ca.gc.aafc.dina.jpa.BaseDAO;
@@ -35,7 +35,7 @@ public class MainConfiguration {
 
     // Map all DTOs to their related Entities.
     Map<Class<?>, Class<?>> entitiesMap = ClassAnnotationHelper
-      .findAnnotatedClasses(AgentDto.class, RelatedEntity.class)
+      .findAnnotatedClasses(PersonDto.class, RelatedEntity.class)
       .stream()
       .collect(
         Collectors.toMap(
