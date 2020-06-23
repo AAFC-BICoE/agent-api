@@ -1,4 +1,4 @@
-package ca.gc.aafc.person.api.repository;
+package ca.gc.aafc.agent.api.repository;
 
 import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,13 +15,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import ca.gc.aafc.agent.api.KeycloakTestConfiguration;
+import ca.gc.aafc.agent.api.dto.PersonDto;
+import ca.gc.aafc.agent.api.entities.Person;
+import ca.gc.aafc.agent.api.testsupport.factories.PersonFactory;
 import ca.gc.aafc.dina.testsupport.DBBackedIntegrationTest;
 import ca.gc.aafc.dina.testsupport.factories.TestableEntityFactory;
-import ca.gc.aafc.person.api.KeycloakTestConfiguration;
-import ca.gc.aafc.person.api.dto.PersonDto;
-import ca.gc.aafc.person.api.entities.Person;
-import ca.gc.aafc.person.api.repository.PersonResourceRepository;
-import ca.gc.aafc.person.api.testsupport.factories.PersonFactory;
 import io.crnk.core.queryspec.QuerySpec;
 
 /**

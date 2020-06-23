@@ -1,17 +1,17 @@
-package ca.gc.aafc.person.api.repository;
+package ca.gc.aafc.agent.api.repository;
 
 import java.util.Arrays;
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
+import ca.gc.aafc.agent.api.dto.PersonDto;
 import ca.gc.aafc.dina.filter.RsqlFilterHandler;
 import ca.gc.aafc.dina.filter.SimpleFilterHandler;
 import ca.gc.aafc.dina.repository.JpaDtoRepository;
 import ca.gc.aafc.dina.repository.JpaResourceRepository;
 import ca.gc.aafc.dina.repository.meta.JpaMetaInformationProvider;
 import ca.gc.aafc.dina.security.DinaAuthenticatedUser;
-import ca.gc.aafc.person.api.dto.PersonDto;
 
 @Repository
 public class PersonResourceRepository extends JpaResourceRepository<PersonDto> {
