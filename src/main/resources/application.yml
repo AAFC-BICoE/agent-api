@@ -6,7 +6,7 @@ spring:
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-master.xml
     contexts: schema-change
-    liquibase-schema:  person 
+    liquibase-schema:  agent 
   jpa:
     open-in-view: false
 crnk:
@@ -29,7 +29,7 @@ keycloak:
   realm: dina
   auth-server-url: http://${KEYCLOAK_HOST_IP}:8080/auth
   ssl-required: none
-  resource: person
+  resource: agent
   public-client: true
   bearer-only: true
   principal-attribute: preferred_username
