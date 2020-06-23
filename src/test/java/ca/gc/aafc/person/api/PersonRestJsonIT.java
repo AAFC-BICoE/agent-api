@@ -1,4 +1,4 @@
-package ca.gc.aafc.agent.api;
+package ca.gc.aafc.person.api;
 
 import static io.restassured.RestAssured.given;
 
@@ -23,11 +23,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.google.common.collect.ImmutableMap;
 
-import ca.gc.aafc.agent.api.entities.Person;
 import ca.gc.aafc.dina.testsupport.DBBackedIntegrationTest;
 import ca.gc.aafc.dina.testsupport.factories.TestableEntityFactory;
 import ca.gc.aafc.dina.testsupport.jsonapi.JsonAPITestHelper;
 import ca.gc.aafc.dina.testsupport.specs.OpenAPI3Assertions;
+import ca.gc.aafc.person.api.entities.Person;
 import io.crnk.core.engine.http.HttpStatus;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;

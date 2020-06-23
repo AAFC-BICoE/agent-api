@@ -1,4 +1,4 @@
-package ca.gc.aafc.agent.api.entities;
+package ca.gc.aafc.person.api.entities;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -11,8 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import ca.gc.aafc.agent.api.testsupport.factories.PersonFactory;
 import ca.gc.aafc.dina.testsupport.DBBackedIntegrationTest;
+import ca.gc.aafc.person.api.entities.Person;
+import ca.gc.aafc.person.api.testsupport.factories.PersonFactory;
 
 /**
  * Test suite to validate {@link Person} performs as a valid Hibernate Entity.

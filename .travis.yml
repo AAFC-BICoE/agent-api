@@ -8,11 +8,11 @@ cache:
   - $HOME/.m2
 
 before_script:
-  - psql -c "CREATE DATABASE agent_test;" -U postgres
-  - psql -f src/test/resources/init-agent-module.sql agent_test -U postgres
+  - psql -c "CREATE DATABASE person_test;" -U postgres
+  - psql -f src/test/resources/init-agent-module.sql person_test -U postgres
 
 script: 
-  - mvn verify -Dspring.datasource.url=jdbc:postgresql://localhost/agent_test?currentSchema=agent -Dspring.datasource.username=web_user -Dspring.datasource.password=test -Dspring.liquibase.user=migration_user -Dspring.liquibase.password=test checkstyle:check com.github.spotbugs:spotbugs-maven-plugin:check jacoco:check
+  - mvn verify -Dspring.datasource.url=jdbc:postgresql://localhost/person_test?currentSchema=person -Dspring.datasource.username=web_user -Dspring.datasource.password=test -Dspring.liquibase.user=migration_user -Dspring.liquibase.password=test checkstyle:check com.github.spotbugs:spotbugs-maven-plugin:check jacoco:check
  
 jdk:
   - openjdk8

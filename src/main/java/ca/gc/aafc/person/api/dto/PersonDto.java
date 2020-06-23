@@ -1,10 +1,10 @@
-package ca.gc.aafc.agent.api.dto;
+package ca.gc.aafc.person.api.dto;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
-import ca.gc.aafc.agent.api.entities.Person;
 import ca.gc.aafc.dina.dto.RelatedEntity;
+import ca.gc.aafc.person.api.entities.Person;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.crnk.core.resource.annotations.JsonApiId;
 import io.crnk.core.resource.annotations.JsonApiResource;

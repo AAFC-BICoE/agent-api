@@ -1,4 +1,4 @@
-package ca.gc.aafc.agent.api.entities;
+package ca.gc.aafc.person.api.entities;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;

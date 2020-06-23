@@ -1,4 +1,4 @@
-package ca.gc.aafc.agent.api;
+package ca.gc.aafc.person.api;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,9 +1,9 @@
-package ca.gc.aafc.agent.api.testsupport.factories;
+package ca.gc.aafc.person.api.testsupport.factories;
 
 import java.util.UUID;
 
-import ca.gc.aafc.agent.api.entities.Person;
 import ca.gc.aafc.dina.testsupport.factories.TestableEntityFactory;
+import ca.gc.aafc.person.api.entities.Person;
 
 public class PersonFactory implements TestableEntityFactory<Person> {
 
