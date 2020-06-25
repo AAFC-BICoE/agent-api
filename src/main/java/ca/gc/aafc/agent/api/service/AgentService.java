@@ -1,5 +1,7 @@
 package ca.gc.aafc.agent.api.service;
 
+import java.util.UUID;
+
 import org.springframework.stereotype.Service;
 
 import ca.gc.aafc.agent.api.entities.Agent;
@@ -16,6 +18,7 @@ public class AgentService extends DinaService<Agent> {
 
   @Override
   protected Agent preCreate(Agent entity) {
+    entity.setUuid(UUID.randomUUID());
     return entity;
   }
 
