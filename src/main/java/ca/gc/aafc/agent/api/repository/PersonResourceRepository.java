@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
-import ca.gc.aafc.agent.api.dto.AgentDto;
+import ca.gc.aafc.agent.api.dto.PersonDto;
 import ca.gc.aafc.dina.filter.RsqlFilterHandler;
 import ca.gc.aafc.dina.filter.SimpleFilterHandler;
 import ca.gc.aafc.dina.repository.JpaDtoRepository;
@@ -14,12 +14,12 @@ import ca.gc.aafc.dina.repository.meta.JpaMetaInformationProvider;
 import ca.gc.aafc.dina.security.DinaAuthenticatedUser;
 
 @Repository
-public class AgentResourceRepository extends JpaResourceRepository<AgentDto> {
+public class PersonResourceRepository extends JpaResourceRepository<PersonDto> {
 
   // Bean does not exist with keycloak disabled.
   private Optional<DinaAuthenticatedUser> authenticatedUser;
 
-  public AgentResourceRepository(
+  public PersonResourceRepository(
     JpaDtoRepository dtoRepository,
     SimpleFilterHandler simpleFilterHandler,
     RsqlFilterHandler rsqlFilterHandler,
@@ -27,7 +27,7 @@ public class AgentResourceRepository extends JpaResourceRepository<AgentDto> {
     Optional<DinaAuthenticatedUser> authenticatedUser
   ) {
     super(
-      AgentDto.class,
+      PersonDto.class,
       dtoRepository,
       Arrays.asList(simpleFilterHandler, rsqlFilterHandler),
       metaInformationProvider
@@ -36,7 +36,7 @@ public class AgentResourceRepository extends JpaResourceRepository<AgentDto> {
   }
 
   @Override
-  public <S extends AgentDto> S create(S resource) {
+  public <S extends PersonDto> S create(S resource) {
     if (authenticatedUser.isPresent()) {
       resource.setCreatedBy(authenticatedUser.get().getUsername());
     }
