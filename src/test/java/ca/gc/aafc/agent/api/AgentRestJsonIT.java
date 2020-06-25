@@ -50,7 +50,7 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
   public static final String API_BASE_PATH = "/api/v1/agent/";
   public static final String JSON_API_CONTENT_TYPE = "application/vnd.api+json";  
   private static final String SPEC_HOST = "raw.githubusercontent.com";
-  private static final String SPEC_PATH = "DINA-Web/agent-specs/master/schema/agent.yaml";  
+  private static final String SPEC_PATH = "DINA-Web/agent-specs/master/schema/agent.yml";  
   private static final String SCHEMA_NAME = "Agent";
 
   @BeforeEach
