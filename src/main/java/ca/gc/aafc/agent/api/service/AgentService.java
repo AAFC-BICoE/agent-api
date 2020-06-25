@@ -4,31 +4,31 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import ca.gc.aafc.agent.api.entities.Agent;
+import ca.gc.aafc.agent.api.entities.Person;
 import ca.gc.aafc.dina.jpa.BaseDAO;
 import ca.gc.aafc.dina.service.DinaService;
 import lombok.NonNull;
 
 @Service
-public class AgentService extends DinaService<Agent> {
+public class AgentService extends DinaService<Person> {
 
   public AgentService(@NonNull BaseDAO baseDAO) {
     super(baseDAO);
   }
 
   @Override
-  protected Agent preCreate(Agent entity) {
+  protected Person preCreate(Person entity) {
     entity.setUuid(UUID.randomUUID());
     return entity;
   }
 
   @Override
-  protected void preDelete(Agent entity) {
+  protected void preDelete(Person entity) {
 
   }
 
   @Override
-  protected Agent preUpdate(Agent entity) {
+  protected Person preUpdate(Person entity) {
     return entity;
   }
 
