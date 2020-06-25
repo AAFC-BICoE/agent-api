@@ -23,7 +23,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.google.common.collect.ImmutableMap;
 
-import ca.gc.aafc.agent.api.entities.Agent;
+import ca.gc.aafc.agent.api.entities.Person;
 import ca.gc.aafc.dina.testsupport.DBBackedIntegrationTest;
 import ca.gc.aafc.dina.testsupport.factories.TestableEntityFactory;
 import ca.gc.aafc.dina.testsupport.jsonapi.JsonAPITestHelper;
@@ -35,23 +35,23 @@ import io.restassured.response.ValidatableResponse;
 import lombok.extern.log4j.Log4j2;
 
 /**
- * Test suite to validate correct HTTP and JSON API responses for {@link Agent}
+ * Test suite to validate correct HTTP and JSON API responses for {@link Person}
  * Endpoints.
  */
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
 @Log4j2
-public class AgentRestJsonIT extends DBBackedIntegrationTest {
+public class PersonRestJsonIT extends DBBackedIntegrationTest {
 
   @LocalServerPort
   protected int testPort;
 
-  public static final String API_BASE_PATH = "/api/v1/agent/";
+  public static final String API_BASE_PATH = "/api/v1/person/";
   public static final String JSON_API_CONTENT_TYPE = "application/vnd.api+json";  
   private static final String SPEC_HOST = "raw.githubusercontent.com";
   private static final String SPEC_PATH = "DINA-Web/agent-specs/master/schema/agent.yml";  
-  private static final String SCHEMA_NAME = "Agent";
+  private static final String SCHEMA_NAME = "Person";
 
   @BeforeEach
   public void setup() {
@@ -65,19 +65,19 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
   public void tearDown() {
     runInNewTransaction(em -> {
       CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-      CriteriaDelete<Agent> query = criteriaBuilder.createCriteriaDelete(Agent.class);
-      Root<Agent> root = query.from(Agent.class);
+      CriteriaDelete<Person> query = criteriaBuilder.createCriteriaDelete(Person.class);
+      Root<Person> root = query.from(Person.class);
       query.where(criteriaBuilder.isNotNull(root.get("uuid")));
       em.createQuery(query).executeUpdate();
     });
   }
 
   @Test
-  public void post_NewAgent_ReturnsOkayAndBody() {
+  public void post_NewPerson_ReturnsOkayAndBody() {
     String displayName = "Albert";
     String email = "Albert@yahoo.com";
 
-    Response response = postAgent(displayName, email);
+    Response response = postPerson(displayName, email);
 
     assertValidResponseBodyAndCode(response, displayName, email, HttpStatus.CREATED_201)
       .body("data.id", Matchers.notNullValue());
@@ -85,12 +85,12 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
   }
 
   @Test
-  public void Patch_UpdateAgent_ReturnsOkayAndBody() {
-    String id = persistAgent("agent", "agent@agen.ca");
+  public void Patch_UpdatePerson_ReturnsOkayAndBody() {
+    String id = persistPerson("person", "person@agen.ca");
 
     String newName = "Updated Name";
     String newEmail = "Updated@yahoo.nz";
-    patchAgent(newName, newEmail, id);
+    patchPerson(newName, newEmail, id);
 
     Response response = sendGet(id);
     assertValidResponseBodyAndCode(response, newName, newEmail, HttpStatus.OK_200);
@@ -98,10 +98,10 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
   }
 
   @Test
-  public void get_PersistedAgent_ReturnsOkayAndBody() {
+  public void get_PersistedPerson_ReturnsOkayAndBody() {
     String displayName = TestableEntityFactory.generateRandomNameLettersOnly(10);
     String email = TestableEntityFactory.generateRandomNameLettersOnly(5);
-    String id = persistAgent(displayName, email);
+    String id = persistPerson(displayName, email);
 
     Response response = sendGet(id);
 
@@ -115,14 +115,14 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
   }
 
   @Test
-  public void get_InvalidAgent_ReturnsResourceNotFound() {
+  public void get_InvalidPerson_ReturnsResourceNotFound() {
     Response response = sendGet("a8098c1a-f86e-11da-bd1a-00112444be1e");
     response.then().statusCode(HttpStatus.NOT_FOUND_404);
   }
 
   @Test
-  public void delete_PeresistedAgent_ReturnsNoConentAndDeletes() {
-    String id = persistAgent("agent", "agent@agen.ca");
+  public void delete_PeresistedPerson_ReturnsNoConentAndDeletes() {
+    String id = persistPerson("person", "person@agen.ca");
 
     Response response = sendDelete(id);
     response.then().statusCode(HttpStatus.NO_CONTENT_204);
@@ -132,7 +132,7 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
   }
 
   /**
-   * Send a HTTP DELETE request to the agent endpoint with a given id
+   * Send a HTTP DELETE request to the person endpoint with a given id
    *
    * @param id - id of the entity
    * @return - response of the request
@@ -145,7 +145,7 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
   }
 
   /**
-   * Send a HTTP GET request to the agent endpoint with a given id
+   * Send a HTTP GET request to the person endpoint with a given id
    *
    * @param id - id of the entity
    * @return - response of the request
@@ -158,15 +158,15 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
   }
 
   /**
-   * Send a HTTP PATCH request to the agent endpoint with a given id, name, and
+   * Send a HTTP PATCH request to the person endpoint with a given id, name, and
    * email.
    *
-   * @param newDisplayName - new name for the agent
-   * @param newEmail       - new email for the agent
+   * @param newDisplayName - new name for the person
+   * @param newEmail       - new email for the person
    * @param id             - id of the entity
    * @return - response of the request
    */
-  private Response patchAgent(String newDisplayName, String newEmail, String id) {
+  private Response patchPerson(String newDisplayName, String newEmail, String id) {
     return given()
       .header("crnk-compact", "true")
       .contentType(JSON_API_CONTENT_TYPE)
@@ -176,13 +176,13 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
   }
 
   /**
-   * Send a HTTP POST request to the agent endpoint with a given name and email.
+   * Send a HTTP POST request to the person endpoint with a given name and email.
    *
-   * @param displayName - name for the agent
-   * @param email       - email for the agent
+   * @param displayName - name for the person
+   * @param email       - email for the person
    * @return - response of the request
    */
-  private Response postAgent(String displayName, String email) {
+  private Response postPerson(String displayName, String email) {
     return given()
       .header("crnk-compact", "true")
       .contentType(JSON_API_CONTENT_TYPE)
@@ -224,18 +224,18 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
     ImmutableMap.Builder<String, Object> objAttribMap = new ImmutableMap.Builder<>();
     objAttribMap.put("displayName", displayName);
     objAttribMap.put("email", email);
-    return JsonAPITestHelper.toJsonAPIMap("agent", objAttribMap.build(),null, null);
+    return JsonAPITestHelper.toJsonAPIMap("person", objAttribMap.build(),null, null);
   }
 
   /**
-   * Helper method to persist an Agent with a given name and email.
+   * Helper method to persist an Person with a given name and email.
    *
-   * @param name  - name for the agent
-   * @param email - email for the agent
-   * @return - id of the persisted agent
+   * @param name  - name for the person
+   * @param email - email for the person
+   * @return - id of the persisted person
    */
-  private String persistAgent(String name, String email) {
-    String id =  postAgent(name, email)
+  private String persistPerson(String name, String email) {
+    String id =  postPerson(name, email)
       .body()
       .jsonPath()
       .get("data.id");
@@ -244,7 +244,7 @@ public class AgentRestJsonIT extends DBBackedIntegrationTest {
 
   /**
    * Validates a given JSON response body matches the schema defined in
-   * {@link AgentRestJsonIT#SCHEMA_NAME}
+   * {@link PersonRestJsonIT#SCHEMA_NAME}
    *
    * @param responseJson The response json from service
    */
