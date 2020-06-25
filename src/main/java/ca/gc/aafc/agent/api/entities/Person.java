@@ -8,7 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.PrePersist;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -58,10 +57,5 @@ public class Person implements DinaEntity {
 
   @Column(name = "created_on", insertable = false, updatable = false)
   private OffsetDateTime createdOn;
-
-  @PrePersist
-  public void initUuid() {
-    this.uuid = UUID.randomUUID();
-  }
 
 }

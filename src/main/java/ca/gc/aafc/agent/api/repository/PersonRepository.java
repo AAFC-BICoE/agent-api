@@ -1,37 +1,35 @@
 package ca.gc.aafc.agent.api.repository;
 
-import java.util.Arrays;
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
 import ca.gc.aafc.agent.api.dto.PersonDto;
-import ca.gc.aafc.dina.filter.RsqlFilterHandler;
-import ca.gc.aafc.dina.filter.SimpleFilterHandler;
-import ca.gc.aafc.dina.repository.JpaDtoRepository;
-import ca.gc.aafc.dina.repository.JpaResourceRepository;
-import ca.gc.aafc.dina.repository.meta.JpaMetaInformationProvider;
+import ca.gc.aafc.agent.api.entities.Person;
+import ca.gc.aafc.dina.filter.DinaFilterResolver;
+import ca.gc.aafc.dina.mapper.DinaMapper;
+import ca.gc.aafc.dina.repository.DinaRepository;
 import ca.gc.aafc.dina.security.DinaAuthenticatedUser;
+import ca.gc.aafc.dina.service.DinaService;
+import lombok.NonNull;
 
 @Repository
-public class PersonResourceRepository extends JpaResourceRepository<PersonDto> {
+public class PersonRepository extends DinaRepository<PersonDto, Person> {
 
   // Bean does not exist with keycloak disabled.
   private Optional<DinaAuthenticatedUser> authenticatedUser;
 
-  public PersonResourceRepository(
-    JpaDtoRepository dtoRepository,
-    SimpleFilterHandler simpleFilterHandler,
-    RsqlFilterHandler rsqlFilterHandler,
-    JpaMetaInformationProvider metaInformationProvider,
+  public PersonRepository(
+    @NonNull DinaService<Person> dinaService,
+    @NonNull DinaFilterResolver filterResolver,
     Optional<DinaAuthenticatedUser> authenticatedUser
   ) {
     super(
+      dinaService,
+      new DinaMapper<>(PersonDto.class),
       PersonDto.class,
-      dtoRepository,
-      Arrays.asList(simpleFilterHandler, rsqlFilterHandler),
-      metaInformationProvider
-    );
+      Person.class,
+      filterResolver);
     this.authenticatedUser = authenticatedUser;
   }
 
