@@ -10,9 +10,9 @@ import ca.gc.aafc.dina.service.DinaService;
 import lombok.NonNull;
 
 @Service
-public class AgentService extends DinaService<Person> {
+public class PersonService extends DinaService<Person> {
 
-  public AgentService(@NonNull BaseDAO baseDAO) {
+  public PersonService(@NonNull BaseDAO baseDAO) {
     super(baseDAO);
   }
 

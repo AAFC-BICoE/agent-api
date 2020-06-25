@@ -14,12 +14,12 @@ import ca.gc.aafc.dina.service.DinaService;
 import lombok.NonNull;
 
 @Repository
-public class AgentRepository extends DinaRepository<PersonDto, Person> {
+public class PersonRepository extends DinaRepository<PersonDto, Person> {
 
   // Bean does not exist with keycloak disabled.
   private Optional<DinaAuthenticatedUser> authenticatedUser;
 
-  public AgentRepository(
+  public PersonRepository(
     @NonNull DinaService<Person> dinaService,
     @NonNull DinaFilterResolver filterResolver,
     Optional<DinaAuthenticatedUser> authenticatedUser

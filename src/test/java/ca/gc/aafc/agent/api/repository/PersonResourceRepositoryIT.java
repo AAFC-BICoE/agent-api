@@ -33,7 +33,7 @@ import io.crnk.core.queryspec.QuerySpec;
 public class PersonResourceRepositoryIT extends DBBackedIntegrationTest {
 
   @Inject
-  private AgentRepository personResourceRepository;
+  private PersonRepository personResourceRepository;
 
   private Person personUnderTest;
 
