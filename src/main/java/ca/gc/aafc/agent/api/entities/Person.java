@@ -51,7 +51,7 @@ public class Person implements DinaEntity {
   private String displayName;
 
   @NotBlank
-  @Email(message = "is invalid, please use format: <user>@<site>.com.")
+  @Email(message = "{messages.email}")
   private String email;
 
   @Column(name = "created_by")
