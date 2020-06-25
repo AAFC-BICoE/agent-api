@@ -2,14 +2,14 @@ package ca.gc.aafc.agent.api.testsupport.factories;
 
 import java.util.UUID;
 
-import ca.gc.aafc.agent.api.entities.Agent;
+import ca.gc.aafc.agent.api.entities.Person;
 import ca.gc.aafc.dina.testsupport.factories.TestableEntityFactory;
 
-public class AgentFactory implements TestableEntityFactory<Agent> {
+public class PersonFactory implements TestableEntityFactory<Person> {
 
   @Override
-  public Agent getEntityInstance() {
-    return newAgent().build();
+  public Person getEntityInstance() {
+    return newPerson().build();
   }
 
   /**
@@ -19,8 +19,8 @@ public class AgentFactory implements TestableEntityFactory<Agent> {
    * 
    * @return Pre-configured builder with all mandatory fields set
    */
-  public static Agent.AgentBuilder newAgent() {
-    return Agent
+  public static Person.PersonBuilder newPerson() {
+    return Person
       .builder()
       .uuid(UUID.randomUUID())
       .displayName(TestableEntityFactory.generateRandomNameLettersOnly(15))
