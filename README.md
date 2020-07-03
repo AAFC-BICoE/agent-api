@@ -4,6 +4,10 @@ AAFC DINA agent module implementation.
 
 See DINA agent module [specification](https://github.com/DINA-Web/agent-specs).
 
+## Required
+
+* Java 11
+* Maven 3.6 (tested)
 
 ## Documentation
 
