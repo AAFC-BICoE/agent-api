@@ -1,4 +1,4 @@
-FROM maven:ibmjava-alpine
+FROM maven:3.6.3-jdk-11-slim
 
 WORKDIR /project
 
@@ -13,9 +13,9 @@ RUN mvn test
 RUN mvn clean install -Dmaven.test.skip=true
 
 # Stage 2: extract jar and set entrypoint
-FROM openjdk:8-jre-slim
+FROM openjdk:11-jre-slim
 RUN useradd -s /bin/bash user
 USER user
-COPY --from=0 --chown=644 /project/target/agent-api-*.jar /agent-api.jar
+COPY --chown=644 target/agent-api-*.jar /agent-api.jar
 EXPOSE 8080
-ENTRYPOINT ["java","-XX:+UnlockExperimentalVMOptions","-XX:+UseCGroupMemoryLimitForHeap","-jar","/agent-api.jar"]
+ENTRYPOINT ["java", "-jar", "/agent-api.jar"]
