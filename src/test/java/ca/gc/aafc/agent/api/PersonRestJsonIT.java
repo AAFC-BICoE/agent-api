@@ -121,6 +121,12 @@ public class PersonRestJsonIT extends DBBackedIntegrationTest {
   }
 
   @Test
+  public void get_InvalidUUID_ReturnsResourceNotFound() {
+    Response response = sendGet("12131231");
+    response.then().statusCode(HttpStatus.BAD_REQUEST_400);
+  }
+
+  @Test
   public void delete_PeresistedPerson_ReturnsNoConentAndDeletes() {
     String id = persistPerson("person", "person@agen.ca");
 
