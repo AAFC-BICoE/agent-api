@@ -1,12 +1,11 @@
 package ca.gc.aafc.agent.api.repository;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import io.crnk.servlet.CrnkFilter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -30,27 +30,26 @@ public class RequestUuidValidationFilter extends CrnkFilter {
   private final List<String> endpoints;
 
   @Override
-  public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-      throws IOException, ServletException {
+  @SneakyThrows
+  public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) {
 
     if (request instanceof HttpServletRequest && response instanceof HttpServletResponse) {
       HttpServletRequest httpRequest = (HttpServletRequest) request;
       HttpServletResponse httpResponse = (HttpServletResponse) response;
 
       if (StringUtils.equalsIgnoreCase(httpRequest.getMethod(), METHOD)) {
-        log.info("Validating ID if present for URI: " + httpRequest.getRequestURI());
+        String uri = httpRequest.getRequestURI();
+        log.info("Validating ID if present for URI: " + uri);
 
-        String[] path = splitPath(httpRequest.getRequestURI());
+        String[] path = splitPath(uri);
+        Optional<String> endpoint = parseEndpoint(path);
 
-        String endpoint = parseEndpoint(path);
-
-        int index = indexOfIgnoreCase(path, endpoint);
-
-        if (index < path.length && !isUuidValid(path[index + 1])) {
-          httpResponse.sendError(
-            HttpServletResponse.SC_BAD_REQUEST,
-            path[index + 1] + " is not a valid uuid");
+        String endOfPath = path[path.length - 1];
+        if (endpoint.isPresent() && hasId(path, endpoint.get()) && !isUuidValid(endOfPath)) {
+          setErrorResponse(httpResponse, endOfPath);
           return;
+        } else {
+          log.warn("UUID validation not set for resouce with URI: " + uri);
         }
       }
     }
@@ -58,26 +57,24 @@ public class RequestUuidValidationFilter extends CrnkFilter {
   }
 
   private static String[] splitPath(String uri) {
-    String[] path = uri.split(SEPARATOR);
-    return Arrays.asList(path).stream().filter(ele -> StringUtils.isNotBlank(ele))
+    return Arrays.asList(uri.split(SEPARATOR)).stream()
+        .filter(ele -> StringUtils.isNotBlank(ele))
         .toArray(String[]::new);
   }
 
-  private String parseEndpoint(String[] path) {
+  private Optional<String> parseEndpoint(String[] path) {
     return Arrays.asList(path).stream()
         .filter(ele -> endpoints.stream().anyMatch(end -> StringUtils.equalsIgnoreCase(ele, end)))
-        .findFirst()
-        .orElse(null);
+        .findFirst();
   }
 
-  private static int indexOfIgnoreCase(String[] array, String string) {
-    for (int i = 0; i < array.length; i++) {
-      String ele = array[i];
-      if (StringUtils.equalsIgnoreCase(ele, string)) {
-        return i;
-      }
-    }
-    return -1;
+  private static boolean hasId(String[] path, String endpoint) {
+    return !StringUtils.equalsIgnoreCase(path[path.length - 1], endpoint);
+  }
+
+  @SneakyThrows
+  private static void setErrorResponse(HttpServletResponse resp, String uuid) {
+    resp.sendError(HttpServletResponse.SC_BAD_REQUEST, uuid + " is not a valid uuid");
   }
 
   private static boolean isUuidValid(String uuid) {
