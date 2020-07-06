@@ -2,9 +2,9 @@ package ca.gc.aafc.agent.api.repository;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
-import javax.inject.Named;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -15,14 +15,19 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 
 import io.crnk.servlet.CrnkFilter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
-@Named
 @Log4j2
+@RequiredArgsConstructor
 public class RequestUuidValidationFilter extends CrnkFilter {
 
+  private static final String METHOD = "GET";
   private static final String SEPARATOR = "/";
-  private static final String ENTITY_NAME = "person";
+
+  @NonNull
+  private final List<String> endpoints;
 
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -32,12 +37,14 @@ public class RequestUuidValidationFilter extends CrnkFilter {
       HttpServletRequest httpRequest = (HttpServletRequest) request;
       HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-      if (StringUtils.equalsIgnoreCase(httpRequest.getMethod(), "GET")) {
+      if (StringUtils.equalsIgnoreCase(httpRequest.getMethod(), METHOD)) {
         log.info("Validating ID if present for URI: " + httpRequest.getRequestURI());
 
         String[] path = splitPath(httpRequest.getRequestURI());
 
-        int index = indexOfIgnoreCase(path, ENTITY_NAME);
+        String endpoint = parseEndpoint(path);
+
+        int index = indexOfIgnoreCase(path, endpoint);
 
         if (index < path.length && !isUuidValid(path[index + 1])) {
           httpResponse.sendError(
@@ -54,6 +61,13 @@ public class RequestUuidValidationFilter extends CrnkFilter {
     String[] path = uri.split(SEPARATOR);
     return Arrays.asList(path).stream().filter(ele -> StringUtils.isNotBlank(ele))
         .toArray(String[]::new);
+  }
+
+  private String parseEndpoint(String[] path) {
+    return Arrays.asList(path).stream()
+        .filter(ele -> endpoints.stream().anyMatch(end -> StringUtils.equalsIgnoreCase(ele, end)))
+        .findFirst()
+        .orElse(null);
   }
 
   private static int indexOfIgnoreCase(String[] array, String string) {

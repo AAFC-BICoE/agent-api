@@ -1,5 +1,6 @@
 package ca.gc.aafc.agent.api;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import ca.gc.aafc.agent.api.dto.PersonDto;
+import ca.gc.aafc.agent.api.repository.RequestUuidValidationFilter;
 import ca.gc.aafc.dina.DinaBaseApiAutoConfiguration;
 import ca.gc.aafc.dina.dto.RelatedEntity;
 import ca.gc.aafc.dina.jpa.BaseDAO;
@@ -43,6 +45,11 @@ public class MainConfiguration {
           clazz -> clazz.getAnnotation(RelatedEntity.class).value()));
 
     return new JpaDtoMapper(entitiesMap, customFieldResolvers);
+  }
+
+  @Bean
+  public RequestUuidValidationFilter idValidator() {
+    return new RequestUuidValidationFilter(Arrays.asList("person"));
   }
 
 }
