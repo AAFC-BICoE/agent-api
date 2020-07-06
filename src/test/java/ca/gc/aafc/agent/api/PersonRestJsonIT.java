@@ -121,9 +121,13 @@ public class PersonRestJsonIT extends DBBackedIntegrationTest {
   }
 
   @Test
-  public void get_InvalidUUID_ReturnsResourceNotFound() {
-    Response response = sendGet("12131231");
-    response.then().statusCode(HttpStatus.BAD_REQUEST_400);
+  public void get_InvalidUUID_ReturnsBadRequest() {
+    Response getResponse = sendGet("12131231");
+    getResponse.then().statusCode(HttpStatus.BAD_REQUEST_400);
+
+    Response getWithQueryString = sendGet("12131231"+
+    "?filter[acDerivedFrom.id][EQ]=a8098c1a-f86e-11da-bd1a-00112444be1e");
+    getWithQueryString.then().statusCode(HttpStatus.BAD_REQUEST_400);
   }
 
   @Test
