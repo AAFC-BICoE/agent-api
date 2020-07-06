@@ -51,7 +51,7 @@ public class Person implements DinaEntity {
   private String displayName;
 
   @NotBlank
-  @Email(message = "{messages.email}")
+  @Email
   private String email;
 
   @Column(name = "created_by")
