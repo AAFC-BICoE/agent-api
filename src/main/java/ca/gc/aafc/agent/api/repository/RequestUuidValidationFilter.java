@@ -1,7 +1,9 @@
 package ca.gc.aafc.agent.api.repository;
 
+import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -11,8 +13,13 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.StringUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ImmutableMap;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.entity.ContentType;
+
+import io.crnk.core.engine.http.HttpStatus;
 import io.crnk.servlet.CrnkFilter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -46,7 +53,7 @@ public class RequestUuidValidationFilter extends CrnkFilter {
 
         String endOfPath = path[path.length - 1];
         if (endpoint.isPresent() && hasId(path, endpoint.get()) && !isUuidValid(endOfPath)) {
-          setErrorResponse(httpResponse, endOfPath);
+          setErrorResponse(httpResponse, endOfPath, uri);
           return;
         } else {
           log.warn("UUID validation not set for resouce with URI: " + uri);
@@ -78,8 +85,26 @@ public class RequestUuidValidationFilter extends CrnkFilter {
   }
 
   @SneakyThrows
-  private static void setErrorResponse(HttpServletResponse resp, String uuid) {
-    resp.sendError(HttpServletResponse.SC_BAD_REQUEST, uuid + " is not a valid uuid");
+  private static void setErrorResponse(HttpServletResponse resp, String uuid, String uri) {
+    resp.setStatus(HttpStatus.BAD_REQUEST_400);
+    resp.setContentType(ContentType.APPLICATION_JSON.toString());
+    resp.getWriter().write(getErrorBody(uuid, uri));
+    resp.flushBuffer();
+  }
+
+  @SneakyThrows
+  private static String getErrorBody(String uuid, String uri) {
+    Map<String, String> metaData = ImmutableMap.of(
+      "path", uri,
+      "timestamp", OffsetDateTime.now().toString());
+
+    Map<String, Object> errorData = ImmutableMap.of(
+      "status", Integer.toString(HttpStatus.BAD_REQUEST_400),
+      "title", HttpStatus.toMessage(HttpStatus.BAD_REQUEST_400),
+      "detail", uuid + " is not a valid uuid",
+      "meta", metaData);
+    Map<String, Object[]> returnBody = ImmutableMap.of("errors", new Object[] { errorData });
+    return new ObjectMapper().writeValueAsString(returnBody);
   }
 
   private static boolean isUuidValid(String uuid) {
