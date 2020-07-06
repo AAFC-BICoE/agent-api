@@ -98,6 +98,11 @@ public class PersonRestJsonIT extends DBBackedIntegrationTest {
   }
 
   @Test
+  public void patch_InvalidUUID_ReturnsBadRequest() {
+    patchPerson("name", "email", "invalid").then().statusCode(HttpStatus.BAD_REQUEST_400);
+  }
+
+  @Test
   public void get_PersistedPerson_ReturnsOkayAndBody() {
     String displayName = TestableEntityFactory.generateRandomNameLettersOnly(10);
     String email = TestableEntityFactory.generateRandomNameLettersOnly(5);

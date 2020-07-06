@@ -23,7 +23,7 @@ import lombok.extern.log4j.Log4j2;
 @RequiredArgsConstructor
 public class RequestUuidValidationFilter extends CrnkFilter {
 
-  private static final String METHOD = "GET";
+  private static final String[] METHODS = {"GET", "PATCH"};
   private static final String SEPARATOR = "/";
 
   @NonNull
@@ -37,7 +37,7 @@ public class RequestUuidValidationFilter extends CrnkFilter {
       HttpServletRequest httpRequest = (HttpServletRequest) request;
       HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-      if (StringUtils.equalsIgnoreCase(httpRequest.getMethod(), METHOD)) {
+      if (isValidMethod(httpRequest.getMethod())) {
         String uri = httpRequest.getRequestURI();
         log.info("Validating ID if present for URI: " + uri);
 
@@ -54,6 +54,11 @@ public class RequestUuidValidationFilter extends CrnkFilter {
       }
     }
     super.doFilter(request, response, chain);
+  }
+
+  private static boolean isValidMethod(String method) {
+    return Arrays.asList(METHODS).stream()
+        .anyMatch(elemment -> StringUtils.equalsIgnoreCase(method, elemment));
   }
 
   private static String[] splitPath(String uri) {
