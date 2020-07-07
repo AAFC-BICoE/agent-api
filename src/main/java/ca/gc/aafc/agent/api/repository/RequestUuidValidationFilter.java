@@ -22,20 +22,26 @@ import org.apache.http.entity.ContentType;
 import io.crnk.core.engine.http.HttpStatus;
 import io.crnk.servlet.CrnkFilter;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-@RequiredArgsConstructor
 public class RequestUuidValidationFilter extends CrnkFilter {
 
   private static final String[] METHODS = {"GET", "PATCH", "DELETE"};
   private static final String SEPARATOR = "/";
   private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
 
-  @NonNull
   private final List<String> endpoints;
+  private final String webPathPrefix;
+
+  public RequestUuidValidationFilter(
+    @NonNull String webPathPrefix,
+    @NonNull List<String> endpoints
+  ) {
+    this.endpoints = endpoints;
+    this.webPathPrefix = webPathPrefix;
+  }
 
   @Override
   @SneakyThrows
@@ -46,16 +52,16 @@ public class RequestUuidValidationFilter extends CrnkFilter {
       HttpServletResponse httpResponse = (HttpServletResponse) response;
 
       if (isValidMethod(httpRequest.getMethod())) {
-        String uri = httpRequest.getRequestURI();
+        String uri = stripPrefix(httpRequest.getRequestURI());
         log.info("Validating ID if present for URI: " + uri);
 
         String[] path = splitPath(uri);
         Optional<String> endpoint = parseEndpoint(path);
+        Optional<String> uuid = parseUUID(path);
 
-        String endOfPath = path[path.length - 1];
         if (endpoint.isPresent()) {
-          if (hasId(path, endpoint.get()) && !isUuidValid(endOfPath)) {
-            setErrorResponse(httpResponse, endOfPath, uri);
+          if (uuid.isPresent() && !isUuidValid(uuid.get())) {
+            setErrorResponse(httpResponse, uuid.get(), uri);
             return;
           }
         } else {
@@ -71,6 +77,14 @@ public class RequestUuidValidationFilter extends CrnkFilter {
         .anyMatch(elemment -> StringUtils.equalsIgnoreCase(method, elemment));
   }
 
+  private String stripPrefix(String uri) {
+    if (!uri.startsWith(webPathPrefix)) {
+      throw new IllegalStateException(
+          "Incorrect web path prefix set expected: " + webPathPrefix + " but URI was: " + uri);
+    }
+    return uri.replaceFirst(webPathPrefix, "");
+  }
+
   private static String[] splitPath(String uri) {
     return Arrays.asList(uri.split(SEPARATOR)).stream()
         .filter(ele -> StringUtils.isNotBlank(ele))
@@ -78,13 +92,17 @@ public class RequestUuidValidationFilter extends CrnkFilter {
   }
 
   private Optional<String> parseEndpoint(String[] path) {
-    return Arrays.asList(path).stream()
-        .filter(ele -> endpoints.stream().anyMatch(end -> StringUtils.equalsIgnoreCase(ele, end)))
-        .findFirst();
+    if (path.length == 0) {
+      return Optional.empty();
+    }
+    return endpoints.stream().filter(end -> StringUtils.equalsIgnoreCase(end, path[0])).findFirst();
   }
 
-  private static boolean hasId(String[] path, String endpoint) {
-    return !StringUtils.equalsIgnoreCase(path[path.length - 1], endpoint);
+  private Optional<String> parseUUID(String[] path) {
+    if (path.length < 2) {
+      return Optional.empty();
+    }
+    return Optional.of(path[1]);
   }
 
   @SneakyThrows

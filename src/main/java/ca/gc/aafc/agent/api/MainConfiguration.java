@@ -49,7 +49,7 @@ public class MainConfiguration {
 
   @Bean
   public RequestUuidValidationFilter idValidator() {
-    return new RequestUuidValidationFilter(Arrays.asList("person"));
+    return new RequestUuidValidationFilter("/api/v1", Arrays.asList("person"));
   }
 
 }
