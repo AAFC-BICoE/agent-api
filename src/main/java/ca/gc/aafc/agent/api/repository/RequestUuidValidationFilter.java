@@ -30,7 +30,7 @@ import lombok.extern.log4j.Log4j2;
 @RequiredArgsConstructor
 public class RequestUuidValidationFilter extends CrnkFilter {
 
-  private static final String[] METHODS = {"GET", "PATCH"};
+  private static final String[] METHODS = {"GET", "PATCH", "DELETE"};
   private static final String SEPARATOR = "/";
 
   @NonNull

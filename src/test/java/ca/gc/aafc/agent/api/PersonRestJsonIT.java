@@ -146,6 +146,11 @@ public class PersonRestJsonIT extends DBBackedIntegrationTest {
     getResponse.then().statusCode(HttpStatus.NOT_FOUND_404);
   }
 
+  @Test
+  public void delete_InvalidUUID_ReturnsBadRequest() {
+    sendDelete("invalid id").then().statusCode(HttpStatus.BAD_REQUEST_400);
+  }
+
   /**
    * Send a HTTP DELETE request to the person endpoint with a given id
    *
