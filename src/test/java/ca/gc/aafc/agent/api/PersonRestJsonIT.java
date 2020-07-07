@@ -52,6 +52,7 @@ public class PersonRestJsonIT extends DBBackedIntegrationTest {
   private static final String SPEC_HOST = "raw.githubusercontent.com";
   private static final String SPEC_PATH = "DINA-Web/agent-specs/master/schema/agent.yml";  
   private static final String SCHEMA_NAME = "Person";
+  public static final String EMAIL_ERROR = "email must be a well-formed email address";
 
   @BeforeEach
   public void setup() {
@@ -82,6 +83,16 @@ public class PersonRestJsonIT extends DBBackedIntegrationTest {
     assertValidResponseBodyAndCode(response, displayName, email, HttpStatus.CREATED_201)
       .body("data.id", Matchers.notNullValue());
     validateJsonSchema(response.body().asString());
+  }
+
+  @Test
+  public void post_NewPerson_ReturnsInvalidEmail() {
+    String displayName = "Albert";
+    String email = "AlbertYahoo.com";
+
+    Response response = postPerson(displayName, email);
+    response.then().statusCode(HttpStatus.UNPROCESSABLE_ENTITY_422).body("errors.detail", Matchers.equalTo(EMAIL_ERROR));
+
   }
 
   @Test
