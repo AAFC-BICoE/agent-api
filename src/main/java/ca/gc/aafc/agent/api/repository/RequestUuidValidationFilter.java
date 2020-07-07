@@ -52,9 +52,11 @@ public class RequestUuidValidationFilter extends CrnkFilter {
         Optional<String> endpoint = parseEndpoint(path);
 
         String endOfPath = path[path.length - 1];
-        if (endpoint.isPresent() && hasId(path, endpoint.get()) && !isUuidValid(endOfPath)) {
-          setErrorResponse(httpResponse, endOfPath, uri);
-          return;
+        if (endpoint.isPresent()) {
+          if (hasId(path, endpoint.get()) && !isUuidValid(endOfPath)) {
+            setErrorResponse(httpResponse, endOfPath, uri);
+            return;
+          }
         } else {
           log.warn("UUID validation not set for resouce with URI: " + uri);
         }
