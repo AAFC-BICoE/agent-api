@@ -91,8 +91,7 @@ public class PersonRestJsonIT extends DBBackedIntegrationTest {
     String email = "AlbertYahoo.com";
 
     Response response = postPerson(displayName, email);
-    response.then().statusCode(HttpStatus.UNPROCESSABLE_ENTITY_422).body("errors.detail", Matchers.equalTo(EMAIL_ERROR));
-
+    response.then().statusCode(HttpStatus.UNPROCESSABLE_ENTITY_422).body("errors.detail", Matchers.hasItem(EMAIL_ERROR));
   }
 
   @Test
