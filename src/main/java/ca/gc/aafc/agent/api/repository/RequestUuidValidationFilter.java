@@ -32,6 +32,7 @@ public class RequestUuidValidationFilter extends CrnkFilter {
 
   private static final String[] METHODS = {"GET", "PATCH", "DELETE"};
   private static final String SEPARATOR = "/";
+  private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
 
   @NonNull
   private final List<String> endpoints;
@@ -106,7 +107,7 @@ public class RequestUuidValidationFilter extends CrnkFilter {
       "detail", uuid + " is not a valid uuid",
       "meta", metaData);
     Map<String, Object[]> returnBody = ImmutableMap.of("errors", new Object[] { errorData });
-    return new ObjectMapper().writeValueAsString(returnBody);
+    return JSON_MAPPER.writeValueAsString(returnBody);
   }
 
   private static boolean isUuidValid(String uuid) {
