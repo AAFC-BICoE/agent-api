@@ -17,6 +17,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -125,14 +127,13 @@ public class PersonRestJsonIT extends DBBackedIntegrationTest {
     response.then().statusCode(HttpStatus.NOT_FOUND_404);
   }
 
-  @Test
-  public void get_InvalidUUID_ReturnsBadRequest() {
-    Response getResponse = sendGet("12131231");
+  @ParameterizedTest
+  @ValueSource(strings = { 
+    "12131231",
+    "12131231?filter[acDerivedFrom.id][EQ]=a8098c1a-f86e-11da-bd1a-00112444be1e" })
+  public void get_InvalidUUID_ReturnsBadRequest(String uri) {
+    Response getResponse = sendGet(uri);
     getResponse.then().statusCode(HttpStatus.BAD_REQUEST_400);
-
-    Response getWithQueryString = sendGet("12131231"+
-    "?filter[acDerivedFrom.id][EQ]=a8098c1a-f86e-11da-bd1a-00112444be1e");
-    getWithQueryString.then().statusCode(HttpStatus.BAD_REQUEST_400);
   }
 
   @Test
