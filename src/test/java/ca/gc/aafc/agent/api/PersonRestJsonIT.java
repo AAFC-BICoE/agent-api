@@ -110,7 +110,7 @@ public class PersonRestJsonIT extends DBBackedIntegrationTest {
   @Test
   public void get_PersistedPerson_ReturnsOkayAndBody() {
     String displayName = TestableEntityFactory.generateRandomNameLettersOnly(10);
-    String email = TestableEntityFactory.generateRandomNameLettersOnly(5);
+    String email = TestableEntityFactory.generateRandomNameLettersOnly(5) + "@email.com";
     String id = persistPerson(displayName, email);
 
     Response response = sendGet(id);

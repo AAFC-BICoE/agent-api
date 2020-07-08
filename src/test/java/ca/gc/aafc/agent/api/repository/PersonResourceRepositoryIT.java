@@ -47,7 +47,7 @@ public class PersonResourceRepositoryIT extends DBBackedIntegrationTest {
   public void create_ValidPerson_PersonPersisted() {
     PersonDto personDto = new PersonDto();
     personDto.setDisplayName(TestableEntityFactory.generateRandomNameLettersOnly(10));
-    personDto.setEmail(TestableEntityFactory.generateRandomNameLettersOnly(5));
+    personDto.setEmail(TestableEntityFactory.generateRandomNameLettersOnly(5) + "@email.com");
 
     UUID uuid = personResourceRepository.create(personDto).getUuid();
 
@@ -60,7 +60,7 @@ public class PersonResourceRepositoryIT extends DBBackedIntegrationTest {
 
   @Test
   public void save_PersistedPerson_FieldsUpdated() {
-    String updatedEmail = "Updated_Email";
+    String updatedEmail = "Updated_Email@email.com";
     String updatedName = "Updated_Name";
 
     PersonDto updatedPerson = personResourceRepository.findOne(
