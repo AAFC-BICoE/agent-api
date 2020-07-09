@@ -52,6 +52,7 @@ public class PersonRestJsonIT extends DBBackedIntegrationTest {
   private static final String SPEC_HOST = "raw.githubusercontent.com";
   private static final String SPEC_PATH = "DINA-Web/agent-specs/master/schema/agent.yml";  
   private static final String SCHEMA_NAME = "Person";
+  public static final String EMAIL_ERROR = "email must be a well-formed email address";
 
   @BeforeEach
   public void setup() {
@@ -85,6 +86,15 @@ public class PersonRestJsonIT extends DBBackedIntegrationTest {
   }
 
   @Test
+  public void post_NewPerson_ReturnsInvalidEmail() {
+    String displayName = "Albert";
+    String email = "AlbertYahoo.com";
+
+    Response response = postPerson(displayName, email);
+    response.then().statusCode(HttpStatus.UNPROCESSABLE_ENTITY_422).body("errors.detail", Matchers.hasItem(EMAIL_ERROR));
+  }
+
+  @Test
   public void Patch_UpdatePerson_ReturnsOkayAndBody() {
     String id = persistPerson("person", "person@agen.ca");
 
@@ -100,7 +110,7 @@ public class PersonRestJsonIT extends DBBackedIntegrationTest {
   @Test
   public void get_PersistedPerson_ReturnsOkayAndBody() {
     String displayName = TestableEntityFactory.generateRandomNameLettersOnly(10);
-    String email = TestableEntityFactory.generateRandomNameLettersOnly(5);
+    String email = TestableEntityFactory.generateRandomNameLettersOnly(5) + "@email.com";
     String id = persistPerson(displayName, email);
 
     Response response = sendGet(id);
