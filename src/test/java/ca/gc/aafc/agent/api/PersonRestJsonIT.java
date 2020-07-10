@@ -138,22 +138,8 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
   @Test
   public void delete_PeresistedPerson_ReturnsNoConentAndDeletes() {
     String id = persistPerson("person", "person@agen.ca");
-
-    Response response = sendDelete(id);
-    response.then().statusCode(HttpStatus.NO_CONTENT_204);
-
+    super.sendDelete("", id);
     super.sendGet("", id, HttpStatus.NOT_FOUND_404);
-  }
-
-  /**
-   * Send a HTTP DELETE request to the person endpoint with a given id
-   *
-   * @param id
-   *             - id of the entity
-   * @return - response of the request
-   */
-  private Response sendDelete(String id) {
-    return given().header("crnk-compact", "true").when().delete(API_BASE_PATH + id);
   }
 
   /**
