@@ -6,25 +6,25 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.Map;
 
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
+
+import com.google.common.collect.ImmutableMap;
 
 import org.apache.http.client.utils.URIBuilder;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import com.google.common.collect.ImmutableMap;
 
 import ca.gc.aafc.agent.api.entities.Person;
-import ca.gc.aafc.dina.testsupport.DBBackedIntegrationTest;
+import ca.gc.aafc.dina.testsupport.BaseRestAssuredTest;
 import ca.gc.aafc.dina.testsupport.factories.TestableEntityFactory;
 import ca.gc.aafc.dina.testsupport.jsonapi.JsonAPITestHelper;
 import ca.gc.aafc.dina.testsupport.specs.OpenAPI3Assertions;
@@ -38,14 +38,12 @@ import lombok.extern.log4j.Log4j2;
  * Test suite to validate correct HTTP and JSON API responses for {@link Person}
  * Endpoints.
  */
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
 @Log4j2
-public class PersonRestJsonIT extends DBBackedIntegrationTest {
+public class PersonRestJsonIT extends BaseRestAssuredTest {
 
-  @LocalServerPort
-  protected int testPort;
+  @Inject
+  private EntityManagerFactory entityManagerFactory;
 
   public static final String API_BASE_PATH = "/api/v1/person/";
   public static final String JSON_API_CONTENT_TYPE = "application/vnd.api+json";  
@@ -54,9 +52,13 @@ public class PersonRestJsonIT extends DBBackedIntegrationTest {
   private static final String SCHEMA_NAME = "Person";
   public static final String EMAIL_ERROR = "email must be a well-formed email address";
 
+  protected PersonRestJsonIT() {
+    super(API_BASE_PATH);
+  }
+
   @BeforeEach
   public void setup() {
-    RestAssured.port = testPort;
+    RestAssured.port = super.testPort;
   }
 
   /**
@@ -64,13 +66,20 @@ public class PersonRestJsonIT extends DBBackedIntegrationTest {
    */
   @AfterEach
   public void tearDown() {
-    runInNewTransaction(em -> {
-      CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-      CriteriaDelete<Person> query = criteriaBuilder.createCriteriaDelete(Person.class);
-      Root<Person> root = query.from(Person.class);
-      query.where(criteriaBuilder.isNotNull(root.get("uuid")));
-      em.createQuery(query).executeUpdate();
-    });
+    EntityManager em = entityManagerFactory.createEntityManager();
+
+    EntityTransaction et = em.getTransaction();
+    et.begin();
+
+    CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+    CriteriaDelete<Person> query = criteriaBuilder.createCriteriaDelete(Person.class);
+    Root<Person> root = query.from(Person.class);
+    query.where(criteriaBuilder.isNotNull(root.get("uuid")));
+    em.createQuery(query).executeUpdate();
+
+    em.flush();
+    et.commit();
+    em.close();
   }
 
   @Test
