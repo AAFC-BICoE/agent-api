@@ -95,10 +95,9 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
     String displayName = "Albert";
     String email = "AlbertYahoo.com";
 
-    ValidatableResponse response =
-        super.sendPost("", getPostBody(displayName, email), HttpStatus.UNPROCESSABLE_ENTITY_422);
-    response.statusCode(HttpStatus.UNPROCESSABLE_ENTITY_422).body("errors.detail",
-        Matchers.hasItem(EMAIL_ERROR));
+    super.sendPost("", getPostBody(displayName, email), HttpStatus.UNPROCESSABLE_ENTITY_422)
+        .statusCode(HttpStatus.UNPROCESSABLE_ENTITY_422)
+        .body("errors.detail", Matchers.hasItem(EMAIL_ERROR));
   }
 
   @Test
@@ -122,8 +121,8 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
 
     ValidatableResponse response = super.sendGet("", id);
 
-    assertValidResponseBodyAndCode(response, displayName, email, HttpStatus.OK_200).body("data.id",
-        Matchers.equalTo(id));
+    assertValidResponseBodyAndCode(response, displayName, email, HttpStatus.OK_200)
+        .body("data.id", Matchers.equalTo(id));
     validateJsonSchema(response.extract().asString());
   }
 
