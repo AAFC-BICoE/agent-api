@@ -1,7 +1,5 @@
 package ca.gc.aafc.agent.api;
 
-import static io.restassured.RestAssured.given;
-
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.Map;
@@ -30,7 +28,6 @@ import ca.gc.aafc.dina.testsupport.jsonapi.JsonAPITestHelper;
 import ca.gc.aafc.dina.testsupport.specs.OpenAPI3Assertions;
 import io.crnk.core.engine.http.HttpStatus;
 import io.restassured.RestAssured;
-import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import lombok.extern.log4j.Log4j2;
 
@@ -110,7 +107,7 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
 
     String newName = "Updated Name";
     String newEmail = "Updated@yahoo.nz";
-    patchPerson(newName, newEmail, id);
+    super.sendPatch("", id, getPostBody(newName, newEmail));
 
     ValidatableResponse response = super.sendGet("", id);
     assertValidResponseBodyAndCode(response, newName, newEmail, HttpStatus.OK_200);
@@ -138,25 +135,9 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
   @Test
   public void delete_PeresistedPerson_ReturnsNoConentAndDeletes() {
     String id = persistPerson("person", "person@agen.ca");
+    super.sendGet("", id, HttpStatus.OK_200);
     super.sendDelete("", id);
     super.sendGet("", id, HttpStatus.NOT_FOUND_404);
-  }
-
-  /**
-   * Send a HTTP PATCH request to the person endpoint with a given id, name, and
-   * email.
-   *
-   * @param newDisplayName
-   *                         - new name for the person
-   * @param newEmail
-   *                         - new email for the person
-   * @param id
-   *                         - id of the entity
-   * @return - response of the request
-   */
-  private Response patchPerson(String newDisplayName, String newEmail, String id) {
-    return given().header("crnk-compact", "true").contentType(JSON_API_CONTENT_TYPE)
-        .body(getPostBody(newDisplayName, newEmail)).when().patch(API_BASE_PATH + id);
   }
 
   /**
