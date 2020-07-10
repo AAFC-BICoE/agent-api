@@ -46,9 +46,8 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
   private EntityManagerFactory entityManagerFactory;
 
   public static final String API_BASE_PATH = "/api/v1/person/";
-  public static final String JSON_API_CONTENT_TYPE = "application/vnd.api+json";  
   private static final String SPEC_HOST = "raw.githubusercontent.com";
-  private static final String SPEC_PATH = "DINA-Web/agent-specs/master/schema/agent.yml";  
+  private static final String SPEC_PATH = "DINA-Web/agent-specs/master/schema/agent.yml";
   private static final String SCHEMA_NAME = "Person";
   public static final String EMAIL_ERROR = "email must be a well-formed email address";
 
@@ -87,11 +86,11 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
     String displayName = "Albert";
     String email = "Albert@yahoo.com";
 
-    Response response = postPerson(displayName, email);
+    ValidatableResponse response = super.sendPost("", getPostBody(displayName, email));
 
     assertValidResponseBodyAndCode(response, displayName, email, HttpStatus.CREATED_201)
-      .body("data.id", Matchers.notNullValue());
-    validateJsonSchema(response.body().asString());
+        .body("data.id", Matchers.notNullValue());
+    validateJsonSchema(response.extract().asString());
   }
 
   @Test
@@ -99,8 +98,10 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
     String displayName = "Albert";
     String email = "AlbertYahoo.com";
 
-    Response response = postPerson(displayName, email);
-    response.then().statusCode(HttpStatus.UNPROCESSABLE_ENTITY_422).body("errors.detail", Matchers.hasItem(EMAIL_ERROR));
+    ValidatableResponse response =
+        super.sendPost("", getPostBody(displayName, email), HttpStatus.UNPROCESSABLE_ENTITY_422);
+    response.statusCode(HttpStatus.UNPROCESSABLE_ENTITY_422).body("errors.detail",
+        Matchers.hasItem(EMAIL_ERROR));
   }
 
   @Test
@@ -111,9 +112,9 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
     String newEmail = "Updated@yahoo.nz";
     patchPerson(newName, newEmail, id);
 
-    Response response = sendGet(id);
+    ValidatableResponse response = sendGet(id);
     assertValidResponseBodyAndCode(response, newName, newEmail, HttpStatus.OK_200);
-    validateJsonSchema(response.body().asString());
+    validateJsonSchema(response.extract().asString());
   }
 
   @Test
@@ -122,21 +123,17 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
     String email = TestableEntityFactory.generateRandomNameLettersOnly(5) + "@email.com";
     String id = persistPerson(displayName, email);
 
-    Response response = sendGet(id);
+    ValidatableResponse response = sendGet(id);
 
-    assertValidResponseBodyAndCode(
-        response,
-        displayName,
-        email,
-        HttpStatus.OK_200
-      ).body("data.id", Matchers.equalTo(id));
-    validateJsonSchema(response.body().asString());
+    assertValidResponseBodyAndCode(response, displayName, email, HttpStatus.OK_200).body("data.id",
+        Matchers.equalTo(id));
+    validateJsonSchema(response.extract().asString());
   }
 
   @Test
   public void get_InvalidPerson_ReturnsResourceNotFound() {
-    Response response = sendGet("a8098c1a-f86e-11da-bd1a-00112444be1e");
-    response.then().statusCode(HttpStatus.NOT_FOUND_404);
+    ValidatableResponse response = sendGet("a8098c1a-f86e-11da-bd1a-00112444be1e");
+    response.statusCode(HttpStatus.NOT_FOUND_404);
   }
 
   @Test
@@ -146,126 +143,105 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
     Response response = sendDelete(id);
     response.then().statusCode(HttpStatus.NO_CONTENT_204);
 
-    Response getResponse = sendGet(id);
-    getResponse.then().statusCode(HttpStatus.NOT_FOUND_404);
+    ValidatableResponse getResponse = sendGet(id);
+    getResponse.statusCode(HttpStatus.NOT_FOUND_404);
   }
 
   /**
    * Send a HTTP DELETE request to the person endpoint with a given id
    *
-   * @param id - id of the entity
+   * @param id
+   *             - id of the entity
    * @return - response of the request
    */
   private Response sendDelete(String id) {
-    return given()
-      .header("crnk-compact", "true")
-      .when()
-      .delete(API_BASE_PATH + id);
+    return given().header("crnk-compact", "true").when().delete(API_BASE_PATH + id);
   }
 
   /**
    * Send a HTTP GET request to the person endpoint with a given id
    *
-   * @param id - id of the entity
+   * @param id
+   *             - id of the entity
    * @return - response of the request
    */
-  private Response sendGet(String id) {
-    return given()
-      .header("crnk-compact", "true")
-      .when()
-      .get(API_BASE_PATH + id);
+  private ValidatableResponse sendGet(String id) {
+    return given().header("crnk-compact", "true").when().get(API_BASE_PATH + id).then();
   }
 
   /**
    * Send a HTTP PATCH request to the person endpoint with a given id, name, and
    * email.
    *
-   * @param newDisplayName - new name for the person
-   * @param newEmail       - new email for the person
-   * @param id             - id of the entity
+   * @param newDisplayName
+   *                         - new name for the person
+   * @param newEmail
+   *                         - new email for the person
+   * @param id
+   *                         - id of the entity
    * @return - response of the request
    */
   private Response patchPerson(String newDisplayName, String newEmail, String id) {
-    return given()
-      .header("crnk-compact", "true")
-      .contentType(JSON_API_CONTENT_TYPE)
-      .body(getPostBody(newDisplayName, newEmail))
-      .when()
-      .patch(API_BASE_PATH + id);
-  }
-
-  /**
-   * Send a HTTP POST request to the person endpoint with a given name and email.
-   *
-   * @param displayName - name for the person
-   * @param email       - email for the person
-   * @return - response of the request
-   */
-  private Response postPerson(String displayName, String email) {
-    return given()
-      .header("crnk-compact", "true")
-      .contentType(JSON_API_CONTENT_TYPE)
-      .body(getPostBody(displayName, email))
-      .when()
-      .post(API_BASE_PATH);
+    return given().header("crnk-compact", "true").contentType(JSON_API_CONTENT_TYPE)
+        .body(getPostBody(newDisplayName, newEmail)).when().patch(API_BASE_PATH + id);
   }
 
   /**
    * Assert a given response contains the correct name, email, and HTTP return
    * code as given.
    *
-   * @param response      - response to validate
-   * @param expectedName  - expected name in the response body
-   * @param expectedEmail - expected email in the response body
-   * @param httpCode      - expected HTTP response code
+   * @param response
+   *                        - response to validate
+   * @param expectedName
+   *                        - expected name in the response body
+   * @param expectedEmail
+   *                        - expected email in the response body
+   * @param httpCode
+   *                        - expected HTTP response code
    * @return - A validatable response from the request.
    */
-  private static ValidatableResponse assertValidResponseBodyAndCode(
-      Response response,
-      String expectedName,
-      String expectedEmail,
-      int httpCode
-  ) {
-    return response.then()
-      .statusCode(httpCode)
-      .body("data.attributes.displayName", Matchers.equalTo(expectedName))
-      .body("data.attributes.email", Matchers.equalTo(expectedEmail));
+  private static ValidatableResponse assertValidResponseBodyAndCode(ValidatableResponse response,
+      String expectedName, String expectedEmail, int httpCode) {
+    return response.statusCode(httpCode)
+        .body("data.attributes.displayName", Matchers.equalTo(expectedName))
+        .body("data.attributes.email", Matchers.equalTo(expectedEmail));
   }
 
   /**
    * Returns a serializable JSON API Map for use with POSTED request bodies.
    *
-   * @param displayName - name for the post body
-   * @param email       - email for the post body
+   * @param displayName
+   *                      - name for the post body
+   * @param email
+   *                      - email for the post body
    * @return - serializable JSON API map
    */
   private static Map<String, Object> getPostBody(String displayName, String email) {
     ImmutableMap.Builder<String, Object> objAttribMap = new ImmutableMap.Builder<>();
     objAttribMap.put("displayName", displayName);
     objAttribMap.put("email", email);
-    return JsonAPITestHelper.toJsonAPIMap("person", objAttribMap.build(),null, null);
+    return JsonAPITestHelper.toJsonAPIMap("person", objAttribMap.build(), null, null);
   }
 
   /**
    * Helper method to persist an Person with a given name and email.
    *
-   * @param name  - name for the person
-   * @param email - email for the person
+   * @param name
+   *                - name for the person
+   * @param email
+   *                - email for the person
    * @return - id of the persisted person
    */
   private String persistPerson(String name, String email) {
-    String id =  postPerson(name, email)
-      .body()
-      .jsonPath()
-      .get("data.id");
-    return id;
+    return super.sendPost("", getPostBody(name, email)).extract().jsonPath().get("data.id");
   }
 
   /**
    * Validates a given JSON response body matches the schema defined in
    * {@link PersonRestJsonIT#SCHEMA_NAME}
    *
-   * @param responseJson The response json from service
+   * @param responseJson
+   *                       The response json from service
    */
   private void validateJsonSchema(String responseJson) {
     if (!Boolean.valueOf(System.getProperty("testing.skip-external-schema-validation"))) {
@@ -274,19 +250,15 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
         uriBuilder.setScheme("https");
         uriBuilder.setHost(SPEC_HOST);
         uriBuilder.setPath(SPEC_PATH);
-        log.info(
-          "Validating {} schema against the following response: {}",
-          () -> SCHEMA_NAME,
-          () -> responseJson);
+        log.info("Validating {} schema against the following response: {}", () -> SCHEMA_NAME,
+            () -> responseJson);
         OpenAPI3Assertions.assertSchema(uriBuilder.build().toURL(), SCHEMA_NAME, responseJson);
       } catch (URISyntaxException | MalformedURLException e) {
         log.error(e);
       }
     } else {
-      log.warn(
-        "Skipping schema validation." + 
-        "System property testing.skip-external-schema-validation set to true. "
-        );
+      log.warn("Skipping schema validation."
+          + "System property testing.skip-external-schema-validation set to true. ");
     }
   }
 }
