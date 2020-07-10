@@ -112,7 +112,7 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
     String newEmail = "Updated@yahoo.nz";
     patchPerson(newName, newEmail, id);
 
-    ValidatableResponse response = sendGet(id);
+    ValidatableResponse response = super.sendGet("", id);
     assertValidResponseBodyAndCode(response, newName, newEmail, HttpStatus.OK_200);
     validateJsonSchema(response.extract().asString());
   }
@@ -123,7 +123,7 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
     String email = TestableEntityFactory.generateRandomNameLettersOnly(5) + "@email.com";
     String id = persistPerson(displayName, email);
 
-    ValidatableResponse response = sendGet(id);
+    ValidatableResponse response = super.sendGet("", id);
 
     assertValidResponseBodyAndCode(response, displayName, email, HttpStatus.OK_200).body("data.id",
         Matchers.equalTo(id));
@@ -132,8 +132,7 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
 
   @Test
   public void get_InvalidPerson_ReturnsResourceNotFound() {
-    ValidatableResponse response = sendGet("a8098c1a-f86e-11da-bd1a-00112444be1e");
-    response.statusCode(HttpStatus.NOT_FOUND_404);
+    super.sendGet("", "a8098c1a-f86e-11da-bd1a-00112444be1e", HttpStatus.NOT_FOUND_404);
   }
 
   @Test
@@ -143,8 +142,7 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
     Response response = sendDelete(id);
     response.then().statusCode(HttpStatus.NO_CONTENT_204);
 
-    ValidatableResponse getResponse = sendGet(id);
-    getResponse.statusCode(HttpStatus.NOT_FOUND_404);
+    super.sendGet("", id, HttpStatus.NOT_FOUND_404);
   }
 
   /**
@@ -156,17 +154,6 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
    */
   private Response sendDelete(String id) {
     return given().header("crnk-compact", "true").when().delete(API_BASE_PATH + id);
-  }
-
-  /**
-   * Send a HTTP GET request to the person endpoint with a given id
-   *
-   * @param id
-   *             - id of the entity
-   * @return - response of the request
-   */
-  private ValidatableResponse sendGet(String id) {
-    return given().header("crnk-compact", "true").when().get(API_BASE_PATH + id).then();
   }
 
   /**
