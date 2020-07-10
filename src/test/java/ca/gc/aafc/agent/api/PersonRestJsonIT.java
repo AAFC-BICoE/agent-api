@@ -18,7 +18,6 @@ import com.google.common.collect.ImmutableMap;
 import org.apache.http.client.utils.URIBuilder;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import ca.gc.aafc.agent.api.entities.Person;
@@ -27,7 +26,6 @@ import ca.gc.aafc.dina.testsupport.factories.TestableEntityFactory;
 import ca.gc.aafc.dina.testsupport.jsonapi.JsonAPITestHelper;
 import ca.gc.aafc.dina.testsupport.specs.OpenAPI3Assertions;
 import io.crnk.core.engine.http.HttpStatus;
-import io.restassured.RestAssured;
 import io.restassured.response.ValidatableResponse;
 import lombok.extern.log4j.Log4j2;
 
@@ -50,11 +48,6 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
 
   protected PersonRestJsonIT() {
     super(API_BASE_PATH);
-  }
-
-  @BeforeEach
-  public void setup() {
-    RestAssured.port = super.testPort;
   }
 
   /**
