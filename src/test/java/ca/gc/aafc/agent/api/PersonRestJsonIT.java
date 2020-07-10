@@ -96,7 +96,6 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
     String email = "AlbertYahoo.com";
 
     super.sendPost("", getPostBody(displayName, email), HttpStatus.UNPROCESSABLE_ENTITY_422)
-        .statusCode(HttpStatus.UNPROCESSABLE_ENTITY_422)
         .body("errors.detail", Matchers.hasItem(EMAIL_ERROR));
   }
 
@@ -134,7 +133,7 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
   @Test
   public void delete_PeresistedPerson_ReturnsNoConentAndDeletes() {
     String id = persistPerson("person", "person@agen.ca");
-    super.sendGet("", id, HttpStatus.OK_200);
+    super.sendGet("", id);
     super.sendDelete("", id);
     super.sendGet("", id, HttpStatus.NOT_FOUND_404);
   }
