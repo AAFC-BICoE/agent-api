@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import ca.gc.aafc.agent.api.testsupport.factories.PersonFactory;
-import ca.gc.aafc.dina.testsupport.DBBackedIntegrationTest;
+import ca.gc.aafc.dina.testsupport.DatabaseSupportService;
 
 /**
  * Test suite to validate {@link Person} performs as a valid Hibernate Entity.
@@ -20,7 +20,7 @@ import ca.gc.aafc.dina.testsupport.DBBackedIntegrationTest;
 @SpringBootTest
 @Transactional
 @ActiveProfiles("test")
-public class PersonCrudIT extends DBBackedIntegrationTest {
+public class PersonCrudIT extends DatabaseSupportService  {
 
   private Person personUnderTest;
 

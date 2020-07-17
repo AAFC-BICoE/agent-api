@@ -10,6 +10,7 @@ import ca.gc.aafc.dina.filter.DinaFilterResolver;
 import ca.gc.aafc.dina.mapper.DinaMapper;
 import ca.gc.aafc.dina.repository.DinaRepository;
 import ca.gc.aafc.dina.security.DinaAuthenticatedUser;
+import ca.gc.aafc.dina.service.DinaAuthorizationService;
 import ca.gc.aafc.dina.service.DinaService;
 import lombok.NonNull;
 
@@ -22,10 +23,12 @@ public class PersonRepository extends DinaRepository<PersonDto, Person> {
   public PersonRepository(
     @NonNull DinaService<Person> dinaService,
     @NonNull DinaFilterResolver filterResolver,
-    Optional<DinaAuthenticatedUser> authenticatedUser
+    Optional<DinaAuthenticatedUser> authenticatedUser,
+    Optional<DinaAuthorizationService> authorizationService
   ) {
     super(
       dinaService,
+      authorizationService,
       new DinaMapper<>(PersonDto.class),
       PersonDto.class,
       Person.class,

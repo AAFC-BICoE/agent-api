@@ -19,7 +19,7 @@ import ca.gc.aafc.agent.api.KeycloakTestConfiguration;
 import ca.gc.aafc.agent.api.dto.PersonDto;
 import ca.gc.aafc.agent.api.entities.Person;
 import ca.gc.aafc.agent.api.testsupport.factories.PersonFactory;
-import ca.gc.aafc.dina.testsupport.DBBackedIntegrationTest;
+import ca.gc.aafc.dina.testsupport.DatabaseSupportService;
 import ca.gc.aafc.dina.testsupport.factories.TestableEntityFactory;
 import io.crnk.core.queryspec.QuerySpec;
 
@@ -30,7 +30,7 @@ import io.crnk.core.queryspec.QuerySpec;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @Transactional
-public class PersonResourceRepositoryIT extends DBBackedIntegrationTest {
+public class PersonResourceRepositoryIT extends DatabaseSupportService  {
 
   @Inject
   private PersonRepository personResourceRepository;
