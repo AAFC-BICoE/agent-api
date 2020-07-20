@@ -30,17 +30,20 @@ import io.crnk.core.queryspec.QuerySpec;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @Transactional
-public class PersonResourceRepositoryIT extends DatabaseSupportService  {
+public class PersonResourceRepositoryIT {
 
   @Inject
   private PersonRepository personResourceRepository;
+
+  @Inject
+  private DatabaseSupportService dbService;
 
   private Person personUnderTest;
 
   @BeforeEach
   public void setup() {
     personUnderTest = PersonFactory.newPerson().build();
-    save(personUnderTest);
+    dbService.save(personUnderTest);
   }
 
   @Test
@@ -51,7 +54,7 @@ public class PersonResourceRepositoryIT extends DatabaseSupportService  {
 
     UUID uuid = personResourceRepository.create(personDto).getUuid();
 
-    Person result = findUnique(Person.class, "uuid", uuid);
+    Person result = dbService.findUnique(Person.class, "uuid", uuid);
     assertEquals(personDto.getDisplayName(), result.getDisplayName());
     assertEquals(personDto.getEmail(), result.getEmail());
     assertEquals(uuid, result.getUuid());
@@ -72,7 +75,7 @@ public class PersonResourceRepositoryIT extends DatabaseSupportService  {
 
     personResourceRepository.save(updatedPerson);
 
-    Person result = findUnique(Person.class, "uuid", updatedPerson.getUuid());
+    Person result = dbService.findUnique(Person.class, "uuid", updatedPerson.getUuid());
     assertEquals(updatedName, result.getDisplayName());
     assertEquals(updatedEmail, result.getEmail());
   }
@@ -96,9 +99,9 @@ public class PersonResourceRepositoryIT extends DatabaseSupportService  {
       new QuerySpec(PersonDto.class)
     );
 
-    assertNotNull(find(Person.class, personUnderTest.getId()));
+    assertNotNull(dbService.find(Person.class, personUnderTest.getId()));
     personResourceRepository.delete(persistedPerson.getUuid());
-    assertNull(find(Person.class, personUnderTest.getId()));
+    assertNull(dbService.find(Person.class, personUnderTest.getId()));
   }
 
 }
