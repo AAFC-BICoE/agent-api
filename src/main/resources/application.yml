@@ -9,6 +9,8 @@ spring:
     liquibase-schema: agent
   jpa:
     open-in-view: false
+  # Allow grace timeout period for 20 seconds
+  lifecycle.timeout-per-shutdown-phase: 20s
 crnk:
   pathPrefix: /api/v1
   domainName: ""
@@ -41,3 +43,5 @@ keycloak:
       security-collections:
         - patterns:
           - /*
+# Wait for requests to finish before shutting down:
+server.shutdown: graceful
