@@ -9,6 +9,8 @@ spring:
     liquibase-schema: agent
   jpa:
     open-in-view: false
+  # Allow grace timeout period for 20 seconds
+  lifecycle.timeout-per-shutdown-phase: 20s
 crnk:
   pathPrefix: /api/v1
   domainName: ""
@@ -33,7 +35,6 @@ keycloak:
   public-client: true
   bearer-only: true
   principal-attribute: preferred_username
-
   # All endpoints require a logged-in user with the "user" role.
   security-constraints:
     - auth-roles:
@@ -41,3 +42,9 @@ keycloak:
       security-collections:
         - patterns:
           - /*
+javers:
+  # Don't let Javers create its tables
+  sqlSchemaManagementEnabled: false
+  
+# Wait for requests to finish before shutting down:
+server.shutdown: graceful
