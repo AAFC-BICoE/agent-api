@@ -1,5 +1,6 @@
 FROM maven:3.6.3-jdk-11-slim as build-stage
 
+RUN mkdir /project
 WORKDIR /project
 
 # Cache maven dependencies
