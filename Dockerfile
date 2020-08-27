@@ -16,6 +16,26 @@ RUN mvn clean install -Dmaven.test.skip=true
 FROM openjdk:11-jre-slim
 RUN useradd -s /bin/bash user
 USER user
-COPY --from=0 --chown=644 /project/target/agent-api-*.jar /agent-api.jar
+
+WORKDIR /app
+COPY --from=build-stage --chown=user /project/target/agent-api*.jar /app/
+COPY --chown=user scripts/*.sh /app/
+COPY --chown=user scripts/*.awk /app/
+COPY --chown=user pom.xml /app/
+RUN chmod +x *.sh
+
+USER user
 EXPOSE 8080
+WORKDIR /app
+
+ENV spring.datasource.username=springuser
+ENV spring.datasource.password=springcreds
+ENV spring.liquibase.user=liquibaseuser
+ENV spring.liquibase.password=liquibasecreds
+ENV spring.liquibase.defaultSchema=objectstore
+ENV POSTGRES_DB=object_store
+ENV POSTGRES_USER=postgres
+ENV POSTGRES_PASSWORD=databasecreds
+ENV POSTGRES_HOST=localhost
+
 ENTRYPOINT ["java", "-jar", "/agent-api.jar"]
