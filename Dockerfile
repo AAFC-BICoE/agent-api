@@ -16,7 +16,7 @@ RUN mvn clean install -Dmaven.test.skip=true
 # Stage 2: extract jar and set entrypoint
 FROM openjdk:11-jre-slim
 RUN useradd -s /bin/bash user
-USER user
+USER root
 
 WORKDIR /app
 COPY --from=build-stage --chown=user /project/target/agent-api*.jar /app/
