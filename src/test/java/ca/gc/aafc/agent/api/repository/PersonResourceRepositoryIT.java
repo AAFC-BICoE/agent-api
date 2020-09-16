@@ -9,10 +9,12 @@ import java.util.UUID;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import ca.gc.aafc.agent.api.dto.PersonDto;
@@ -66,7 +68,7 @@ public class PersonResourceRepositoryIT {
 
   @Test
   @WithMockKeycloakUser(username="user", groupRole = {"group 1:COLLECTION_MANAGER"})
-  public void save_PersistedPerson_FieldsUpdated() {
+  public void save_PersistedPerson_When_User_Possess_CollectioManagerRole_FieldsUpdated() {
     String updatedEmail = "Updated_Email@email.com";
     String updatedName = "Updated_Name";
 
@@ -83,7 +85,24 @@ public class PersonResourceRepositoryIT {
     assertEquals(updatedName, result.getDisplayName());
     assertEquals(updatedEmail, result.getEmail());
   }
+  
+  @Test
+  @WithMockKeycloakUser(username="user", groupRole = {"group 1: STAFF"})
+  public void save_PersistedPerson_When_User_Has_No_CollectionManager_Role_FieldsUpdate_Denied() {
+    String updatedEmail = "Updated_Email@email.com";
+    String updatedName = "Updated_Name";
 
+    PersonDto updatedPerson = personResourceRepository.findOne(
+      personUnderTest.getUuid(),
+      new QuerySpec(PersonDto.class)
+    );
+    updatedPerson.setDisplayName(updatedName);
+    updatedPerson.setEmail(updatedEmail);
+
+    Assertions.assertThrows(AccessDeniedException.class,()-> personResourceRepository.save(updatedPerson));
+
+  }
+  
   @Test
   public void find_NoFieldsSelected_ReturnsAllFields() {
     PersonDto result = personResourceRepository.findOne(
@@ -98,7 +117,7 @@ public class PersonResourceRepositoryIT {
 
   @Test
   @WithMockKeycloakUser(username="user", groupRole = {"group 1:COLLECTION_MANAGER"})
-  public void remove_PersistedPerson_PersonRemoved() {
+  public void remove_PersistedPerson_When_User_Possess_CollectioManagerRole_PersonRemoved() {
     PersonDto persistedPerson = personResourceRepository.findOne(
       personUnderTest.getUuid(),
       new QuerySpec(PersonDto.class)
@@ -108,5 +127,18 @@ public class PersonResourceRepositoryIT {
     personResourceRepository.delete(persistedPerson.getUuid());
     assertNull(dbService.find(Person.class, personUnderTest.getId()));
   }
+  
+  @Test
+  @WithMockKeycloakUser(username="user", groupRole = {"group 1:STAFF"})
+  public void remove_PersistedPerson_When_User_Has_No_CollectionManager_Role_PersonRemove_Denied() {
+    PersonDto persistedPerson = personResourceRepository.findOne(
+      personUnderTest.getUuid(),
+      new QuerySpec(PersonDto.class)
+    );
+
+    assertNotNull(dbService.find(Person.class, personUnderTest.getId()));    
+    Assertions.assertThrows(AccessDeniedException.class,()-> personResourceRepository.delete(persistedPerson.getUuid()));
+    assertNotNull(dbService.find(Person.class, personUnderTest.getId()));
+  }  
 
 }
