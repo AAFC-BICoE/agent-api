@@ -20,10 +20,5 @@ public class PersonAuthorizationService implements DinaAuthorizationService {
 
   @Override
   public void authorizeCreate(Object entity) {
-    // TODO Auto-generated method stub
-    
   }
-
-
-
 }

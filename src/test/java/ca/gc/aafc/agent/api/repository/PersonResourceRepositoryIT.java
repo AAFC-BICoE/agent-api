@@ -15,12 +15,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import ca.gc.aafc.agent.api.KeycloakTestConfiguration;
 import ca.gc.aafc.agent.api.dto.PersonDto;
 import ca.gc.aafc.agent.api.entities.Person;
 import ca.gc.aafc.agent.api.testsupport.factories.PersonFactory;
 import ca.gc.aafc.dina.testsupport.DatabaseSupportService;
 import ca.gc.aafc.dina.testsupport.factories.TestableEntityFactory;
+import ca.gc.aafc.dina.testsupport.security.WithMockKeycloakUser;
 import io.crnk.core.queryspec.QuerySpec;
 
 /**
@@ -28,7 +28,9 @@ import io.crnk.core.queryspec.QuerySpec;
  * CRUD operations for the {@link Person} Entity.
  */
 @ExtendWith(SpringExtension.class)
-@SpringBootTest
+@SpringBootTest( 
+    properties = "keycloak.enabled: true" 
+)
 @Transactional
 public class PersonResourceRepositoryIT {
 
@@ -47,21 +49,23 @@ public class PersonResourceRepositoryIT {
   }
 
   @Test
+  @WithMockKeycloakUser(username="user", groupRole = {"group 1:staff"})
   public void create_ValidPerson_PersonPersisted() {
     PersonDto personDto = new PersonDto();
     personDto.setDisplayName(TestableEntityFactory.generateRandomNameLettersOnly(10));
     personDto.setEmail(TestableEntityFactory.generateRandomNameLettersOnly(5) + "@email.com");
-
+    
     UUID uuid = personResourceRepository.create(personDto).getUuid();
 
     Person result = dbService.findUnique(Person.class, "uuid", uuid);
     assertEquals(personDto.getDisplayName(), result.getDisplayName());
     assertEquals(personDto.getEmail(), result.getEmail());
     assertEquals(uuid, result.getUuid());
-    assertEquals(KeycloakTestConfiguration.USER_NAME, result.getCreatedBy());
+    assertEquals("user", result.getCreatedBy());
   }
 
   @Test
+  @WithMockKeycloakUser(username="user", groupRole = {"group 1:COLLECTION_MANAGER"})
   public void save_PersistedPerson_FieldsUpdated() {
     String updatedEmail = "Updated_Email@email.com";
     String updatedName = "Updated_Name";
@@ -93,6 +97,7 @@ public class PersonResourceRepositoryIT {
   }
 
   @Test
+  @WithMockKeycloakUser(username="user", groupRole = {"group 1:COLLECTION_MANAGER"})
   public void remove_PersistedPerson_PersonRemoved() {
     PersonDto persistedPerson = personResourceRepository.findOne(
       personUnderTest.getUuid(),
