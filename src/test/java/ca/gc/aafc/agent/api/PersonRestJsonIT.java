@@ -8,9 +8,6 @@ import java.net.URL;
 import java.util.Map;
 
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.Root;
@@ -25,23 +22,22 @@ import org.junit.jupiter.api.Test;
 
 import ca.gc.aafc.agent.api.entities.Person;
 import ca.gc.aafc.dina.testsupport.BaseRestAssuredTest;
+import ca.gc.aafc.dina.testsupport.DatabaseSupportService;
 import ca.gc.aafc.dina.testsupport.factories.TestableEntityFactory;
 import ca.gc.aafc.dina.testsupport.jsonapi.JsonAPITestHelper;
 import ca.gc.aafc.dina.testsupport.specs.OpenAPI3Assertions;
 import io.crnk.core.engine.http.HttpStatus;
 import io.restassured.response.ValidatableResponse;
-import lombok.extern.log4j.Log4j2;
 
 /**
  * Test suite to validate correct HTTP and JSON API responses for {@link Person}
  * Endpoints.
  */
 @Transactional
-@Log4j2
 public class PersonRestJsonIT extends BaseRestAssuredTest {
 
   @Inject
-  private EntityManagerFactory entityManagerFactory;
+  private DatabaseSupportService databaseSupportService;
 
   private static URL specUrl;
 
@@ -72,20 +68,13 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
    */
   @AfterEach
   public void tearDown() {
-    EntityManager em = entityManagerFactory.createEntityManager();
-
-    EntityTransaction et = em.getTransaction();
-    et.begin();
-
-    CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-    CriteriaDelete<Person> query = criteriaBuilder.createCriteriaDelete(Person.class);
-    Root<Person> root = query.from(Person.class);
-    query.where(criteriaBuilder.isNotNull(root.get("uuid")));
-    em.createQuery(query).executeUpdate();
-
-    em.flush();
-    et.commit();
-    em.close();
+    databaseSupportService.runInNewTransaction(entityManager -> {
+      CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+      CriteriaDelete<Person> query = criteriaBuilder.createCriteriaDelete(Person.class);
+      Root<Person> root = query.from(Person.class);
+      query.where(criteriaBuilder.isNotNull(root.get("uuid")));
+      entityManager.createQuery(query).executeUpdate();
+    });
   }
 
   @Test
