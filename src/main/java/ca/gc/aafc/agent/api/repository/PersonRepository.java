@@ -1,16 +1,18 @@
 package ca.gc.aafc.agent.api.repository;
 
+import java.util.Optional;
+
+import org.springframework.stereotype.Repository;
+
 import ca.gc.aafc.agent.api.dto.PersonDto;
 import ca.gc.aafc.agent.api.entities.Person;
+import ca.gc.aafc.agent.api.service.PersonAuthorizationService;
 import ca.gc.aafc.dina.filter.DinaFilterResolver;
 import ca.gc.aafc.dina.mapper.DinaMapper;
 import ca.gc.aafc.dina.repository.DinaRepository;
 import ca.gc.aafc.dina.security.DinaAuthenticatedUser;
 import ca.gc.aafc.dina.service.DinaService;
 import lombok.NonNull;
-import org.springframework.stereotype.Repository;
-
-import java.util.Optional;
 
 @Repository
 public class PersonRepository extends DinaRepository<PersonDto, Person> {
@@ -20,12 +22,13 @@ public class PersonRepository extends DinaRepository<PersonDto, Person> {
 
   public PersonRepository(
     @NonNull DinaService<Person> dinaService,
+    @NonNull PersonAuthorizationService authorizationService,
     @NonNull DinaFilterResolver filterResolver,
     Optional<DinaAuthenticatedUser> authenticatedUser
   ) {
     super(
       dinaService,
-      Optional.empty(), //no special authorization
+      Optional.of(authorizationService),
       Optional.empty(), //no auditing for now
       new DinaMapper<>(PersonDto.class),
       PersonDto.class,
