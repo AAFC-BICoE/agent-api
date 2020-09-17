@@ -1,7 +1,10 @@
 package ca.gc.aafc.agent.api;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -40,19 +43,28 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
   @Inject
   private EntityManagerFactory entityManagerFactory;
 
+  private static URL specUrl;
+
   public static final String API_BASE_PATH = "/api/v1/person/";
   private static final String SPEC_HOST = "raw.githubusercontent.com";
   private static final String SPEC_PATH = "DINA-Web/agent-specs/master/schema/agent.yml";
   private static final String SCHEMA_NAME = "Person";
   public static final String EMAIL_ERROR = "email must be a well-formed email address";
-  
-  private static URIBuilder uriBuilder = new URIBuilder();
+
+  private static final URIBuilder URI_BUILDER = new URIBuilder();
+  static {
+    URI_BUILDER.setScheme("https");
+    URI_BUILDER.setHost(SPEC_HOST);
+    URI_BUILDER.setPath(SPEC_PATH);
+  }
   
   protected PersonRestJsonIT() {
     super(API_BASE_PATH);
-    uriBuilder.setScheme("https");
-    uriBuilder.setHost(SPEC_HOST);
-    uriBuilder.setPath(SPEC_PATH);    
+    try {
+      specUrl = URI_BUILDER.build().toURL();
+    } catch (MalformedURLException | URISyntaxException e) {
+      fail(e);
+    }
   }
 
   /**
@@ -77,7 +89,7 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
   }
 
   @Test
-  public void post_NewPerson_ReturnsOkayAndBody() throws MalformedURLException, URISyntaxException {
+  public void post_NewPerson_ReturnsOkayAndBody() {
     String displayName = "Albert";
     String email = "Albert@yahoo.com";
 
@@ -85,7 +97,7 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
 
     assertValidResponseBodyAndCode(response, displayName, email, HttpStatus.CREATED_201)
         .body("data.id", Matchers.notNullValue());
-    OpenAPI3Assertions.assertRemoteSchema(this.uriBuilder.build().toURL(), SCHEMA_NAME, response.extract().asString());
+    OpenAPI3Assertions.assertRemoteSchema(specUrl, SCHEMA_NAME, response.extract().asString());
   }
 
   @Test
@@ -98,7 +110,7 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
   }
 
   @Test
-  public void Patch_UpdatePerson_ReturnsOkayAndBody() throws MalformedURLException, URISyntaxException {
+  public void Patch_UpdatePerson_ReturnsOkayAndBody() {
     String id = persistPerson("person", "person@agen.ca");
 
     String newName = "Updated Name";
@@ -107,11 +119,11 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
 
     ValidatableResponse response = super.sendGet("", id);
     assertValidResponseBodyAndCode(response, newName, newEmail, HttpStatus.OK_200);
-    OpenAPI3Assertions.assertRemoteSchema(this.uriBuilder.build().toURL(), SCHEMA_NAME, response.extract().asString());
+    OpenAPI3Assertions.assertRemoteSchema(specUrl, SCHEMA_NAME, response.extract().asString());
   }
 
   @Test
-  public void get_PersistedPerson_ReturnsOkayAndBody() throws MalformedURLException, URISyntaxException {
+  public void get_PersistedPerson_ReturnsOkayAndBody() {
     String displayName = TestableEntityFactory.generateRandomNameLettersOnly(10);
     String email = TestableEntityFactory.generateRandomNameLettersOnly(5) + "@email.com";
     String id = persistPerson(displayName, email);
@@ -120,7 +132,7 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
 
     assertValidResponseBodyAndCode(response, displayName, email, HttpStatus.OK_200)
         .body("data.id", Matchers.equalTo(id));
-    OpenAPI3Assertions.assertRemoteSchema(this.uriBuilder.build().toURL(), SCHEMA_NAME, response.extract().asString());    
+    OpenAPI3Assertions.assertRemoteSchema(specUrl, SCHEMA_NAME, response.extract().asString());
   }
 
   @Test
@@ -129,7 +141,7 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
   }
 
   @Test
-  public void delete_PeresistedPerson_ReturnsNoConentAndDeletes() {
+  public void delete_PersistedPerson_ReturnsNoContentAndDeletes() {
     String id = persistPerson("person", "person@agen.ca");
     super.sendGet("", id);
     super.sendDelete("", id);
