@@ -1,7 +1,10 @@
 package ca.gc.aafc.agent.api;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -40,14 +43,28 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
   @Inject
   private EntityManagerFactory entityManagerFactory;
 
+  private static URL specUrl;
+
   public static final String API_BASE_PATH = "/api/v1/person/";
   private static final String SPEC_HOST = "raw.githubusercontent.com";
   private static final String SPEC_PATH = "DINA-Web/agent-specs/master/schema/agent.yml";
   private static final String SCHEMA_NAME = "Person";
   public static final String EMAIL_ERROR = "email must be a well-formed email address";
 
+  private static final URIBuilder URI_BUILDER = new URIBuilder();
+  static {
+    URI_BUILDER.setScheme("https");
+    URI_BUILDER.setHost(SPEC_HOST);
+    URI_BUILDER.setPath(SPEC_PATH);
+  }
+  
   protected PersonRestJsonIT() {
     super(API_BASE_PATH);
+    try {
+      specUrl = URI_BUILDER.build().toURL();
+    } catch (MalformedURLException | URISyntaxException e) {
+      fail(e);
+    }
   }
 
   /**
@@ -80,7 +97,7 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
 
     assertValidResponseBodyAndCode(response, displayName, email, HttpStatus.CREATED_201)
         .body("data.id", Matchers.notNullValue());
-    validateJsonSchema(response.extract().asString());
+    OpenAPI3Assertions.assertRemoteSchema(specUrl, SCHEMA_NAME, response.extract().asString());
   }
 
   @Test
@@ -102,7 +119,7 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
 
     ValidatableResponse response = super.sendGet("", id);
     assertValidResponseBodyAndCode(response, newName, newEmail, HttpStatus.OK_200);
-    validateJsonSchema(response.extract().asString());
+    OpenAPI3Assertions.assertRemoteSchema(specUrl, SCHEMA_NAME, response.extract().asString());
   }
 
   @Test
@@ -115,7 +132,7 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
 
     assertValidResponseBodyAndCode(response, displayName, email, HttpStatus.OK_200)
         .body("data.id", Matchers.equalTo(id));
-    validateJsonSchema(response.extract().asString());
+    OpenAPI3Assertions.assertRemoteSchema(specUrl, SCHEMA_NAME, response.extract().asString());
   }
 
   @Test
@@ -124,7 +141,7 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
   }
 
   @Test
-  public void delete_PeresistedPerson_ReturnsNoConentAndDeletes() {
+  public void delete_PersistedPerson_ReturnsNoContentAndDeletes() {
     String id = persistPerson("person", "person@agen.ca");
     super.sendGet("", id);
     super.sendDelete("", id);
@@ -181,29 +198,4 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
     return super.sendPost("", getPostBody(name, email)).extract().jsonPath().get("data.id");
   }
 
-  /**
-   * Validates a given JSON response body matches the schema defined in
-   * {@link PersonRestJsonIT#SCHEMA_NAME}
-   *
-   * @param responseJson
-   *                       The response json from service
-   */
-  private void validateJsonSchema(String responseJson) {
-    if (!Boolean.valueOf(System.getProperty("testing.skip-external-schema-validation"))) {
-      try {
-        URIBuilder uriBuilder = new URIBuilder();
-        uriBuilder.setScheme("https");
-        uriBuilder.setHost(SPEC_HOST);
-        uriBuilder.setPath(SPEC_PATH);
-        log.info("Validating {} schema against the following response: {}", () -> SCHEMA_NAME,
-            () -> responseJson);
-        OpenAPI3Assertions.assertSchema(uriBuilder.build().toURL(), SCHEMA_NAME, responseJson);
-      } catch (URISyntaxException | MalformedURLException e) {
-        log.error(e);
-      }
-    } else {
-      log.warn("Skipping schema validation."
-          + "System property testing.skip-external-schema-validation set to true. ");
-    }
-  }
 }
