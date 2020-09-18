@@ -67,7 +67,7 @@ public class Organization implements DinaEntity {
    * Exposes the aliases array as a string for easier searching using the usual string
    * filtering operators.
    */
-  @Formula("array_to_string(aliases, ',')")
-  private String aliasesAsString;
+  @Formula("array_to_string(name::text || aliases, ',')")
+  private String nameAndAliases;
   
 }
