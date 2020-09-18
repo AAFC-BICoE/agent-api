@@ -133,7 +133,7 @@ public class OrganizationResourceRepositoryIT {
 
     assertNotNull(dbService.find(Organization.class, organizationUnderTest.getId()));
     Assertions.assertThrows(AccessDeniedException.class,() -> organizationRepository.delete(persistedOrg.getUuid()));
-    assertNull(dbService.find(Organization.class, organizationUnderTest.getId()));
+    assertNotNull(dbService.find(Organization.class, organizationUnderTest.getId()));
   }  
 
 }
