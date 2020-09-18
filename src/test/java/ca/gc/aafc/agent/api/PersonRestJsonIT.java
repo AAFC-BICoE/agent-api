@@ -6,6 +6,7 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -63,20 +64,6 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
     }
   }
 
-  /**
-   * Remove database entries after each test.
-   */
-  @AfterEach
-  public void tearDown() {
-    databaseSupportService.runInNewTransaction(entityManager -> {
-      CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-      CriteriaDelete<Person> query = criteriaBuilder.createCriteriaDelete(Person.class);
-      Root<Person> root = query.from(Person.class);
-      query.where(criteriaBuilder.isNotNull(root.get("uuid")));
-      entityManager.createQuery(query).executeUpdate();
-    });
-  }
-
   @Test
   public void post_NewPerson_ReturnsOkayAndBody() {
     String displayName = "Albert";
@@ -85,8 +72,12 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
     ValidatableResponse response = super.sendPost("", getPostBody(displayName, email));
 
     assertValidResponseBodyAndCode(response, displayName, email, HttpStatus.CREATED_201)
-        .body("data.id", Matchers.notNullValue());
+      .body("data.id", Matchers.notNullValue());
     OpenAPI3Assertions.assertRemoteSchema(specUrl, SCHEMA_NAME, response.extract().asString());
+
+    // Cleanup:
+    UUID uuid = response.extract().jsonPath().getUUID("data.id");
+    databaseSupportService.deleteByProperty(Person.class, "uuid", uuid);
   }
 
   @Test
@@ -109,6 +100,9 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
     ValidatableResponse response = super.sendGet("", id);
     assertValidResponseBodyAndCode(response, newName, newEmail, HttpStatus.OK_200);
     OpenAPI3Assertions.assertRemoteSchema(specUrl, SCHEMA_NAME, response.extract().asString());
+
+    // Cleanup:
+    databaseSupportService.deleteByProperty(Person.class, "uuid", UUID.fromString(id));
   }
 
   @Test
@@ -122,6 +116,9 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
     assertValidResponseBodyAndCode(response, displayName, email, HttpStatus.OK_200)
         .body("data.id", Matchers.equalTo(id));
     OpenAPI3Assertions.assertRemoteSchema(specUrl, SCHEMA_NAME, response.extract().asString());
+
+    // Cleanup:
+    databaseSupportService.deleteByProperty(Person.class, "uuid", UUID.fromString(id));
   }
 
   @Test
@@ -135,6 +132,9 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
     super.sendGet("", id);
     super.sendDelete("", id);
     super.sendGet("", id, HttpStatus.NOT_FOUND_404);
+
+    // Cleanup:
+    databaseSupportService.deleteByProperty(Person.class, "uuid", UUID.fromString(id));
   }
 
   /**
