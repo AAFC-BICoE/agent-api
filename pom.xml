@@ -71,6 +71,12 @@
       <groupId>org.liquibase</groupId>
       <artifactId>liquibase-core</artifactId>
     </dependency>
+    <dependency>
+			<groupId>com.vladmihalcea</groupId>
+			<artifactId>hibernate-types-52</artifactId>
+			<version>${hibernate-types-52.version}</version>
+		</dependency>
+
     <!--  Added for compatability with new liquibase update, ticket: #18663 -->
     <dependency>
       <groupId>com.fasterxml.jackson.module</groupId>
