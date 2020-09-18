@@ -36,4 +36,12 @@ public class OrganizationRepository extends DinaRepository<OrganizationDto, Orga
     this.authenticatedUser = authenticatedUser;
   }
 
+  @Override
+  public <S extends OrganizationDto> S create(S resource) {
+    if (authenticatedUser.isPresent()) {
+      resource.setCreatedBy(authenticatedUser.get().getUsername());
+    }
+    return super.create(resource);
+  }
+
 }
