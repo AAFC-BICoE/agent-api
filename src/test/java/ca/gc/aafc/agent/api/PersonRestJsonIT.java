@@ -16,10 +16,14 @@ import com.google.common.collect.ImmutableMap;
 import org.apache.http.client.utils.URIBuilder;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 
 import ca.gc.aafc.agent.api.entities.Person;
 import ca.gc.aafc.dina.testsupport.BaseRestAssuredTest;
 import ca.gc.aafc.dina.testsupport.DatabaseSupportService;
+import ca.gc.aafc.dina.testsupport.PostgresTestContainerInitializer;
 import ca.gc.aafc.dina.testsupport.factories.TestableEntityFactory;
 import ca.gc.aafc.dina.testsupport.jsonapi.JsonAPITestHelper;
 import ca.gc.aafc.dina.testsupport.specs.OpenAPI3Assertions;
@@ -30,6 +34,12 @@ import io.restassured.response.ValidatableResponse;
  * Test suite to validate correct HTTP and JSON API responses for {@link Person}
  * Endpoints.
  */
+@SpringBootTest(
+  classes = AgentModuleApiLauncher.class,
+  webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
+)
+@TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
+@ContextConfiguration(initializers = { PostgresTestContainerInitializer.class })
 @Transactional
 public class PersonRestJsonIT extends BaseRestAssuredTest {
 

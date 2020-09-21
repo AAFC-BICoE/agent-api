@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import ca.gc.aafc.agent.api.BaseIntegrationTest;
 import ca.gc.aafc.agent.api.dto.PersonDto;
 import ca.gc.aafc.agent.api.entities.Person;
 import ca.gc.aafc.agent.api.testsupport.factories.PersonFactory;
@@ -30,11 +31,8 @@ import io.crnk.core.queryspec.QuerySpec;
  * CRUD operations for the {@link Person} Entity.
  */
 @ExtendWith(SpringExtension.class)
-@SpringBootTest( 
-    properties = "keycloak.enabled: true" 
-)
-@Transactional
-public class PersonResourceRepositoryIT {
+@SpringBootTest(properties = {"keycloak.enabled: true"})
+public class PersonResourceRepositoryIT extends BaseIntegrationTest {
 
   @Inject
   private PersonRepository personResourceRepository;
