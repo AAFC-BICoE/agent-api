@@ -9,16 +9,12 @@ import java.util.Map;
 import java.util.UUID;
 
 import javax.inject.Inject;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaDelete;
-import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
 import com.google.common.collect.ImmutableMap;
 
 import org.apache.http.client.utils.URIBuilder;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import ca.gc.aafc.agent.api.entities.Person;
