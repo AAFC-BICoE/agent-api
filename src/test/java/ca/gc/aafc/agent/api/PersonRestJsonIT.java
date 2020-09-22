@@ -40,7 +40,7 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
 
   public static final String API_BASE_PATH = "/api/v1/person/";
   private static final String SPEC_HOST = "raw.githubusercontent.com";
-  private static final String SPEC_PATH = "DINA-Web/agent-specs/master/schema/agent.yml";
+  private static final String SPEC_PATH = "DINA-Web/agent-specs/master/schema/person.yml";
   private static final String SCHEMA_NAME = "Person";
   public static final String EMAIL_ERROR = "email must be a well-formed email address";
 
