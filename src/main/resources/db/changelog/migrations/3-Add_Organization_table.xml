@@ -16,7 +16,7 @@
 				<constraints nullable="false" unique="true" />
 			</column>
 			<column name="name" type="VARCHAR(250)">
-				<constraints nullable="false" />
+				<constraints nullable="false" unique="true" />
 			</column>
 			<column name="aliases" type="text[]" />
       <column name="created_by" type="varchar(255)"/>
