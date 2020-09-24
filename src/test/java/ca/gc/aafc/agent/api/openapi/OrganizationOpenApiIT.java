@@ -1,10 +1,9 @@
 package ca.gc.aafc.agent.api.openapi;
 
-import static org.junit.jupiter.api.Assertions.fail;
-
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.List;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -15,14 +14,18 @@ import com.google.common.collect.ImmutableMap;
 import org.apache.http.client.utils.URIBuilder;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 
 import ca.gc.aafc.agent.api.entities.Organization;
 import ca.gc.aafc.dina.testsupport.BaseRestAssuredTest;
 import ca.gc.aafc.dina.testsupport.DatabaseSupportService;
+import ca.gc.aafc.dina.testsupport.PostgresTestContainerInitializer;
 import ca.gc.aafc.dina.testsupport.jsonapi.JsonAPITestHelper;
 import ca.gc.aafc.dina.testsupport.specs.OpenAPI3Assertions;
 import io.crnk.core.engine.http.HttpStatus;
 import io.restassured.response.ValidatableResponse;
+import lombok.SneakyThrows;
 
 @Transactional
 public class OrganizationOpenApiIT extends BaseRestAssuredTest {
@@ -44,19 +47,16 @@ public class OrganizationOpenApiIT extends BaseRestAssuredTest {
 
   private static URL specUrl;
 
-  protected OrganizationOpenApiIT(String basePath) {
+  @SneakyThrows({ MalformedURLException.class, URISyntaxException.class })
+  protected OrganizationOpenApiIT() {
     super(API_BASE_PATH);
-    try {
-      specUrl = URI_BUILDER.build().toURL();
-    } catch (MalformedURLException | URISyntaxException e) {
-      fail(e);
-    }
+    specUrl = URI_BUILDER.build().toURL();
   }
 
   @Test
   public void post_NewPerson_ReturnsOkayAndBody() {
     String name = "test-organization";
-    String[] aliases = new String[] {"alias1", "alias2"};
+    List<String> aliases = List.of("alias1", "alias2");
 
     ValidatableResponse response = super.sendPost(
       "",
