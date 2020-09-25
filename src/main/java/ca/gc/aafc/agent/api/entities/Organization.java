@@ -63,11 +63,4 @@ public class Organization implements DinaEntity {
   @Column(name = "created_on", insertable = false, updatable = false)
   private OffsetDateTime createdOn;
 
-  /**
-   * Exposes the aliases array as a string for easier searching using the usual string
-   * filtering operators.
-   */
-  @Formula("array_to_string(name::text || aliases, ',')")
-  private String nameAndAliases;
-  
 }

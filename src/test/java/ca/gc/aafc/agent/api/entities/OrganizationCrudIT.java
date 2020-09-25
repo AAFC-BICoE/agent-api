@@ -45,10 +45,6 @@ public class OrganizationCrudIT {
     Organization fetchedOrganization = dbService.find(Organization.class, organizationUnderTest.getId());
     assertEquals(organizationUnderTest.getId(), fetchedOrganization.getId());
     assertArrayEquals(organizationUnderTest.getAliases(), fetchedOrganization.getAliases());
-    assertEquals(
-      organizationUnderTest.getName() + "," + String.join(",", organizationUnderTest.getAliases()),
-      fetchedOrganization.getNameAndAliases()
-    );
     assertEquals(organizationUnderTest.getUuid(), fetchedOrganization.getUuid());
     assertNotNull(fetchedOrganization.getCreatedOn());
   }
