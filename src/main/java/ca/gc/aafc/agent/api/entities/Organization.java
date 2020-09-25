@@ -13,7 +13,6 @@ import javax.validation.constraints.NotNull;
 
 import com.vladmihalcea.hibernate.type.array.StringArrayType;
 
-import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.NaturalIdCache;
 import org.hibernate.annotations.Type;
