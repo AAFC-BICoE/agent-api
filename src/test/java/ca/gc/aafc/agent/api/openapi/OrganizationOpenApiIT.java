@@ -14,13 +14,10 @@ import com.google.common.collect.ImmutableMap;
 import org.apache.http.client.utils.URIBuilder;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
 
 import ca.gc.aafc.agent.api.entities.Organization;
 import ca.gc.aafc.dina.testsupport.BaseRestAssuredTest;
 import ca.gc.aafc.dina.testsupport.DatabaseSupportService;
-import ca.gc.aafc.dina.testsupport.PostgresTestContainerInitializer;
 import ca.gc.aafc.dina.testsupport.jsonapi.JsonAPITestHelper;
 import ca.gc.aafc.dina.testsupport.specs.OpenAPI3Assertions;
 import io.crnk.core.engine.http.HttpStatus;
