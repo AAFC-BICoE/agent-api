@@ -1,13 +1,19 @@
 package ca.gc.aafc.agent.api.entities;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -35,7 +41,7 @@ import lombok.ToString;
 @Builder
 @SuppressFBWarnings(justification = "ok for Hibernate Entity", value = { "EI_EXPOSE_REP", "EI_EXPOSE_REP2" })
 @NaturalIdCache
-public class Person implements DinaEntity {
+public class Person implements DinaEntity {  
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,5 +65,10 @@ public class Person implements DinaEntity {
 
   @Column(name = "created_on", insertable = false, updatable = false)
   private OffsetDateTime createdOn;
+
+  @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @JoinTable(name = "person_organization", joinColumns = {
+      @JoinColumn(name = "person_id") }, inverseJoinColumns = { @JoinColumn(name = "organization_id") })
+  private List<Organization> organizations;
 
 }
