@@ -39,7 +39,8 @@ public class PersonCrudIT {
   public void setup() {
     personUnderTest = PersonFactory.newPerson().build();
     organizationUnderTest = OrganizationFactory.newOrganization().build();
-    personUnderTest.setOrganizations(Arrays.asList(organizationUnderTest));    
+    personUnderTest.setOrganizations(Arrays.asList(organizationUnderTest));
+    dbService.save(organizationUnderTest);
     dbService.save(personUnderTest);
   }
 
@@ -50,6 +51,7 @@ public class PersonCrudIT {
     person.setOrganizations(Arrays.asList(organizationUnderTest));
     assertNull(person.getId());
     assertNull(organizationUnderTest.getId());
+    dbService.save(organizationUnderTest);
     dbService.save(person);
     assertNotNull(person.getId());
     assertNotNull(organizationUnderTest.getId());

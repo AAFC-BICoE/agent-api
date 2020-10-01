@@ -66,7 +66,7 @@ public class Person implements DinaEntity {
   @Column(name = "created_on", insertable = false, updatable = false)
   private OffsetDateTime createdOn;
 
-  @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(name = "person_organization", joinColumns = {
       @JoinColumn(name = "person_id") }, inverseJoinColumns = { @JoinColumn(name = "organization_id") })
   private List<Organization> organizations;

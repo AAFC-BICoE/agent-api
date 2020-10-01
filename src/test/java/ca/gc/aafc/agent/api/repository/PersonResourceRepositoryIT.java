@@ -4,6 +4,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.util.Arrays;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -17,8 +18,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import ca.gc.aafc.agent.api.dto.OrganizationDto;
 import ca.gc.aafc.agent.api.dto.PersonDto;
+import ca.gc.aafc.agent.api.entities.Organization;
 import ca.gc.aafc.agent.api.entities.Person;
+import ca.gc.aafc.agent.api.testsupport.factories.OrganizationFactory;
 import ca.gc.aafc.agent.api.testsupport.factories.PersonFactory;
 import ca.gc.aafc.dina.testsupport.DatabaseSupportService;
 import ca.gc.aafc.dina.testsupport.factories.TestableEntityFactory;
@@ -38,15 +42,23 @@ public class PersonResourceRepositoryIT {
 
   @Inject
   private PersonRepository personResourceRepository;
+  
+  @Inject
+  private OrganizationRepository organizationResourceRepository;
 
   @Inject
   private DatabaseSupportService dbService;
 
   private Person personUnderTest;
 
+  private Organization organizationUnderTest;
+
   @BeforeEach
   public void setup() {
     personUnderTest = PersonFactory.newPerson().build();
+    organizationUnderTest = OrganizationFactory.newOrganization().build();
+    personUnderTest.setOrganizations(Arrays.asList(organizationUnderTest));
+    dbService.save(organizationUnderTest);
     dbService.save(personUnderTest);
   }
 
@@ -56,6 +68,14 @@ public class PersonResourceRepositoryIT {
     PersonDto personDto = new PersonDto();
     personDto.setDisplayName(TestableEntityFactory.generateRandomNameLettersOnly(10));
     personDto.setEmail(TestableEntityFactory.generateRandomNameLettersOnly(5) + "@email.com");
+
+    OrganizationDto organizationDto = new OrganizationDto();
+    organizationDto.setName(TestableEntityFactory.generateRandomNameLettersOnly(5));
+    organizationDto.setUuid(UUID.randomUUID());
+    
+    organizationResourceRepository.create(organizationDto);
+
+    personDto.setOrganizations(Arrays.asList(organizationDto));
     
     UUID uuid = personResourceRepository.create(personDto).getUuid();
 
@@ -64,6 +84,8 @@ public class PersonResourceRepositoryIT {
     assertEquals(personDto.getEmail(), result.getEmail());
     assertEquals(uuid, result.getUuid());
     assertEquals("user", result.getCreatedBy());
+    assertNotNull(result.getOrganizations());
+    assertEquals(organizationDto.getUuid(),result.getOrganizations().get(0).getUuid());
   }
 
   @Test
@@ -71,8 +93,7 @@ public class PersonResourceRepositoryIT {
   public void save_PersistedPerson_When_User_Possess_CollectioManagerRole_FieldsUpdated() {
     String updatedEmail = "Updated_Email@email.com";
     String updatedName = "Updated_Name";
-
-    PersonDto updatedPerson = personResourceRepository.findOne(
+   PersonDto updatedPerson = personResourceRepository.findOne(
       personUnderTest.getUuid(),
       new QuerySpec(PersonDto.class)
     );
@@ -84,6 +105,7 @@ public class PersonResourceRepositoryIT {
     Person result = dbService.findUnique(Person.class, "uuid", updatedPerson.getUuid());
     assertEquals(updatedName, result.getDisplayName());
     assertEquals(updatedEmail, result.getEmail());
+    assertNotNull(result.getOrganizations());
   }
   
   @Test
@@ -113,6 +135,8 @@ public class PersonResourceRepositoryIT {
     assertEquals(personUnderTest.getDisplayName(), result.getDisplayName());
     assertEquals(personUnderTest.getEmail(), result.getEmail());
     assertEquals(personUnderTest.getUuid(), result.getUuid());
+    assertNotNull(result.getOrganizations());
+    assertEquals(organizationUnderTest.getName(), result.getOrganizations().get(0).getName());
   }
 
   @Test
@@ -124,8 +148,10 @@ public class PersonResourceRepositoryIT {
     );
 
     assertNotNull(dbService.find(Person.class, personUnderTest.getId()));
+    assertNotNull(dbService.find(Organization.class, organizationUnderTest.getId()));
     personResourceRepository.delete(persistedPerson.getUuid());
     assertNull(dbService.find(Person.class, personUnderTest.getId()));
+    assertNull(dbService.find(Organization.class, organizationUnderTest.getId()));    
   }
   
   @Test
