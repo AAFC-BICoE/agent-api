@@ -26,6 +26,6 @@ public class PersonDto {
   private String createdBy;
   private OffsetDateTime createdOn;
 
-  @JsonApiRelation(mappedBy = "persons")
+  @JsonApiRelation
   private List<OrganizationDto> organizations;  
 }

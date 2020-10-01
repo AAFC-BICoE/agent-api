@@ -1,7 +1,6 @@
 package ca.gc.aafc.agent.api.dto;
 
 import java.time.OffsetDateTime;
-import java.util.List;
 import java.util.UUID;
 
 import ca.gc.aafc.agent.api.entities.Organization;
@@ -26,6 +25,4 @@ public class OrganizationDto {
   private String createdBy;
   private OffsetDateTime createdOn;
   
-  private List<PersonDto> persons;  
-
 }
