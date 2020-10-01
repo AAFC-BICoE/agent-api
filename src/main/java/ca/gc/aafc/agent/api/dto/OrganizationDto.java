@@ -8,7 +8,6 @@ import ca.gc.aafc.agent.api.entities.Organization;
 import ca.gc.aafc.dina.dto.RelatedEntity;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.crnk.core.resource.annotations.JsonApiId;
-import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.crnk.core.resource.annotations.JsonApiResource;
 import lombok.Data;
 
@@ -27,7 +26,6 @@ public class OrganizationDto {
   private String createdBy;
   private OffsetDateTime createdOn;
   
-  @JsonApiRelation
   private List<PersonDto> persons;  
 
 }
