@@ -9,6 +9,7 @@ import java.util.UUID;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import ca.gc.aafc.dina.testsupport.PostgresTestContainerInitializer;
 import com.google.common.collect.ImmutableMap;
 
 import org.apache.http.client.utils.URIBuilder;
@@ -23,7 +24,11 @@ import ca.gc.aafc.dina.testsupport.specs.OpenAPI3Assertions;
 import io.crnk.core.engine.http.HttpStatus;
 import io.restassured.response.ValidatableResponse;
 import lombok.SneakyThrows;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 
+@TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
+@ContextConfiguration(initializers = { PostgresTestContainerInitializer.class })
 @Transactional
 public class OrganizationOpenApiIT extends BaseRestAssuredTest {
 
@@ -51,7 +56,7 @@ public class OrganizationOpenApiIT extends BaseRestAssuredTest {
   }
 
   @Test
-  public void post_NewPerson_ReturnsOkayAndBody() {
+  public void post_NewOrganization_ReturnsOkayAndBody() {
     String name = "test-organization";
     List<String> aliases = List.of("alias1", "alias2");
 
@@ -68,7 +73,7 @@ public class OrganizationOpenApiIT extends BaseRestAssuredTest {
       )
     );
 
-    response.statusCode(HttpStatus.CREATED_201)
+    response
       .body("data.attributes.name", Matchers.equalTo(name))
       .body("data.attributes.aliases", Matchers.equalTo(aliases))
       .body("data.id", Matchers.notNullValue());
