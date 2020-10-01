@@ -17,7 +17,6 @@ import ca.gc.aafc.dina.testsupport.DatabaseSupportService;
 /**
  * Test suite to validate {@link Person} performs as a valid Hibernate Entity.
  */
-@ActiveProfiles("test")
 public class PersonCrudIT extends BaseIntegrationTest {
 
   @Inject

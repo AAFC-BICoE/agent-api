@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import ca.gc.aafc.agent.api.BaseIntegrationTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,10 +17,8 @@ import org.springframework.test.context.ActiveProfiles;
 import ca.gc.aafc.agent.api.testsupport.factories.OrganizationFactory;
 import ca.gc.aafc.dina.testsupport.DatabaseSupportService;
 
-@SpringBootTest
 @Transactional
-@ActiveProfiles("test")
-public class OrganizationCrudIT {
+public class OrganizationCrudIT extends BaseIntegrationTest {
 
   @Inject
   private DatabaseSupportService dbService;

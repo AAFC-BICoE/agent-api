@@ -10,6 +10,7 @@ import java.util.UUID;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import ca.gc.aafc.agent.api.BaseIntegrationTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,12 +26,9 @@ import ca.gc.aafc.dina.testsupport.DatabaseSupportService;
 import ca.gc.aafc.dina.testsupport.security.WithMockKeycloakUser;
 import io.crnk.core.queryspec.QuerySpec;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest( 
-    properties = "keycloak.enabled: true" 
-)
+@SpringBootTest(properties = {"keycloak.enabled: true"})
 @Transactional
-public class OrganizationResourceRepositoryIT {
+public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
   
   @Inject
   private OrganizationRepository organizationRepository;
