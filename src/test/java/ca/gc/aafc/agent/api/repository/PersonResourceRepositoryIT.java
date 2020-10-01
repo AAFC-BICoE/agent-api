@@ -1,11 +1,14 @@
 package ca.gc.aafc.agent.api.repository;
 
 import static org.junit.Assert.assertNull;
+import io.crnk.core.queryspec.IncludeRelationSpec;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -85,7 +88,6 @@ public class PersonResourceRepositoryIT {
     assertEquals(uuid, result.getUuid());
     assertEquals("user", result.getCreatedBy());
     assertNotNull(result.getOrganizations());
-    assertEquals(organizationDto.getUuid(),result.getOrganizations().get(0).getUuid());
   }
 
   @Test
@@ -105,7 +107,6 @@ public class PersonResourceRepositoryIT {
     Person result = dbService.findUnique(Person.class, "uuid", updatedPerson.getUuid());
     assertEquals(updatedName, result.getDisplayName());
     assertEquals(updatedEmail, result.getEmail());
-    assertNotNull(result.getOrganizations());
   }
   
   @Test
@@ -135,9 +136,33 @@ public class PersonResourceRepositoryIT {
     assertEquals(personUnderTest.getDisplayName(), result.getDisplayName());
     assertEquals(personUnderTest.getEmail(), result.getEmail());
     assertEquals(personUnderTest.getUuid(), result.getUuid());
-    assertNotNull(result.getOrganizations());
+  }
+  
+  @Test
+  public void find_PersistedPerson_When_RelationSpec_Specified_ReturnsPersonWithRelations() {
+   
+    QuerySpec querySpec = new QuerySpec(PersonDto.class);
+    QuerySpec orgSpec = new QuerySpec(OrganizationDto.class);
+    
+    List<IncludeRelationSpec> includeRelationSpec = Arrays.asList("organizations")
+        .stream()
+        .map(Arrays::asList)
+        .map(IncludeRelationSpec::new)
+        .collect(Collectors.toList());
+    
+    querySpec.setIncludedRelations(includeRelationSpec);
+    querySpec.setNestedSpecs(Arrays.asList(orgSpec));        
+    PersonDto result = personResourceRepository.findOne(
+      personUnderTest.getUuid(),
+      querySpec
+    );
+
+    assertEquals(personUnderTest.getDisplayName(), result.getDisplayName());
+    assertEquals(personUnderTest.getEmail(), result.getEmail());
+    assertEquals(personUnderTest.getUuid(), result.getUuid());
     assertEquals(organizationUnderTest.getName(), result.getOrganizations().get(0).getName());
   }
+  
 
   @Test
   @WithMockKeycloakUser(username="user", groupRole = {"group 1:COLLECTION_MANAGER"})
@@ -148,10 +173,8 @@ public class PersonResourceRepositoryIT {
     );
 
     assertNotNull(dbService.find(Person.class, personUnderTest.getId()));
-    assertNotNull(dbService.find(Organization.class, organizationUnderTest.getId()));
     personResourceRepository.delete(persistedPerson.getUuid());
     assertNull(dbService.find(Person.class, personUnderTest.getId()));
-    assertNull(dbService.find(Organization.class, organizationUnderTest.getId()));    
   }
   
   @Test
