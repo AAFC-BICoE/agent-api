@@ -16,7 +16,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-
+import ca.gc.aafc.agent.api.BaseIntegrationTest;
 import ca.gc.aafc.agent.api.testsupport.factories.OrganizationFactory;
 import ca.gc.aafc.agent.api.testsupport.factories.PersonFactory;
 import ca.gc.aafc.dina.testsupport.DatabaseSupportService;
@@ -24,10 +24,7 @@ import ca.gc.aafc.dina.testsupport.DatabaseSupportService;
 /**
  * Test suite to validate {@link Person} performs as a valid Hibernate Entity.
  */
-@SpringBootTest
-@Transactional
-@ActiveProfiles("test")
-public class PersonCrudIT {
+public class PersonCrudIT extends BaseIntegrationTest {
 
   @Inject
   private DatabaseSupportService dbService;
