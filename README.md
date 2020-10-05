@@ -39,12 +39,13 @@ ObjectStoreAPI container will automatically be redeployed with new version when 
 
 AAFC DINA agent module implementation.
 
-See DINA agent module [specification](https://github.com/DINA-Web/agent-specs).
+See DINA agent module [specification](https://dina-web.github.io/agent-specs/).
 
 ## Required
 
 * Java 11
 * Maven 3.6 (tested)
+* Docker 19+ (for running integration tests)
 
 ## Documentation
 
@@ -79,31 +80,4 @@ docker-compose down
 
 ## Testing
 
-For testing purposes use the same docker-compose.yml and .env file (from the previous).
-
-### 1. Add a `docker-compose.override.yml` file.
-
-Create an override file to expose the postgres port on your host:
-```
-version: "3.7"
-
-services:
-  agent-db:
-    ports:
-      - 5432:5432
-```
-
-### 2. Launch the database service
-
-```
-docker-compose up agent-db
-```
-
-To run the integration tests:
-
-```
-mvn verify -Dspring.datasource.url=jdbc:postgresql://localhost/agent_test?currentSchema=agent -Dspring.datasource.username=web_user -Dspring.datasource.password=test -Dspring.liquibase.user=migration_user -Dspring.liquibase.password=test checkstyle:check com.github.spotbugs:spotbugs-maven-plugin:check jacoco:check
-```
-
-Some integration tests rely on a schema file available on a shared GitHub repo. If there are issues accessing this file, 
-the schema validation can be skipped by adding the `-Dtesting.skip-external-schema-validation=true` flag to the above command.
+Run tests using `mvn verify`. Docker is required, so the integration tests can launch an embedded Postgres test container.

@@ -4,9 +4,9 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
-import ca.gc.aafc.agent.api.dto.PersonDto;
-import ca.gc.aafc.agent.api.entities.Person;
-import ca.gc.aafc.agent.api.service.PersonAuthorizationService;
+import ca.gc.aafc.agent.api.dto.OrganizationDto;
+import ca.gc.aafc.agent.api.entities.Organization;
+import ca.gc.aafc.agent.api.service.OrganizationAuthorizationService;
 import ca.gc.aafc.dina.filter.DinaFilterResolver;
 import ca.gc.aafc.dina.mapper.DinaMapper;
 import ca.gc.aafc.dina.repository.DinaRepository;
@@ -15,14 +15,13 @@ import ca.gc.aafc.dina.service.DinaService;
 import lombok.NonNull;
 
 @Repository
-public class PersonRepository extends DinaRepository<PersonDto, Person> {
+public class OrganizationRepository extends DinaRepository<OrganizationDto, Organization> {
 
-  // Bean does not exist with keycloak disabled.
   private Optional<DinaAuthenticatedUser> authenticatedUser;
-
-  public PersonRepository(
-    @NonNull DinaService<Person> dinaService,
-    @NonNull PersonAuthorizationService authorizationService,
+  
+  public OrganizationRepository(
+    @NonNull DinaService<Organization> dinaService,
+    @NonNull OrganizationAuthorizationService authorizationService,
     @NonNull DinaFilterResolver filterResolver,
     Optional<DinaAuthenticatedUser> authenticatedUser
   ) {
@@ -30,15 +29,15 @@ public class PersonRepository extends DinaRepository<PersonDto, Person> {
       dinaService,
       Optional.of(authorizationService),
       Optional.empty(), //no auditing for now
-      new DinaMapper<>(PersonDto.class),
-      PersonDto.class,
-      Person.class,
+      new DinaMapper<>(OrganizationDto.class),
+      OrganizationDto.class,
+      Organization.class,
       filterResolver);
     this.authenticatedUser = authenticatedUser;
   }
 
   @Override
-  public <S extends PersonDto> S create(S resource) {
+  public <S extends OrganizationDto> S create(S resource) {
     if (authenticatedUser.isPresent()) {
       resource.setCreatedBy(authenticatedUser.get().getUsername());
     }

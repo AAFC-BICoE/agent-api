@@ -3,4 +3,6 @@
   <include file="db/changelog/db.changelog-init.xml"/>
   <include file="db/changelog/migrations/1-Add_CreatedBy_and_CreatedOn_agent_table.xml" />
   <include file="db/changelog/migrations/2-Rename_agent_tableName_to_person_and_update_primaryKey_and_unique_index_names.xml" />  
+  <include file="db/changelog/migrations/3-Add_Organization_table.xml" />
+  <include file="db/changelog/migrations/4-Add_person_to_organization_relationship_table.xml" />  
 </databaseChangeLog>
