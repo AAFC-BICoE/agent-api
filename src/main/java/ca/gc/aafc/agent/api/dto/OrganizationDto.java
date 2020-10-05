@@ -24,5 +24,5 @@ public class OrganizationDto {
 
   private String createdBy;
   private OffsetDateTime createdOn;
-
+  
 }

@@ -1,12 +1,14 @@
 package ca.gc.aafc.agent.api.dto;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import ca.gc.aafc.agent.api.entities.Person;
 import ca.gc.aafc.dina.dto.RelatedEntity;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.crnk.core.resource.annotations.JsonApiId;
+import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.crnk.core.resource.annotations.JsonApiResource;
 import lombok.Data;
 
@@ -23,4 +25,7 @@ public class PersonDto {
   private String email;
   private String createdBy;
   private OffsetDateTime createdOn;
+
+  @JsonApiRelation
+  private List<OrganizationDto> organizations;  
 }

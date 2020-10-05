@@ -1,10 +1,14 @@
 package ca.gc.aafc.agent.api.repository;
 
 import static org.junit.Assert.assertNull;
+import io.crnk.core.queryspec.IncludeRelationSpec;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -17,9 +21,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import ca.gc.aafc.agent.api.dto.OrganizationDto;
 import ca.gc.aafc.agent.api.BaseIntegrationTest;
 import ca.gc.aafc.agent.api.dto.PersonDto;
+import ca.gc.aafc.agent.api.entities.Organization;
 import ca.gc.aafc.agent.api.entities.Person;
+import ca.gc.aafc.agent.api.testsupport.factories.OrganizationFactory;
 import ca.gc.aafc.agent.api.testsupport.factories.PersonFactory;
 import ca.gc.aafc.dina.testsupport.DatabaseSupportService;
 import ca.gc.aafc.dina.testsupport.factories.TestableEntityFactory;
@@ -36,15 +43,23 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
 
   @Inject
   private PersonRepository personResourceRepository;
+  
+  @Inject
+  private OrganizationRepository organizationResourceRepository;
 
   @Inject
   private DatabaseSupportService dbService;
 
   private Person personUnderTest;
 
+  private Organization organizationUnderTest;
+
   @BeforeEach
   public void setup() {
     personUnderTest = PersonFactory.newPerson().build();
+    organizationUnderTest = OrganizationFactory.newOrganization().build();
+    personUnderTest.setOrganizations(Arrays.asList(organizationUnderTest));
+    dbService.save(organizationUnderTest);
     dbService.save(personUnderTest);
   }
 
@@ -54,6 +69,14 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
     PersonDto personDto = new PersonDto();
     personDto.setDisplayName(TestableEntityFactory.generateRandomNameLettersOnly(10));
     personDto.setEmail(TestableEntityFactory.generateRandomNameLettersOnly(5) + "@email.com");
+
+    OrganizationDto organizationDto = new OrganizationDto();
+    organizationDto.setName(TestableEntityFactory.generateRandomNameLettersOnly(5));
+    organizationDto.setUuid(UUID.randomUUID());
+    
+    organizationResourceRepository.create(organizationDto);
+
+    personDto.setOrganizations(Arrays.asList(organizationDto));
     
     UUID uuid = personResourceRepository.create(personDto).getUuid();
 
@@ -62,6 +85,7 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
     assertEquals(personDto.getEmail(), result.getEmail());
     assertEquals(uuid, result.getUuid());
     assertEquals("user", result.getCreatedBy());
+    assertNotNull(result.getOrganizations());
   }
 
   @Test
@@ -69,8 +93,7 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
   public void save_PersistedPerson_When_User_Possess_CollectioManagerRole_FieldsUpdated() {
     String updatedEmail = "Updated_Email@email.com";
     String updatedName = "Updated_Name";
-
-    PersonDto updatedPerson = personResourceRepository.findOne(
+   PersonDto updatedPerson = personResourceRepository.findOne(
       personUnderTest.getUuid(),
       new QuerySpec(PersonDto.class)
     );
@@ -112,6 +135,32 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
     assertEquals(personUnderTest.getEmail(), result.getEmail());
     assertEquals(personUnderTest.getUuid(), result.getUuid());
   }
+  
+  @Test
+  public void find_PersistedPerson_When_RelationSpec_Specified_ReturnsPersonWithRelations() {
+   
+    QuerySpec querySpec = new QuerySpec(PersonDto.class);
+    QuerySpec orgSpec = new QuerySpec(OrganizationDto.class);
+    
+    List<IncludeRelationSpec> includeRelationSpec = Arrays.asList("organizations")
+        .stream()
+        .map(Arrays::asList)
+        .map(IncludeRelationSpec::new)
+        .collect(Collectors.toList());
+    
+    querySpec.setIncludedRelations(includeRelationSpec);
+    querySpec.setNestedSpecs(Arrays.asList(orgSpec));        
+    PersonDto result = personResourceRepository.findOne(
+      personUnderTest.getUuid(),
+      querySpec
+    );
+
+    assertEquals(personUnderTest.getDisplayName(), result.getDisplayName());
+    assertEquals(personUnderTest.getEmail(), result.getEmail());
+    assertEquals(personUnderTest.getUuid(), result.getUuid());
+    assertEquals(organizationUnderTest.getName(), result.getOrganizations().get(0).getName());
+  }
+  
 
   @Test
   @WithMockKeycloakUser(username="user", groupRole = {"group 1:COLLECTION_MANAGER"})
