@@ -1,0 +1,15 @@
+# Test config:
+spring:
+  datasource:
+    username: web_user
+    password: test
+  liquibase:
+    liquibase-schema: agent
+    user: migration_user
+    password: test
+embedded.postgresql:
+  enabled: true
+  image: postgres:12.4
+  init-script-file: init-agent-module.sql
+  database: agent_test
+  schema: agent

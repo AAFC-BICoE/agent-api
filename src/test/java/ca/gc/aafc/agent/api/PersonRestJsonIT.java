@@ -6,48 +6,51 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaDelete;
-import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
 import com.google.common.collect.ImmutableMap;
 
 import org.apache.http.client.utils.URIBuilder;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 
 import ca.gc.aafc.agent.api.entities.Person;
 import ca.gc.aafc.dina.testsupport.BaseRestAssuredTest;
+import ca.gc.aafc.dina.testsupport.DatabaseSupportService;
+import ca.gc.aafc.dina.testsupport.PostgresTestContainerInitializer;
 import ca.gc.aafc.dina.testsupport.factories.TestableEntityFactory;
 import ca.gc.aafc.dina.testsupport.jsonapi.JsonAPITestHelper;
 import ca.gc.aafc.dina.testsupport.specs.OpenAPI3Assertions;
 import io.crnk.core.engine.http.HttpStatus;
 import io.restassured.response.ValidatableResponse;
-import lombok.extern.log4j.Log4j2;
 
 /**
  * Test suite to validate correct HTTP and JSON API responses for {@link Person}
  * Endpoints.
  */
+@SpringBootTest(
+  classes = AgentModuleApiLauncher.class,
+  webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
+)
+@TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
+@ContextConfiguration(initializers = { PostgresTestContainerInitializer.class })
 @Transactional
-@Log4j2
 public class PersonRestJsonIT extends BaseRestAssuredTest {
 
   @Inject
-  private EntityManagerFactory entityManagerFactory;
+  private DatabaseSupportService databaseSupportService;
 
   private static URL specUrl;
 
   public static final String API_BASE_PATH = "/api/v1/person/";
   private static final String SPEC_HOST = "raw.githubusercontent.com";
-  private static final String SPEC_PATH = "DINA-Web/agent-specs/master/schema/agent.yml";
+  private static final String SPEC_PATH = "DINA-Web/agent-specs/master/schema/person.yml";
   private static final String SCHEMA_NAME = "Person";
   public static final String EMAIL_ERROR = "email must be a well-formed email address";
 
@@ -67,27 +70,6 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
     }
   }
 
-  /**
-   * Remove database entries after each test.
-   */
-  @AfterEach
-  public void tearDown() {
-    EntityManager em = entityManagerFactory.createEntityManager();
-
-    EntityTransaction et = em.getTransaction();
-    et.begin();
-
-    CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-    CriteriaDelete<Person> query = criteriaBuilder.createCriteriaDelete(Person.class);
-    Root<Person> root = query.from(Person.class);
-    query.where(criteriaBuilder.isNotNull(root.get("uuid")));
-    em.createQuery(query).executeUpdate();
-
-    em.flush();
-    et.commit();
-    em.close();
-  }
-
   @Test
   public void post_NewPerson_ReturnsOkayAndBody() {
     String displayName = "Albert";
@@ -96,8 +78,12 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
     ValidatableResponse response = super.sendPost("", getPostBody(displayName, email));
 
     assertValidResponseBodyAndCode(response, displayName, email, HttpStatus.CREATED_201)
-        .body("data.id", Matchers.notNullValue());
+      .body("data.id", Matchers.notNullValue());
     OpenAPI3Assertions.assertRemoteSchema(specUrl, SCHEMA_NAME, response.extract().asString());
+
+    // Cleanup:
+    UUID uuid = response.extract().jsonPath().getUUID("data.id");
+    databaseSupportService.deleteByProperty(Person.class, "uuid", uuid);
   }
 
   @Test
@@ -120,6 +106,9 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
     ValidatableResponse response = super.sendGet("", id);
     assertValidResponseBodyAndCode(response, newName, newEmail, HttpStatus.OK_200);
     OpenAPI3Assertions.assertRemoteSchema(specUrl, SCHEMA_NAME, response.extract().asString());
+
+    // Cleanup:
+    databaseSupportService.deleteByProperty(Person.class, "uuid", UUID.fromString(id));
   }
 
   @Test
@@ -133,6 +122,9 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
     assertValidResponseBodyAndCode(response, displayName, email, HttpStatus.OK_200)
         .body("data.id", Matchers.equalTo(id));
     OpenAPI3Assertions.assertRemoteSchema(specUrl, SCHEMA_NAME, response.extract().asString());
+
+    // Cleanup:
+    databaseSupportService.deleteByProperty(Person.class, "uuid", UUID.fromString(id));
   }
 
   @Test
@@ -146,6 +138,9 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
     super.sendGet("", id);
     super.sendDelete("", id);
     super.sendGet("", id, HttpStatus.NOT_FOUND_404);
+
+    // Cleanup:
+    databaseSupportService.deleteByProperty(Person.class, "uuid", UUID.fromString(id));
   }
 
   /**
