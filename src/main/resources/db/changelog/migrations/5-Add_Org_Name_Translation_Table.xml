@@ -10,9 +10,6 @@
             <column autoIncrement="true" name="id" type="SERIAL">
                 <constraints primaryKey="true" primaryKeyName="pk_name_translation_id"/>
             </column>
-            <column name="uuid" type="uuid">
-                <constraints nullable="false" unique="true" />
-            </column>
             <column name="language" type="VARCHAR(250)">
                 <constraints nullable="false"/>
             </column>
@@ -23,6 +20,12 @@
                 <constraints foreignKeyName="fk_name_translation_organization_id" references="organization(id)"/>
             </column>
         </createTable>
+
+        <addUniqueConstraint
+                columnNames="language, organization_id"
+                constraintName="unique_org_name_translation_language_organization_id"
+                tableName="org_name_translation"
+        />
     </changeSet>
 
 </databaseChangeLog>
