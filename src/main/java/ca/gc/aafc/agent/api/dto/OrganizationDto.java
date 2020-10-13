@@ -32,12 +32,12 @@ public class OrganizationDto {
   private List<OrganizationNameTranslation> nameTranslations;
 
   @CustomFieldResolver(fieldName = "nameTranslations")
-  private static List<OrganizationNameTranslation> toDTO(Organization entity) {
+  public static List<OrganizationNameTranslation> toDTO(Organization entity) {
     return Collections.emptyList();
   }
 
   @CustomFieldResolver(fieldName = "nameTranslations")
-  private static List<OrganizationNameTranslation> toEntity(OrganizationDto dto) {
+  public static List<OrganizationNameTranslation> toEntity(OrganizationDto dto) {
     return Collections.emptyList();
   }
 
