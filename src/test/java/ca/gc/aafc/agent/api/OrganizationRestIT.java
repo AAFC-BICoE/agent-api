@@ -20,6 +20,7 @@ import org.testcontainers.shaded.org.apache.commons.lang.RandomStringUtils;
 import javax.inject.Inject;
 import javax.persistence.criteria.Predicate;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
 
@@ -47,7 +48,6 @@ public class OrganizationRestIT extends BaseRestAssuredTest {
       .extract().jsonPath().getString("data.id");
 
     validateResultWithId(expected, id);
-    sendGet("organization", id).log().all(true);//TODO
   }
 
   @Test
@@ -73,6 +73,25 @@ public class OrganizationRestIT extends BaseRestAssuredTest {
   }
 
   @Test
+  void patch_nameTranslationAdded() {
+    OrganizationDto dto = newOrgDTO();
+
+    String id = super.sendPost("organization", mapOrg(dto))
+      .extract().jsonPath().getString("data.id");
+
+    dto.getNameTranslations()
+      .add(OrganizationNameTranslation.builder().language("new lang").value("new Val").build());
+
+    sendPatch("organization", id, ImmutableMap.of(
+      "data", ImmutableMap.of(
+        "type", "organization",
+        "attributes", JsonAPITestHelper.toAttributeMap(dto)
+      )));
+
+    validateResultWithId(dto, id);
+  }
+
+  @Test
   void patch_EmptyPatch_TranslationsRemain() {
     OrganizationDto expected = newOrgDTO();
 
@@ -80,8 +99,7 @@ public class OrganizationRestIT extends BaseRestAssuredTest {
       .extract().jsonPath().getString("data.id");
 
     sendPatch("organization", id, ImmutableMap.of(
-      "data",
-      ImmutableMap.of(
+      "data", ImmutableMap.of(
         "type", "organization",
         "attributes", Collections.emptyMap()
       )));
@@ -95,13 +113,14 @@ public class OrganizationRestIT extends BaseRestAssuredTest {
     response.body(
       "data.attributes.nameTranslations",
       Matchers.hasSize(expectedDTO.getNameTranslations().size()));
-    OrganizationNameTranslation expectedTranslation = expectedDTO.getNameTranslations().get(0);
+    OrganizationNameTranslation expectedTranslation = expectedDTO.getNameTranslations().get(0);//TODO validate all expected translations
     response.body(
       "data.attributes.nameTranslations[0].language",
       Matchers.equalTo(expectedTranslation.getLanguage()));
     response.body(
       "data.attributes.nameTranslations[0].value",
       Matchers.equalTo(expectedTranslation.getValue()));
+    response.log().all(true);//TODO remove me
   }
 
   private static Map<String, Object> mapOrg(OrganizationDto dto) {
@@ -115,7 +134,7 @@ public class OrganizationRestIT extends BaseRestAssuredTest {
     OrganizationNameTranslation translation = OrganizationNameTranslation.builder()
       .value(RandomStringUtils.randomAlphabetic(5))
       .language(RandomStringUtils.randomAlphabetic(5)).build();
-    dto.setNameTranslations(Collections.singletonList(translation));
+    dto.setNameTranslations(new ArrayList<>(Collections.singletonList(translation)));
     return dto;
   }
 
