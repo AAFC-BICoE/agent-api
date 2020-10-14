@@ -1,18 +1,23 @@
 package ca.gc.aafc.agent.api;
 
 import ca.gc.aafc.agent.api.dto.OrganizationDto;
+import ca.gc.aafc.agent.api.entities.Organization;
 import ca.gc.aafc.agent.api.entities.OrganizationNameTranslation;
+import ca.gc.aafc.dina.service.DinaService;
 import ca.gc.aafc.dina.testsupport.BaseRestAssuredTest;
 import ca.gc.aafc.dina.testsupport.PostgresTestContainerInitializer;
 import ca.gc.aafc.dina.testsupport.jsonapi.JsonAPITestHelper;
 import io.restassured.response.ValidatableResponse;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.shaded.org.apache.commons.lang.RandomStringUtils;
 
+import javax.inject.Inject;
+import javax.persistence.criteria.Predicate;
 import javax.transaction.Transactional;
 import java.util.Collections;
 import java.util.Map;
@@ -25,6 +30,9 @@ import java.util.Map;
 @ContextConfiguration(initializers = {PostgresTestContainerInitializer.class})
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
 public class OrganizationRestIT extends BaseRestAssuredTest {
+
+  @Inject
+  private DinaService<Organization> service;
 
   protected OrganizationRestIT() {
     super("/api/v1/");
@@ -56,7 +64,19 @@ public class OrganizationRestIT extends BaseRestAssuredTest {
     String id = super.sendPost("organization", mapOrg(dto))
       .extract().jsonPath().getString("data.id");
 
-    sendGet("organization", id).log().all(true);//TODO
+    Assertions.assertEquals(
+      1,
+      service.findAll(OrganizationNameTranslation.class,
+        (criteriaBuilder, organizationNameTranslationRoot) -> new Predicate[0],
+        null, 0, 10).size());
+
+    sendDelete("organization", id);
+
+    Assertions.assertEquals(
+      0,
+      service.findAll(OrganizationNameTranslation.class,
+        (criteriaBuilder, organizationNameTranslationRoot) -> new Predicate[0],
+        null, 0, 10).size());
   }
 
   private Map<String, Object> mapOrg(OrganizationDto dto) {

@@ -69,6 +69,9 @@ public class Organization implements DinaEntity {
   @ManyToMany(mappedBy = "organizations", fetch = FetchType.LAZY)
   private List<Person> persons;
 
-  @OneToMany(mappedBy = "organization", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+  @OneToMany(
+    mappedBy = "organization",
+    cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+    fetch = FetchType.EAGER)
   private List<OrganizationNameTranslation> nameTranslations;
 }
