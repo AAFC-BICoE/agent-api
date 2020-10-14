@@ -1,6 +1,7 @@
 package ca.gc.aafc.agent.api;
 
 import ca.gc.aafc.agent.api.dto.OrganizationDto;
+import ca.gc.aafc.agent.api.entities.OrganizationNameTranslation;
 import ca.gc.aafc.dina.testsupport.BaseRestAssuredTest;
 import ca.gc.aafc.dina.testsupport.PostgresTestContainerInitializer;
 import ca.gc.aafc.dina.testsupport.jsonapi.JsonAPITestHelper;
@@ -10,6 +11,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 
 import javax.transaction.Transactional;
+import java.util.Collections;
 
 @SpringBootTest(
   classes = AgentModuleApiLauncher.class,
@@ -25,9 +27,11 @@ public class OrganizationRestIT extends BaseRestAssuredTest {
   }
 
   @Test
-  void post_maps() {
+  void post_customFieldsResolved() {
     OrganizationDto dto = new OrganizationDto();
     dto.setName("d");
+    dto.setNameTranslations(Collections.singletonList(OrganizationNameTranslation.builder()
+      .value("testValue").language("testlang").build()));
 
     String id = super.sendPost(
       "organization",

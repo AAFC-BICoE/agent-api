@@ -1,5 +1,7 @@
 package ca.gc.aafc.agent.api.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,6 +35,7 @@ public class OrganizationNameTranslation {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @JsonIgnore
   private Integer id;
 
   @NotBlank
@@ -43,6 +46,7 @@ public class OrganizationNameTranslation {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @NotNull
+  @JsonBackReference
   private Organization organization;
 
 }
