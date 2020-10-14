@@ -7,6 +7,7 @@ import ca.gc.aafc.dina.service.DinaService;
 import ca.gc.aafc.dina.testsupport.BaseRestAssuredTest;
 import ca.gc.aafc.dina.testsupport.PostgresTestContainerInitializer;
 import ca.gc.aafc.dina.testsupport.jsonapi.JsonAPITestHelper;
+import com.google.common.collect.ImmutableMap;
 import io.restassured.response.ValidatableResponse;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -40,21 +41,13 @@ public class OrganizationRestIT extends BaseRestAssuredTest {
 
   @Test
   void post_nameTranslationsPersisted() {
-    OrganizationDto dto = newOrgDTO();
+    OrganizationDto expected = newOrgDTO();
 
-    String id = super.sendPost("organization", mapOrg(dto))
+    String id = super.sendPost("organization", mapOrg(expected))
       .extract().jsonPath().getString("data.id");
 
-    ValidatableResponse response = sendGet("organization", id);
-    response.body("data.attributes.nameTranslations", Matchers.hasSize(1));
-    OrganizationNameTranslation expected = dto.getNameTranslations().get(0);
-    response.body(
-      "data.attributes.nameTranslations[0].language",
-      Matchers.equalTo(expected.getLanguage()));
-    response.body(
-      "data.attributes.nameTranslations[0].value",
-      Matchers.equalTo(expected.getValue()));
-    response.log().all(true);//TODO
+    validateResultWithId(expected, id);
+    sendGet("organization", id).log().all(true);//TODO
   }
 
   @Test
@@ -79,12 +72,44 @@ public class OrganizationRestIT extends BaseRestAssuredTest {
         null, 0, 10).size());
   }
 
-  private Map<String, Object> mapOrg(OrganizationDto dto) {
+  @Test
+  void patch_EmptyPatch_TranslationsRemain() {
+    OrganizationDto expected = newOrgDTO();
+
+    String id = super.sendPost("organization", mapOrg(expected))
+      .extract().jsonPath().getString("data.id");
+
+    sendPatch("organization", id, ImmutableMap.of(
+      "data",
+      ImmutableMap.of(
+        "type", "organization",
+        "attributes", Collections.emptyMap()
+      )));
+
+    validateResultWithId(expected, id);
+  }
+
+  private void validateResultWithId(OrganizationDto expectedDTO, String id) {
+    ValidatableResponse response = sendGet("organization", id);
+    response.body("data.attributes.name", Matchers.equalTo(expectedDTO.getName()));
+    response.body(
+      "data.attributes.nameTranslations",
+      Matchers.hasSize(expectedDTO.getNameTranslations().size()));
+    OrganizationNameTranslation expectedTranslation = expectedDTO.getNameTranslations().get(0);
+    response.body(
+      "data.attributes.nameTranslations[0].language",
+      Matchers.equalTo(expectedTranslation.getLanguage()));
+    response.body(
+      "data.attributes.nameTranslations[0].value",
+      Matchers.equalTo(expectedTranslation.getValue()));
+  }
+
+  private static Map<String, Object> mapOrg(OrganizationDto dto) {
     return JsonAPITestHelper.toJsonAPIMap(
       "organization", JsonAPITestHelper.toAttributeMap(dto), null, null);
   }
 
-  private OrganizationDto newOrgDTO() {
+  private static OrganizationDto newOrgDTO() {
     OrganizationDto dto = new OrganizationDto();
     dto.setName(RandomStringUtils.randomAlphabetic(5));
     OrganizationNameTranslation translation = OrganizationNameTranslation.builder()
