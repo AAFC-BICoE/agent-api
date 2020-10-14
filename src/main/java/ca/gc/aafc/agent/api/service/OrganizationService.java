@@ -60,24 +60,45 @@ public class OrganizationService extends DinaService<Organization> {
     }
   }
 
+  /**
+   * Returns translations for a given entity.
+   *
+   * @param entity a given entity.
+   * @return Returns translations for a given entity.
+   */
   private Map<String, OrganizationNameTranslation> fetchTranslations(@NonNull Organization entity) {
     return this.findAll(
       OrganizationNameTranslation.class,
       (cb, root) -> new Predicate[]{cb.equal(root.get("organization"), entity)},
-      null, 0, 1000).stream().collect(
+      null, 0, Integer.MAX_VALUE).stream().collect(
       Collectors.toMap(OrganizationNameTranslation::getLanguage, Function.identity()));
   }
 
+  /**
+   * Returns a Map of translations per language. the returned translations are backed by the
+   * database if they already exist.
+   *
+   * @param entity       - owner of the translations
+   * @param translations - translations to map
+   * @param persistedMap - current database backed translations
+   * @return Returns a Map of translations per language
+   */
   private static Map<String, OrganizationNameTranslation> mapTranslationsToPersist(
     @NonNull Organization entity,
     @NonNull List<OrganizationNameTranslation> translations,
-    @NonNull Map<String, OrganizationNameTranslation> persistedTranslations
+    @NonNull Map<String, OrganizationNameTranslation> persistedMap
   ) {
     return translations.stream()
-      .map(nameTranslation -> linkTranslation(entity, persistedTranslations, nameTranslation))
+      .map(nameTranslation -> linkTranslation(entity, persistedMap, nameTranslation))
       .collect(Collectors.toMap(OrganizationNameTranslation::getLanguage, Function.identity()));
   }
 
+  /**
+   * Removes translations from the database that are no longer wanted.
+   *
+   * @param oldTranslations     - old set of translations
+   * @param currentTranslations - translations to keep
+   */
   private void removeUnusedTranslations(
     @NonNull Map<String, OrganizationNameTranslation> oldTranslations,
     @NonNull Map<String, OrganizationNameTranslation> currentTranslations
@@ -89,6 +110,16 @@ public class OrganizationService extends DinaService<Organization> {
     });
   }
 
+  /**
+   * Returns a data base backed representation of a given translation from a given map if it exists.
+   * If the given translation does not exist in the given map  the given translation is returned
+   * after being linked to the given entity.
+   *
+   * @param entity       - owner of the translations
+   * @param persistedMap - current database backed translations
+   * @param translation  - translation to link
+   * @return Returns a data base backed representation of a given translation
+   */
   private static OrganizationNameTranslation linkTranslation(
     @NonNull Organization entity,
     @NonNull Map<String, OrganizationNameTranslation> persistedMap,
