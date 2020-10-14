@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.criteria.Predicate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -19,8 +20,11 @@ import java.util.stream.Collectors;
 @Service
 public class OrganizationService extends DinaService<Organization> {
 
+  private final BaseDAO dao;
+
   public OrganizationService(@NonNull BaseDAO baseDAO) {
     super(baseDAO);
+    this.dao = baseDAO;
   }
 
   @Override
@@ -49,21 +53,29 @@ public class OrganizationService extends DinaService<Organization> {
         null, 0, 1000).stream().collect(
         Collectors.toMap(OrganizationNameTranslation::getLanguage, Function.identity()));
 
-      List<OrganizationNameTranslation> toPersist = translations.stream().map(nameTranslation -> {
-        String language = nameTranslation.getLanguage();
-        if (persistedTranslations.containsKey(language)) {
-          OrganizationNameTranslation persisted = persistedTranslations.get(language);
-          if (!StringUtils.equalsIgnoreCase(persisted.getValue(), nameTranslation.getValue())) {
-            persisted.setValue(nameTranslation.getValue());
+      Map<String, OrganizationNameTranslation> toPersist = translations.stream()
+        .map(nameTranslation -> {
+          String language = nameTranslation.getLanguage();
+          if (persistedTranslations.containsKey(language)) {
+            OrganizationNameTranslation persisted = persistedTranslations.get(language);
+            if (!StringUtils.equalsIgnoreCase(persisted.getValue(), nameTranslation.getValue())) {
+              persisted.setValue(nameTranslation.getValue());
+            }
+            return persisted;
+          } else {
+            nameTranslation.setOrganization(entity);
+            return nameTranslation;
           }
-          return persisted;
-        } else {
-          nameTranslation.setOrganization(entity);
-          return nameTranslation;
-        }
-      }).collect(Collectors.toList());
+        })
+        .collect(Collectors.toMap(OrganizationNameTranslation::getLanguage, Function.identity()));
 
-      entity.setNameTranslations(toPersist);
+      persistedTranslations.values().forEach(organizationNameTranslation -> {
+        if (!toPersist.containsKey(organizationNameTranslation.getLanguage())) {
+          dao.delete(organizationNameTranslation);
+        }
+      });
+
+      entity.setNameTranslations(new ArrayList<>(toPersist.values()));
     }
   }
 

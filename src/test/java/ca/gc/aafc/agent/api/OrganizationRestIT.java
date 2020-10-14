@@ -93,6 +93,26 @@ public class OrganizationRestIT extends BaseRestAssuredTest {
   }
 
   @Test
+  void patch_nameTranslationRemoved() {
+    OrganizationDto dto = newOrgDTO();
+    dto.getNameTranslations()
+      .add(OrganizationNameTranslation.builder().language("new lang").value("new Val").build());
+
+    String id = super.sendPost("organization", mapOrg(dto))
+      .extract().jsonPath().getString("data.id");
+
+    dto.getNameTranslations().remove(0);
+
+    sendPatch("organization", id, ImmutableMap.of(
+      "data", ImmutableMap.of(
+        "type", "organization",
+        "attributes", JsonAPITestHelper.toAttributeMap(dto)
+      )));
+
+    validateResultWithId(dto, id);
+  }
+
+  @Test
   void patch_EmptyPatch_TranslationsRemain() {
     OrganizationDto expected = newOrgDTO();
 
@@ -109,13 +129,12 @@ public class OrganizationRestIT extends BaseRestAssuredTest {
   }
 
   private void validateResultWithId(OrganizationDto expectedDTO, String id) {
-    ValidatableResponse response = sendGet("organization", id);
+    ValidatableResponse response = sendGet("organization", id);  response.log().all(true);//TODO remove me
     response.body("data.attributes.name", Matchers.equalTo(expectedDTO.getName()));
     response.body(
       "data.attributes.nameTranslations",
       Matchers.hasSize(expectedDTO.getNameTranslations().size()));
     validateTranslations(response, expectedDTO.getNameTranslations());
-    response.log().all(true);//TODO remove me
   }
 
   private void validateTranslations(
