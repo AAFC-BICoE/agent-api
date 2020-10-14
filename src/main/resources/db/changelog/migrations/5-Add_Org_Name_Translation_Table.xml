@@ -10,7 +10,7 @@
             <column autoIncrement="true" name="id" type="SERIAL">
                 <constraints primaryKey="true" primaryKeyName="pk_name_translation_id"/>
             </column>
-            <column name="language" type="VARCHAR(250)">
+            <column name="language" type="CHAR(2)">
                 <constraints nullable="false"/>
             </column>
             <column name="value" type="VARCHAR(250)">

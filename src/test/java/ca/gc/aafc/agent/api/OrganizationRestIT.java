@@ -81,7 +81,7 @@ public class OrganizationRestIT extends BaseRestAssuredTest {
       .extract().jsonPath().getString("data.id");
 
     dto.getNameTranslations()
-      .add(OrganizationNameTranslation.builder().language("new lang").value("new Val").build());
+      .add(OrganizationNameTranslation.builder().language("ne").value("new Val").build());
 
     sendPatch("organization", id, ImmutableMap.of(
       "data", ImmutableMap.of(
@@ -96,7 +96,7 @@ public class OrganizationRestIT extends BaseRestAssuredTest {
   void patch_nameTranslationRemoved() {
     OrganizationDto dto = newOrgDTO();
     dto.getNameTranslations()
-      .add(OrganizationNameTranslation.builder().language("new lang").value("new Val").build());
+      .add(OrganizationNameTranslation.builder().language("ne").value("new Val").build());
 
     String id = super.sendPost("organization", mapOrg(dto))
       .extract().jsonPath().getString("data.id");
@@ -196,7 +196,7 @@ public class OrganizationRestIT extends BaseRestAssuredTest {
     dto.setName(RandomStringUtils.randomAlphabetic(5));
     OrganizationNameTranslation translation = OrganizationNameTranslation.builder()
       .value(RandomStringUtils.randomAlphabetic(5))
-      .language(RandomStringUtils.randomAlphabetic(5)).build();
+      .language(RandomStringUtils.randomAlphabetic(2)).build();
     dto.setNameTranslations(new ArrayList<>(Collections.singletonList(translation)));
     return dto;
   }
