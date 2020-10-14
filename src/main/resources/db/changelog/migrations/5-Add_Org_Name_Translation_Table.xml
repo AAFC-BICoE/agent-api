@@ -21,11 +21,11 @@
             </column>
         </createTable>
 
-        <addUniqueConstraint
-                columnNames="language, organization_id"
-                constraintName="unique_org_name_translation_language_organization_id"
-                tableName="org_name_translation"
-        />
+        <!-- An organization can only have one translation per language    -->
+        <sql>
+            CREATE UNIQUE INDEX org_name_translation_unique_translation
+            ON org_name_translation (lower(language), organization_id);
+        </sql>
     </changeSet>
 
 </databaseChangeLog>
