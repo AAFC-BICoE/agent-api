@@ -45,37 +45,65 @@ public class OrganizationService extends DinaService<Organization> {
   @Override
   protected void preUpdate(Organization entity) {
     List<OrganizationNameTranslation> translations = entity.getNameTranslations();
+    entity.setNameTranslations(null);
+    Map<String, OrganizationNameTranslation> oldTranslations = fetchTranslations(entity);
+
     if (CollectionUtils.isNotEmpty(translations)) {
-      entity.setNameTranslations(null);
-      Map<String, OrganizationNameTranslation> persistedTranslations = this.findAll(
-        OrganizationNameTranslation.class,
-        (cb, root) -> new Predicate[]{cb.equal(root.get("organization"), entity)},
-        null, 0, 1000).stream().collect(
-        Collectors.toMap(OrganizationNameTranslation::getLanguage, Function.identity()));
+      Map<String, OrganizationNameTranslation> newTranslations =
+        mapTranslationsToPersist(entity, translations, oldTranslations);
 
-      Map<String, OrganizationNameTranslation> toPersist = translations.stream()
-        .map(nameTranslation -> {
-          String language = nameTranslation.getLanguage();
-          if (persistedTranslations.containsKey(language)) {
-            OrganizationNameTranslation persisted = persistedTranslations.get(language);
-            if (!StringUtils.equalsIgnoreCase(persisted.getValue(), nameTranslation.getValue())) {
-              persisted.setValue(nameTranslation.getValue());
-            }
-            return persisted;
-          } else {
-            nameTranslation.setOrganization(entity);
-            return nameTranslation;
-          }
-        })
-        .collect(Collectors.toMap(OrganizationNameTranslation::getLanguage, Function.identity()));
+      removeUnusedTranslations(oldTranslations, newTranslations);
 
-      persistedTranslations.values().forEach(organizationNameTranslation -> {
-        if (!toPersist.containsKey(organizationNameTranslation.getLanguage())) {
-          dao.delete(organizationNameTranslation);
-        }
-      });
+      entity.setNameTranslations(new ArrayList<>(newTranslations.values()));
+    } else {
+      oldTranslations.values().forEach(dao::delete);
+    }
+  }
 
-      entity.setNameTranslations(new ArrayList<>(toPersist.values()));
+  private Map<String, OrganizationNameTranslation> fetchTranslations(@NonNull Organization entity) {
+    return this.findAll(
+      OrganizationNameTranslation.class,
+      (cb, root) -> new Predicate[]{cb.equal(root.get("organization"), entity)},
+      null, 0, 1000).stream().collect(
+      Collectors.toMap(OrganizationNameTranslation::getLanguage, Function.identity()));
+  }
+
+  private static Map<String, OrganizationNameTranslation> mapTranslationsToPersist(
+    @NonNull Organization entity,
+    @NonNull List<OrganizationNameTranslation> translations,
+    @NonNull Map<String, OrganizationNameTranslation> persistedTranslations
+  ) {
+    return translations.stream()
+      .map(nameTranslation -> linkTranslation(entity, persistedTranslations, nameTranslation))
+      .collect(Collectors.toMap(OrganizationNameTranslation::getLanguage, Function.identity()));
+  }
+
+  private void removeUnusedTranslations(
+    @NonNull Map<String, OrganizationNameTranslation> oldTranslations,
+    @NonNull Map<String, OrganizationNameTranslation> currentTranslations
+  ) {
+    oldTranslations.values().forEach(translation -> {
+      if (!currentTranslations.containsKey(translation.getLanguage())) {
+        dao.delete(translation);
+      }
+    });
+  }
+
+  private static OrganizationNameTranslation linkTranslation(
+    @NonNull Organization entity,
+    @NonNull Map<String, OrganizationNameTranslation> persistedMap,
+    @NonNull OrganizationNameTranslation translation
+  ) {
+    String language = translation.getLanguage();
+    if (persistedMap.containsKey(language)) {
+      OrganizationNameTranslation persisted = persistedMap.get(language);
+      if (!StringUtils.equalsIgnoreCase(persisted.getValue(), translation.getValue())) {
+        persisted.setValue(translation.getValue());
+      }
+      return persisted;
+    } else {
+      translation.setOrganization(entity);
+      return translation;
     }
   }
 

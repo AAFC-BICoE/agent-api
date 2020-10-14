@@ -113,6 +113,40 @@ public class OrganizationRestIT extends BaseRestAssuredTest {
   }
 
   @Test
+  void patch_EmptyTranslationsListSubmitted_TranslationsRemoved() {
+    OrganizationDto dto = newOrgDTO();
+
+    String id = super.sendPost("organization", mapOrg(dto))
+      .extract().jsonPath().getString("data.id");
+
+    sendPatch("organization", id, ImmutableMap.of(
+      "data", ImmutableMap.of(
+        "type", "organization",
+        "attributes", ImmutableMap.of("nameTranslations", Collections.emptyList())
+      )));
+
+    dto.getNameTranslations().clear();
+    validateResultWithId(dto, id);
+  }
+
+  @Test
+  void patch_NullTranslationsListSubmitted_TranslationsRemoved() {
+    OrganizationDto dto = newOrgDTO();
+
+    String id = super.sendPost("organization", mapOrg(dto))
+      .extract().jsonPath().getString("data.id");
+
+    sendPatch("organization", id, ImmutableMap.of(
+      "data", ImmutableMap.of(
+        "type", "organization",
+        "attributes", Collections.singletonMap("nameTranslations", null)
+      )));
+
+    dto.getNameTranslations().clear();
+    validateResultWithId(dto, id);
+  }
+
+  @Test
   void patch_EmptyPatch_TranslationsRemain() {
     OrganizationDto expected = newOrgDTO();
 
@@ -129,7 +163,8 @@ public class OrganizationRestIT extends BaseRestAssuredTest {
   }
 
   private void validateResultWithId(OrganizationDto expectedDTO, String id) {
-    ValidatableResponse response = sendGet("organization", id);  response.log().all(true);//TODO remove me
+    ValidatableResponse response = sendGet("organization", id);
+    response.log().all(true);//TODO remove me
     response.body("data.attributes.name", Matchers.equalTo(expectedDTO.getName()));
     response.body(
       "data.attributes.nameTranslations",
