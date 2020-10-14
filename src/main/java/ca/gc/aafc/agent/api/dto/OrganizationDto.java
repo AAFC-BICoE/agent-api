@@ -3,14 +3,12 @@ package ca.gc.aafc.agent.api.dto;
 import ca.gc.aafc.agent.api.entities.Organization;
 import ca.gc.aafc.agent.api.entities.OrganizationNameTranslation;
 import ca.gc.aafc.dina.dto.RelatedEntity;
-import ca.gc.aafc.dina.mapper.CustomFieldResolver;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.crnk.core.resource.annotations.JsonApiId;
 import io.crnk.core.resource.annotations.JsonApiResource;
 import lombok.Data;
 
 import java.time.OffsetDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
