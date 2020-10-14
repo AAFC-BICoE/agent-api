@@ -22,6 +22,7 @@ import javax.persistence.criteria.Predicate;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 @SpringBootTest(
@@ -113,14 +114,22 @@ public class OrganizationRestIT extends BaseRestAssuredTest {
     response.body(
       "data.attributes.nameTranslations",
       Matchers.hasSize(expectedDTO.getNameTranslations().size()));
-    OrganizationNameTranslation expectedTranslation = expectedDTO.getNameTranslations().get(0);//TODO validate all expected translations
-    response.body(
-      "data.attributes.nameTranslations[0].language",
-      Matchers.equalTo(expectedTranslation.getLanguage()));
-    response.body(
-      "data.attributes.nameTranslations[0].value",
-      Matchers.equalTo(expectedTranslation.getValue()));
+    validateTranslations(response, expectedDTO.getNameTranslations());
     response.log().all(true);//TODO remove me
+  }
+
+  private void validateTranslations(
+    ValidatableResponse response, List<OrganizationNameTranslation> translations
+  ) {
+    for (int i = 0; i < translations.size(); i++) {
+      OrganizationNameTranslation expectedTranslation = translations.get(i);
+      response.body(
+        "data.attributes.nameTranslations[" + i + "].language",
+        Matchers.equalTo(expectedTranslation.getLanguage()));
+      response.body(
+        "data.attributes.nameTranslations[" + i + "].value",
+        Matchers.equalTo(expectedTranslation.getValue()));
+    }
   }
 
   private static Map<String, Object> mapOrg(OrganizationDto dto) {
