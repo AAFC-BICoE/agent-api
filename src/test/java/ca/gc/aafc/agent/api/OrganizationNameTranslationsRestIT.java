@@ -32,12 +32,12 @@ import java.util.Map;
 @Transactional
 @ContextConfiguration(initializers = {PostgresTestContainerInitializer.class})
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
-public class OrganizationRestIT extends BaseRestAssuredTest {
+public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
 
   @Inject
   private DinaService<Organization> service;
 
-  protected OrganizationRestIT() {
+  protected OrganizationNameTranslationsRestIT() {
     super("/api/v1/");
   }
 
