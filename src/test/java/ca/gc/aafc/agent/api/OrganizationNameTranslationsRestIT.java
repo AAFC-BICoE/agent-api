@@ -42,7 +42,7 @@ public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
   }
 
   @Test
-  void post_nameTranslationsPersisted() {
+  void post_OrgPostedWithTranslations_TranslationsPersisted() {
     OrganizationDto expected = newOrgDTO();
 
     String id = super.sendPost("organization", mapOrg(expected))
@@ -52,7 +52,7 @@ public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
   }
 
   @Test
-  void delete_nameTranslationsRemoved() {
+  void delete_OrgDeleted_OrphansRemoved() {
     OrganizationDto dto = newOrgDTO();
 
     String id = super.sendPost("organization", mapOrg(dto))
@@ -74,7 +74,7 @@ public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
   }
 
   @Test
-  void patch_nameTranslationAdded() {
+  void patch_OrgUpdatedWithTranslation_TranslationAdded() {
     OrganizationDto dto = newOrgDTO();
 
     String id = super.sendPost("organization", mapOrg(dto))
@@ -93,7 +93,7 @@ public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
   }
 
   @Test
-  void patch_nameTranslationRemoved() {
+  void patch_TranslationRemovedFromOrg_TranslationRemoved() {
     OrganizationDto dto = newOrgDTO();
     dto.getNameTranslations()
       .add(OrganizationNameTranslation.builder().language("ne").value("new Val").build());
@@ -113,7 +113,7 @@ public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
   }
 
   @Test
-  void patch_EmptyTranslationsListSubmitted_TranslationsRemoved() {
+  void patch_EmptyTranslationsListSubmitted_AllTranslationsRemoved() {
     OrganizationDto dto = newOrgDTO();
 
     String id = super.sendPost("organization", mapOrg(dto))
@@ -130,7 +130,7 @@ public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
   }
 
   @Test
-  void patch_NullTranslationsListSubmitted_TranslationsRemoved() {
+  void patch_NullTranslationsListSubmitted_AllTranslationsRemoved() {
     OrganizationDto dto = newOrgDTO();
 
     String id = super.sendPost("organization", mapOrg(dto))
@@ -164,7 +164,6 @@ public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
 
   private void validateResultWithId(OrganizationDto expectedDTO, String id) {
     ValidatableResponse response = sendGet("organization", id);
-    response.log().all(true);//TODO remove me
     response.body("data.attributes.name", Matchers.equalTo(expectedDTO.getName()));
     response.body(
       "data.attributes.nameTranslations",
