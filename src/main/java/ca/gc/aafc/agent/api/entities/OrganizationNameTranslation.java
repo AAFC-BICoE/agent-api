@@ -47,6 +47,7 @@ public class OrganizationNameTranslation {
   @ManyToOne(fetch = FetchType.LAZY)
   @NotNull
   @JsonBackReference
+  @EqualsAndHashCode.Exclude
   private Organization organization;
 
 }
