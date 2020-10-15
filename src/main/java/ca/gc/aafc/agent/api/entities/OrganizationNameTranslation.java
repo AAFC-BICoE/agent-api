@@ -39,7 +39,7 @@ public class OrganizationNameTranslation {
   private Integer id;
 
   @NotBlank
-  private String language;
+  private String languageCode;
 
   @NotBlank
   private String value;

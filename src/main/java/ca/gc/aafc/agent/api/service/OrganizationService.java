@@ -69,7 +69,7 @@ public class OrganizationService extends DinaService<Organization> {
       OrganizationNameTranslation.class,
       (cb, root) -> new Predicate[]{cb.equal(root.get("organization"), entity)},
       null, 0, Integer.MAX_VALUE).stream().collect(
-      Collectors.toMap(OrganizationNameTranslation::getLanguage, Function.identity()));
+      Collectors.toMap(OrganizationNameTranslation::getLanguageCode, Function.identity()));
   }
 
   /**
@@ -88,7 +88,7 @@ public class OrganizationService extends DinaService<Organization> {
   ) {
     return translations.stream()
       .map(nameTranslation -> linkTranslation(entity, persistedMap, nameTranslation))
-      .collect(Collectors.toMap(OrganizationNameTranslation::getLanguage, Function.identity()));
+      .collect(Collectors.toMap(OrganizationNameTranslation::getLanguageCode, Function.identity()));
   }
 
   /**
@@ -102,7 +102,7 @@ public class OrganizationService extends DinaService<Organization> {
     @NonNull Map<String, OrganizationNameTranslation> currentTranslations
   ) {
     oldTranslations.values().forEach(translation -> {
-      if (!currentTranslations.containsKey(translation.getLanguage())) {
+      if (!currentTranslations.containsKey(translation.getLanguageCode())) {
         dao.delete(translation);
       }
     });
@@ -123,7 +123,7 @@ public class OrganizationService extends DinaService<Organization> {
     @NonNull Map<String, OrganizationNameTranslation> persistedMap,
     @NonNull OrganizationNameTranslation translation
   ) {
-    String language = translation.getLanguage();
+    String language = translation.getLanguageCode();
     if (persistedMap.containsKey(language)) {
       OrganizationNameTranslation persisted = persistedMap.get(language);
       if (!StringUtils.equalsIgnoreCase(persisted.getValue(), translation.getValue())) {

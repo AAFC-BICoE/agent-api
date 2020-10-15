@@ -81,7 +81,7 @@ public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
       .extract().jsonPath().getString("data.id");
 
     dto.getNameTranslations()
-      .add(OrganizationNameTranslation.builder().language("ne").value("new Val").build());
+      .add(OrganizationNameTranslation.builder().languageCode("ne").value("new Val").build());
 
     sendPatch("organization", id, ImmutableMap.of(
       "data", ImmutableMap.of(
@@ -96,7 +96,7 @@ public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
   void patch_TranslationRemovedFromOrg_TranslationRemoved() {
     OrganizationDto dto = newOrgDTO();
     dto.getNameTranslations()
-      .add(OrganizationNameTranslation.builder().language("ne").value("new Val").build());
+      .add(OrganizationNameTranslation.builder().languageCode("ne").value("new Val").build());
 
     String id = super.sendPost("organization", mapOrg(dto))
       .extract().jsonPath().getString("data.id");
@@ -177,8 +177,8 @@ public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
     for (int i = 0; i < translations.size(); i++) {
       OrganizationNameTranslation expectedTranslation = translations.get(i);
       response.body(
-        "data.attributes.nameTranslations[" + i + "].language",
-        Matchers.equalTo(expectedTranslation.getLanguage()));
+        "data.attributes.nameTranslations[" + i + "].languageCode",
+        Matchers.equalTo(expectedTranslation.getLanguageCode()));
       response.body(
         "data.attributes.nameTranslations[" + i + "].value",
         Matchers.equalTo(expectedTranslation.getValue()));
@@ -195,7 +195,7 @@ public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
     dto.setName(RandomStringUtils.randomAlphabetic(5));
     OrganizationNameTranslation translation = OrganizationNameTranslation.builder()
       .value(RandomStringUtils.randomAlphabetic(5))
-      .language(RandomStringUtils.randomAlphabetic(2)).build();
+      .languageCode(RandomStringUtils.randomAlphabetic(2)).build();
     dto.setNameTranslations(new ArrayList<>(Collections.singletonList(translation)));
     return dto;
   }
