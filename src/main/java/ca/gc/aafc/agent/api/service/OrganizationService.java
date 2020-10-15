@@ -44,16 +44,14 @@ public class OrganizationService extends DinaService<Organization> {
 
   @Override
   protected void preUpdate(Organization entity) {
-    List<OrganizationNameTranslation> translations = entity.getNameTranslations();
+    List<OrganizationNameTranslation> incomingTranslations = entity.getNameTranslations();
     entity.setNameTranslations(null);
     Map<String, OrganizationNameTranslation> oldTranslations = fetchTranslations(entity);
 
-    if (CollectionUtils.isNotEmpty(translations)) {
+    if (CollectionUtils.isNotEmpty(incomingTranslations)) {
       Map<String, OrganizationNameTranslation> newTranslations =
-        mapTranslationsToPersist(entity, translations, oldTranslations);
-
+        mapTranslationsToPersist(entity, incomingTranslations, oldTranslations);
       removeUnusedTranslations(oldTranslations, newTranslations);
-
       entity.setNameTranslations(new ArrayList<>(newTranslations.values()));
     } else {
       oldTranslations.values().forEach(dao::delete);
@@ -63,7 +61,7 @@ public class OrganizationService extends DinaService<Organization> {
   /**
    * Returns translations for a given entity.
    *
-   * @param entity a given entity.
+   * @param entity - a given entity.
    * @return Returns translations for a given entity.
    */
   private Map<String, OrganizationNameTranslation> fetchTranslations(@NonNull Organization entity) {
@@ -76,7 +74,7 @@ public class OrganizationService extends DinaService<Organization> {
 
   /**
    * Returns a Map of translations per language. the returned translations are backed by the
-   * database if they already exist.
+   * database if they already exist, or they are linked to the given entity.
    *
    * @param entity       - owner of the translations
    * @param translations - translations to map
