@@ -34,7 +34,7 @@ import ca.gc.aafc.dina.testsupport.security.WithMockKeycloakUser;
 import io.crnk.core.queryspec.QuerySpec;
 
 /**
- * Test suite to validate the {@link PersonResourceRepository} correctly handles
+ * Test suite to validate the {@link PersonRepository} correctly handles
  * CRUD operations for the {@link Person} Entity.
  */
 @ExtendWith(SpringExtension.class)
@@ -71,7 +71,6 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
     personDto.setEmail(TestableEntityFactory.generateRandomNameLettersOnly(5) + "@email.com");
 
     OrganizationDto organizationDto = new OrganizationDto();
-    organizationDto.setName(TestableEntityFactory.generateRandomNameLettersOnly(5));
     organizationDto.setUuid(UUID.randomUUID());
     
     organizationResourceRepository.create(organizationDto);
@@ -158,7 +157,7 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
     assertEquals(personUnderTest.getDisplayName(), result.getDisplayName());
     assertEquals(personUnderTest.getEmail(), result.getEmail());
     assertEquals(personUnderTest.getUuid(), result.getUuid());
-    assertEquals(organizationUnderTest.getName(), result.getOrganizations().get(0).getName());
+    assertEquals(organizationUnderTest.getAliases()[0], result.getOrganizations().get(0).getAliases()[0]);
   }
   
 

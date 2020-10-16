@@ -24,7 +24,6 @@ public class OrganizationDto {
   @JsonApiId
   private UUID uuid;
 
-  private String name;
   private String[] aliases;
 
   private String createdBy;

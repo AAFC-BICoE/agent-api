@@ -54,9 +54,6 @@ public class Organization implements DinaEntity {
   @Column(name = "uuid", unique = true)
   private UUID uuid;
 
-  @NotBlank
-  private String name;
-
   @Type(type = "string-array")
   private String[] aliases;
 

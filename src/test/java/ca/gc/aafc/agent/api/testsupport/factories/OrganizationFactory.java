@@ -15,7 +15,6 @@ public class OrganizationFactory implements TestableEntityFactory<Organization> 
   public static Organization.OrganizationBuilder newOrganization() {
     return Organization.builder()
       .uuid(UUID.randomUUID())
-      .name(TestableEntityFactory.generateRandomNameLettersOnly(15))
       .aliases(new String[] {
         TestableEntityFactory.generateRandomNameLettersOnly(15),
         TestableEntityFactory.generateRandomNameLettersOnly(15)

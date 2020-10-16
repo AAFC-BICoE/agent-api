@@ -26,6 +26,9 @@
             CREATE UNIQUE INDEX org_name_translation_unique_translation
             ON org_name_translation (lower(language_code), organization_id);
         </sql>
+
+        <!--  Drop name column from organization table -->
+        <dropColumn columnName="name" tableName="organization"/>
     </changeSet>
 
 </databaseChangeLog>

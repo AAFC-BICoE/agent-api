@@ -165,7 +165,6 @@ public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
 
   private void validateResultWithId(OrganizationDto expectedDTO, String id) {
     ValidatableResponse response = sendGet("organization", id);response.log().all(true);
-    response.body("data.attributes.name", Matchers.equalTo(expectedDTO.getName()));
     response.body(
       "data.attributes.nameTranslations",
       Matchers.hasSize(expectedDTO.getNameTranslations().size()));
@@ -193,7 +192,6 @@ public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
 
   private static OrganizationDto newOrgDTO() {
     OrganizationDto dto = new OrganizationDto();
-    dto.setName(RandomStringUtils.randomAlphabetic(5));
     OrganizationNameTranslationDto translation = OrganizationNameTranslationDto.builder()
       .value(RandomStringUtils.randomAlphabetic(5))
       .languageCode(RandomStringUtils.randomAlphabetic(2)).build();

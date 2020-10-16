@@ -48,13 +48,11 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
   @Test
   public void createOrganization_onSuccess_organizationPersisted() {
     OrganizationDto orgDto = new OrganizationDto();
-    orgDto.setName("test org");
     orgDto.setAliases(new String[] {"test alias"});
 
     UUID uuid = organizationRepository.create(orgDto).getUuid();
 
     Organization result = dbService.findUnique(Organization.class, "uuid", uuid);
-    assertEquals(orgDto.getName(), result.getName());
     assertArrayEquals(orgDto.getAliases(), result.getAliases());
     assertEquals(uuid, result.getUuid());
     assertEquals("user", result.getCreatedBy());
@@ -70,13 +68,11 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
       organizationUnderTest.getUuid(),
       new QuerySpec(OrganizationDto.class)
     );
-    updatedDto.setName(newName);
     updatedDto.setAliases(newAliases);
 
     organizationRepository.save(updatedDto);
 
     Organization result = dbService.findUnique(Organization.class, "uuid", updatedDto.getUuid());
-    assertEquals(newName, result.getName());
     assertArrayEquals(newAliases, result.getAliases());
   }
 
@@ -90,7 +86,6 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
       organizationUnderTest.getUuid(),
       new QuerySpec(OrganizationDto.class)
     );
-    updatedDto.setName(newName);
     updatedDto.setAliases(newAliases);
 
     Assertions.assertThrows(AccessDeniedException.class,()-> organizationRepository.save(updatedDto));
@@ -103,7 +98,6 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
       new QuerySpec(OrganizationDto.class)
     );
 
-    assertEquals(organizationUnderTest.getName(), result.getName());
     assertArrayEquals(organizationUnderTest.getAliases(), result.getAliases());
     assertEquals(organizationUnderTest.getUuid(), result.getUuid());
   }
