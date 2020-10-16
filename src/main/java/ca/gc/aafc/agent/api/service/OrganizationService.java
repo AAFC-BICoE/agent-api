@@ -126,8 +126,8 @@ public class OrganizationService extends DinaService<Organization> {
     String language = translation.getLanguageCode();
     if (persistedMap.containsKey(language)) {
       OrganizationNameTranslation persisted = persistedMap.get(language);
-      if (!StringUtils.equalsIgnoreCase(persisted.getValue(), translation.getValue())) {
-        persisted.setValue(translation.getValue());
+      if (!StringUtils.equalsIgnoreCase(persisted.getName(), translation.getName())) {
+        persisted.setName(translation.getName());
       }
       return persisted;
     } else {

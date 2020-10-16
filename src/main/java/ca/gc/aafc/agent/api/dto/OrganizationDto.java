@@ -38,7 +38,7 @@ public class OrganizationDto {
       .stream()
       .map(translation -> OrganizationNameTranslationDto.builder()
         .languageCode(translation.getLanguageCode())
-        .value(translation.getValue()).build())
+        .name(translation.getName()).build())
       .collect(Collectors.toList());
   }
 
@@ -48,7 +48,7 @@ public class OrganizationDto {
       .stream()
       .map(translation -> OrganizationNameTranslation.builder()
         .languageCode(translation.getLanguageCode())
-        .value(translation.getValue()).build())
+        .name(translation.getName()).build())
       .collect(Collectors.toList());
   }
 }

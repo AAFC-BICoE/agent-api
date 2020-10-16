@@ -41,7 +41,7 @@ public class OrganizationNameTranslation {
   private String languageCode;
 
   @NotBlank
-  private String value;
+  private String name;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @NotNull

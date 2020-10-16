@@ -82,7 +82,7 @@ public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
       .extract().jsonPath().getString("data.id");
 
     dto.getNames()
-      .add(OrganizationNameTranslationDto.builder().languageCode("ne").value("new Val").build());
+      .add(OrganizationNameTranslationDto.builder().languageCode("ne").name("new Val").build());
 
     sendPatch("organization", id, ImmutableMap.of(
       "data", ImmutableMap.of(
@@ -97,7 +97,7 @@ public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
   void patch_TranslationRemovedFromOrg_TranslationRemoved() {
     OrganizationDto dto = newOrgDTO();
     dto.getNames()
-      .add(OrganizationNameTranslationDto.builder().languageCode("ne").value("new Val").build());
+      .add(OrganizationNameTranslationDto.builder().languageCode("ne").name("new Val").build());
 
     String id = super.sendPost("organization", mapOrg(dto))
       .extract().jsonPath().getString("data.id");
@@ -164,7 +164,7 @@ public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
   }
 
   private void validateResultWithId(OrganizationDto expectedDTO, String id) {
-    ValidatableResponse response = sendGet("organization", id);response.log().all(true);
+    ValidatableResponse response = sendGet("organization", id);
     response.body(
       "data.attributes.names",
       Matchers.hasSize(expectedDTO.getNames().size()));
@@ -180,8 +180,8 @@ public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
         "data.attributes.names[" + i + "].languageCode",
         Matchers.equalTo(expectedTranslation.getLanguageCode()));
       response.body(
-        "data.attributes.names[" + i + "].value",
-        Matchers.equalTo(expectedTranslation.getValue()));
+        "data.attributes.names[" + i + "].name",
+        Matchers.equalTo(expectedTranslation.getName()));
     }
   }
 
@@ -193,7 +193,7 @@ public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
   private static OrganizationDto newOrgDTO() {
     OrganizationDto dto = new OrganizationDto();
     OrganizationNameTranslationDto translation = OrganizationNameTranslationDto.builder()
-      .value(RandomStringUtils.randomAlphabetic(5))
+      .name(RandomStringUtils.randomAlphabetic(5))
       .languageCode(RandomStringUtils.randomAlphabetic(2)).build();
     dto.setNames(new ArrayList<>(Collections.singletonList(translation)));
     return dto;

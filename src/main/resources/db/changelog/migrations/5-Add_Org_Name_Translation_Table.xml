@@ -13,7 +13,7 @@
             <column name="language_code" type="CHAR(2)">
                 <constraints nullable="false"/>
             </column>
-            <column name="value" type="VARCHAR(250)">
+            <column name="name" type="VARCHAR(250)">
                 <constraints nullable="false"/>
             </column>
             <column name="organization_id" type="integer">
