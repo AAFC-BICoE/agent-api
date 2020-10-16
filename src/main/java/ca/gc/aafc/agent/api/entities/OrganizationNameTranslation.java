@@ -37,7 +37,7 @@ public class OrganizationNameTranslation {
   private Integer id;
 
   @NotBlank
-  @Size(max = 2)
+  @Size(max = 2, min = 2)
   private String languageCode;
 
   @NotBlank
