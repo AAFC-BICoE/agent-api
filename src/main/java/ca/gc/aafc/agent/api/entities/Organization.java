@@ -70,5 +70,5 @@ public class Organization implements DinaEntity {
     mappedBy = "organization",
     cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
     fetch = FetchType.EAGER)
-  private List<OrganizationNameTranslation> nameTranslations;
+  private List<OrganizationNameTranslation> names;
 }

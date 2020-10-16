@@ -30,11 +30,11 @@ public class OrganizationDto {
   private OffsetDateTime createdOn;
 
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
-  private List<OrganizationNameTranslationDto> nameTranslations;
+  private List<OrganizationNameTranslationDto> names;
 
-  @CustomFieldResolver(fieldName = "nameTranslations")
+  @CustomFieldResolver(fieldName = "names")
   public static List<OrganizationNameTranslationDto> nameTranslationsToDTO(Organization entity) {
-    return entity.getNameTranslations() == null ? null : entity.getNameTranslations()
+    return entity.getNames() == null ? null : entity.getNames()
       .stream()
       .map(translation -> OrganizationNameTranslationDto.builder()
         .languageCode(translation.getLanguageCode())
@@ -42,9 +42,9 @@ public class OrganizationDto {
       .collect(Collectors.toList());
   }
 
-  @CustomFieldResolver(fieldName = "nameTranslations")
+  @CustomFieldResolver(fieldName = "names")
   public static List<OrganizationNameTranslation> nameTranslationsToEntity(OrganizationDto dto) {
-    return dto.getNameTranslations() == null ? null : dto.getNameTranslations()
+    return dto.getNames() == null ? null : dto.getNames()
       .stream()
       .map(translation -> OrganizationNameTranslation.builder()
         .languageCode(translation.getLanguageCode())

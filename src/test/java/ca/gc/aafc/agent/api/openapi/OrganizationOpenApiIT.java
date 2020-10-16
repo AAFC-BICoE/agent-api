@@ -65,7 +65,6 @@ public class OrganizationOpenApiIT extends BaseRestAssuredTest {
       JsonAPITestHelper.toJsonAPIMap(
         "organization",
         new ImmutableMap.Builder<String, Object>()
-          .put("name", name)
           .put("aliases", aliases)
           .build(),
         null,
@@ -74,7 +73,6 @@ public class OrganizationOpenApiIT extends BaseRestAssuredTest {
     );
 
     response
-      .body("data.attributes.name", Matchers.equalTo(name))
       .body("data.attributes.aliases", Matchers.equalTo(aliases))
       .body("data.id", Matchers.notNullValue());
 

@@ -32,8 +32,8 @@ public class OrganizationService extends DinaService<Organization> {
     //Give new Organization UUID
     entity.setUuid(UUID.randomUUID());
     //Link name translations to the Organization before cascade
-    if (CollectionUtils.isNotEmpty(entity.getNameTranslations())) {
-      entity.getNameTranslations().forEach(trans -> trans.setOrganization(entity));
+    if (CollectionUtils.isNotEmpty(entity.getNames())) {
+      entity.getNames().forEach(trans -> trans.setOrganization(entity));
     }
   }
 
@@ -44,15 +44,15 @@ public class OrganizationService extends DinaService<Organization> {
 
   @Override
   protected void preUpdate(Organization entity) {
-    List<OrganizationNameTranslation> incomingTranslations = entity.getNameTranslations();
-    entity.setNameTranslations(null);
+    List<OrganizationNameTranslation> incomingTranslations = entity.getNames();
+    entity.setNames(null);
     Map<String, OrganizationNameTranslation> oldTranslations = fetchTranslations(entity);
 
     if (CollectionUtils.isNotEmpty(incomingTranslations)) {
       Map<String, OrganizationNameTranslation> newTranslations =
         mapTranslationsToPersist(entity, incomingTranslations, oldTranslations);
       removeUnusedTranslations(oldTranslations, newTranslations);
-      entity.setNameTranslations(new ArrayList<>(newTranslations.values()));
+      entity.setNames(new ArrayList<>(newTranslations.values()));
     } else {
       oldTranslations.values().forEach(dao::delete);
     }

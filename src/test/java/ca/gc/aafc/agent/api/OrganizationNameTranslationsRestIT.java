@@ -81,7 +81,7 @@ public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
     String id = super.sendPost("organization", mapOrg(dto))
       .extract().jsonPath().getString("data.id");
 
-    dto.getNameTranslations()
+    dto.getNames()
       .add(OrganizationNameTranslationDto.builder().languageCode("ne").value("new Val").build());
 
     sendPatch("organization", id, ImmutableMap.of(
@@ -96,13 +96,13 @@ public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
   @Test
   void patch_TranslationRemovedFromOrg_TranslationRemoved() {
     OrganizationDto dto = newOrgDTO();
-    dto.getNameTranslations()
+    dto.getNames()
       .add(OrganizationNameTranslationDto.builder().languageCode("ne").value("new Val").build());
 
     String id = super.sendPost("organization", mapOrg(dto))
       .extract().jsonPath().getString("data.id");
 
-    dto.getNameTranslations().remove(0);
+    dto.getNames().remove(0);
 
     sendPatch("organization", id, ImmutableMap.of(
       "data", ImmutableMap.of(
@@ -123,10 +123,10 @@ public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
     sendPatch("organization", id, ImmutableMap.of(
       "data", ImmutableMap.of(
         "type", "organization",
-        "attributes", ImmutableMap.of("nameTranslations", Collections.emptyList())
+        "attributes", ImmutableMap.of("names", Collections.emptyList())
       )));
 
-    dto.getNameTranslations().clear();
+    dto.getNames().clear();
     validateResultWithId(dto, id);
   }
 
@@ -140,10 +140,10 @@ public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
     sendPatch("organization", id, ImmutableMap.of(
       "data", ImmutableMap.of(
         "type", "organization",
-        "attributes", Collections.singletonMap("nameTranslations", null)
+        "attributes", Collections.singletonMap("names", null)
       )));
 
-    dto.getNameTranslations().clear();
+    dto.getNames().clear();
     validateResultWithId(dto, id);
   }
 
@@ -166,9 +166,9 @@ public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
   private void validateResultWithId(OrganizationDto expectedDTO, String id) {
     ValidatableResponse response = sendGet("organization", id);response.log().all(true);
     response.body(
-      "data.attributes.nameTranslations",
-      Matchers.hasSize(expectedDTO.getNameTranslations().size()));
-    validateTranslations(response, expectedDTO.getNameTranslations());
+      "data.attributes.names",
+      Matchers.hasSize(expectedDTO.getNames().size()));
+    validateTranslations(response, expectedDTO.getNames());
   }
 
   private void validateTranslations(
@@ -177,10 +177,10 @@ public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
     for (int i = 0; i < translations.size(); i++) {
       OrganizationNameTranslationDto expectedTranslation = translations.get(i);
       response.body(
-        "data.attributes.nameTranslations[" + i + "].languageCode",
+        "data.attributes.names[" + i + "].languageCode",
         Matchers.equalTo(expectedTranslation.getLanguageCode()));
       response.body(
-        "data.attributes.nameTranslations[" + i + "].value",
+        "data.attributes.names[" + i + "].value",
         Matchers.equalTo(expectedTranslation.getValue()));
     }
   }
@@ -195,7 +195,7 @@ public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
     OrganizationNameTranslationDto translation = OrganizationNameTranslationDto.builder()
       .value(RandomStringUtils.randomAlphabetic(5))
       .languageCode(RandomStringUtils.randomAlphabetic(2)).build();
-    dto.setNameTranslations(new ArrayList<>(Collections.singletonList(translation)));
+    dto.setNames(new ArrayList<>(Collections.singletonList(translation)));
     return dto;
   }
 
