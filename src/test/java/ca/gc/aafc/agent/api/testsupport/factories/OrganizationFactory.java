@@ -20,5 +20,5 @@ public class OrganizationFactory implements TestableEntityFactory<Organization> 
         TestableEntityFactory.generateRandomNameLettersOnly(15)
       });
   }
-  
+
 }
