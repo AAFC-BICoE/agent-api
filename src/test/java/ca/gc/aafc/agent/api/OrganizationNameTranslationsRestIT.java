@@ -1,6 +1,7 @@
 package ca.gc.aafc.agent.api;
 
 import ca.gc.aafc.agent.api.dto.OrganizationDto;
+import ca.gc.aafc.agent.api.dto.OrganizationNameTranslationDto;
 import ca.gc.aafc.agent.api.entities.Organization;
 import ca.gc.aafc.agent.api.entities.OrganizationNameTranslation;
 import ca.gc.aafc.dina.service.DinaService;
@@ -81,7 +82,7 @@ public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
       .extract().jsonPath().getString("data.id");
 
     dto.getNameTranslations()
-      .add(OrganizationNameTranslation.builder().languageCode("ne").value("new Val").build());
+      .add(OrganizationNameTranslationDto.builder().languageCode("ne").value("new Val").build());
 
     sendPatch("organization", id, ImmutableMap.of(
       "data", ImmutableMap.of(
@@ -96,7 +97,7 @@ public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
   void patch_TranslationRemovedFromOrg_TranslationRemoved() {
     OrganizationDto dto = newOrgDTO();
     dto.getNameTranslations()
-      .add(OrganizationNameTranslation.builder().languageCode("ne").value("new Val").build());
+      .add(OrganizationNameTranslationDto.builder().languageCode("ne").value("new Val").build());
 
     String id = super.sendPost("organization", mapOrg(dto))
       .extract().jsonPath().getString("data.id");
@@ -163,7 +164,7 @@ public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
   }
 
   private void validateResultWithId(OrganizationDto expectedDTO, String id) {
-    ValidatableResponse response = sendGet("organization", id);
+    ValidatableResponse response = sendGet("organization", id);response.log().all(true);
     response.body("data.attributes.name", Matchers.equalTo(expectedDTO.getName()));
     response.body(
       "data.attributes.nameTranslations",
@@ -172,10 +173,10 @@ public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
   }
 
   private void validateTranslations(
-    ValidatableResponse response, List<OrganizationNameTranslation> translations
+    ValidatableResponse response, List<OrganizationNameTranslationDto> translations
   ) {
     for (int i = 0; i < translations.size(); i++) {
-      OrganizationNameTranslation expectedTranslation = translations.get(i);
+      OrganizationNameTranslationDto expectedTranslation = translations.get(i);
       response.body(
         "data.attributes.nameTranslations[" + i + "].languageCode",
         Matchers.equalTo(expectedTranslation.getLanguageCode()));
@@ -193,7 +194,7 @@ public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
   private static OrganizationDto newOrgDTO() {
     OrganizationDto dto = new OrganizationDto();
     dto.setName(RandomStringUtils.randomAlphabetic(5));
-    OrganizationNameTranslation translation = OrganizationNameTranslation.builder()
+    OrganizationNameTranslationDto translation = OrganizationNameTranslationDto.builder()
       .value(RandomStringUtils.randomAlphabetic(5))
       .languageCode(RandomStringUtils.randomAlphabetic(2)).build();
     dto.setNameTranslations(new ArrayList<>(Collections.singletonList(translation)));
