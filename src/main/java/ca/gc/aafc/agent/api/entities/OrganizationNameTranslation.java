@@ -17,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity(name = "org_name_translation")
 @Getter
@@ -36,6 +37,7 @@ public class OrganizationNameTranslation {
   private Integer id;
 
   @NotBlank
+  @Size(min = 2)
   private String languageCode;
 
   @NotBlank
