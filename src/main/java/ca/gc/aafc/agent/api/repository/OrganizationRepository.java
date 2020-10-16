@@ -32,7 +32,8 @@ public class OrganizationRepository extends DinaRepository<OrganizationDto, Orga
       new DinaMapper<>(OrganizationDto.class),
       OrganizationDto.class,
       Organization.class,
-      filterResolver);
+      filterResolver,
+      null);
     this.authenticatedUser = authenticatedUser;
   }
 
