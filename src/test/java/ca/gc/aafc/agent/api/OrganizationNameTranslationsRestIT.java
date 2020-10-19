@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @SpringBootTest(
   classes = AgentModuleApiLauncher.class,
@@ -59,19 +60,9 @@ public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
     String id = super.sendPost("organization", mapOrg(dto))
       .extract().jsonPath().getString("data.id");
 
-    Assertions.assertEquals(
-      1,
-      service.findAll(OrganizationNameTranslation.class,
-        (criteriaBuilder, organizationNameTranslationRoot) -> new Predicate[0],
-        null, 0, 10).size());
-
+    Assertions.assertEquals(1, fetchTranslationsCountForOrg(id));
     sendDelete("organization", id);
-
-    Assertions.assertEquals(
-      0,
-      service.findAll(OrganizationNameTranslation.class,
-        (criteriaBuilder, organizationNameTranslationRoot) -> new Predicate[0],
-        null, 0, 10).size());
+    Assertions.assertEquals(0, fetchTranslationsCountForOrg(id));
   }
 
   @Test
@@ -199,4 +190,10 @@ public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
     return dto;
   }
 
+  private long fetchTranslationsCountForOrg(String id) {
+    return service.findAll(OrganizationNameTranslation.class,
+      (criteriaBuilder, organizationNameTranslationRoot) -> new Predicate[0],
+      null, 0, 1000).stream().
+      filter(t -> t.getOrganization().getUuid().equals(UUID.fromString(id))).count();
+  }
 }
