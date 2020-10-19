@@ -1,11 +1,14 @@
 package ca.gc.aafc.agent.api.repository;
 
 import static org.junit.Assert.assertNull;
+
+import ca.gc.aafc.agent.api.dto.OrganizationNameTranslationDto;
 import io.crnk.core.queryspec.IncludeRelationSpec;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -71,6 +74,8 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
     personDto.setEmail(TestableEntityFactory.generateRandomNameLettersOnly(5) + "@email.com");
 
     OrganizationDto organizationDto = new OrganizationDto();
+    organizationDto.setNames(Collections.singletonList(
+      OrganizationNameTranslationDto.builder().languageCode("te").name("name").build()));
     organizationDto.setUuid(UUID.randomUUID());
     
     organizationResourceRepository.create(organizationDto);

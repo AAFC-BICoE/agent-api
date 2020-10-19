@@ -1,35 +1,31 @@
 package ca.gc.aafc.agent.api.repository;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
-import java.util.UUID;
-
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-
 import ca.gc.aafc.agent.api.BaseIntegrationTest;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-
 import ca.gc.aafc.agent.api.dto.OrganizationDto;
+import ca.gc.aafc.agent.api.dto.OrganizationNameTranslationDto;
 import ca.gc.aafc.agent.api.entities.Organization;
+import ca.gc.aafc.agent.api.entities.OrganizationNameTranslation;
 import ca.gc.aafc.agent.api.testsupport.factories.OrganizationFactory;
 import ca.gc.aafc.dina.testsupport.DatabaseSupportService;
 import ca.gc.aafc.dina.testsupport.security.WithMockKeycloakUser;
 import io.crnk.core.queryspec.QuerySpec;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.access.AccessDeniedException;
+
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+import java.util.Collections;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(properties = {"keycloak.enabled: true"})
 @Transactional
 public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
-  
+
   @Inject
   private OrganizationRepository organizationRepository;
 
@@ -42,13 +38,18 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
   public void setup() {
     organizationUnderTest = OrganizationFactory.newOrganization().build();
     dbService.save(organizationUnderTest);
+    dbService.save(OrganizationNameTranslation.builder()
+      .languageCode("le").name("name").organization(organizationUnderTest).build()
+    );
   }
 
-  @WithMockKeycloakUser(username="user", groupRole = {"group 1:staff"})
+  @WithMockKeycloakUser(username = "user", groupRole = {"group 1:staff"})
   @Test
   public void createOrganization_onSuccess_organizationPersisted() {
     OrganizationDto orgDto = new OrganizationDto();
-    orgDto.setAliases(new String[] {"test alias"});
+    orgDto.setNames(Collections.singletonList(
+      OrganizationNameTranslationDto.builder().languageCode("te").name("name").build()));
+    orgDto.setAliases(new String[]{"test alias"});
 
     UUID uuid = organizationRepository.create(orgDto).getUuid();
 
@@ -59,10 +60,9 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
   }
 
   @Test
-  @WithMockKeycloakUser(username="user", groupRole = {"group 1:COLLECTION_MANAGER"})
+  @WithMockKeycloakUser(username = "user", groupRole = {"group 1:COLLECTION_MANAGER"})
   public void save_PersistedOrganization_When_User_Possess_CollectionManagerRole_FieldsUpdated() {
-    String newName = "new name";
-    String[] newAliases = new String[] {"new alias"};
+    String[] newAliases = new String[]{"new alias"};
 
     OrganizationDto updatedDto = organizationRepository.findOne(
       organizationUnderTest.getUuid(),
@@ -77,10 +77,9 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
   }
 
   @Test
-  @WithMockKeycloakUser(username="user", groupRole = {"group 1:STAFF"})
+  @WithMockKeycloakUser(username = "user", groupRole = {"group 1:STAFF"})
   public void save_PersistedOrganization_When_User_Has_No_CollectionManager_Role_FieldsUpdate_Denied() {
-    String newName = "new name";
-    String[] newAliases = new String[] {"new alias"};
+    String[] newAliases = new String[]{"new alias"};
 
     OrganizationDto updatedDto = organizationRepository.findOne(
       organizationUnderTest.getUuid(),
@@ -103,7 +102,7 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
   }
 
   @Test
-  @WithMockKeycloakUser(username="user", groupRole = {"group 1:COLLECTION_MANAGER"})
+  @WithMockKeycloakUser(username = "user", groupRole = {"group 1:COLLECTION_MANAGER"})
   public void remove_PersistedOrganization_When_User_Possess_CollectioManagerRoleOrganizationRemoved() {
     OrganizationDto persistedOrg = organizationRepository.findOne(
       organizationUnderTest.getUuid(),
@@ -116,7 +115,7 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
   }
 
   @Test
-  @WithMockKeycloakUser(username="user", groupRole = {"group 1:STAFF"})
+  @WithMockKeycloakUser(username = "user", groupRole = {"group 1:STAFF"})
   public void remove_PersistedOrganization_When_User_Has_No_CollectionManager_Role_OrganizationRemove_Denied() {
     OrganizationDto persistedOrg = organizationRepository.findOne(
       organizationUnderTest.getUuid(),
@@ -126,6 +125,6 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
     assertNotNull(dbService.find(Organization.class, organizationUnderTest.getId()));
     Assertions.assertThrows(AccessDeniedException.class,() -> organizationRepository.delete(persistedOrg.getUuid()));
     assertNotNull(dbService.find(Organization.class, organizationUnderTest.getId()));
-  }  
+  }
 
 }
