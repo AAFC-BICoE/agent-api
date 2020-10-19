@@ -46,19 +46,14 @@ public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
   @Test
   void post_OrgPostedWithTranslations_TranslationsPersisted() {
     OrganizationDto expected = newOrgDTO();
-
-    String id = super.sendPost("organization", mapOrg(expected))
-      .extract().jsonPath().getString("data.id");
-
+    String id = JsonAPITestHelper.extractId(super.sendPost("organization", mapOrg(expected)));
     validateResultWithId(expected, id);
   }
 
   @Test
   void delete_OrgDeleted_OrphansRemoved() {
     OrganizationDto dto = newOrgDTO();
-
-    String id = super.sendPost("organization", mapOrg(dto))
-      .extract().jsonPath().getString("data.id");
+    String id = JsonAPITestHelper.extractId(super.sendPost("organization", mapOrg(dto)));
 
     Assertions.assertEquals(1, fetchTranslationsCountForOrg(id));
     sendDelete("organization", id);
@@ -68,13 +63,10 @@ public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
   @Test
   void patch_OrgUpdatedWithTranslation_TranslationAdded() {
     OrganizationDto dto = newOrgDTO();
-
-    String id = super.sendPost("organization", mapOrg(dto))
-      .extract().jsonPath().getString("data.id");
+    String id = JsonAPITestHelper.extractId(super.sendPost("organization", mapOrg(dto)));
 
     dto.getNames()
       .add(OrganizationNameTranslationDto.builder().languageCode("ne").name("new Val").build());
-
     sendPatch("organization", id, ImmutableMap.of(
       "data", ImmutableMap.of(
         "type", "organization",
@@ -89,12 +81,9 @@ public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
     OrganizationDto dto = newOrgDTO();
     dto.getNames()
       .add(OrganizationNameTranslationDto.builder().languageCode("ne").name("new Val").build());
-
-    String id = super.sendPost("organization", mapOrg(dto))
-      .extract().jsonPath().getString("data.id");
+    String id = JsonAPITestHelper.extractId(super.sendPost("organization", mapOrg(dto)));
 
     dto.getNames().remove(0);
-
     sendPatch("organization", id, ImmutableMap.of(
       "data", ImmutableMap.of(
         "type", "organization",
@@ -107,9 +96,7 @@ public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
   @Test
   void patch_EmptyTranslationsListSubmitted_AllTranslationsRemoved() {
     OrganizationDto dto = newOrgDTO();
-
-    String id = super.sendPost("organization", mapOrg(dto))
-      .extract().jsonPath().getString("data.id");
+    String id = JsonAPITestHelper.extractId(super.sendPost("organization", mapOrg(dto)));
 
     sendPatch("organization", id, ImmutableMap.of(
       "data", ImmutableMap.of(
@@ -124,9 +111,7 @@ public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
   @Test
   void patch_NullTranslationsListSubmitted_AllTranslationsRemoved() {
     OrganizationDto dto = newOrgDTO();
-
-    String id = super.sendPost("organization", mapOrg(dto))
-      .extract().jsonPath().getString("data.id");
+    String id = JsonAPITestHelper.extractId(super.sendPost("organization", mapOrg(dto)));
 
     sendPatch("organization", id, ImmutableMap.of(
       "data", ImmutableMap.of(
@@ -141,9 +126,7 @@ public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
   @Test
   void patch_EmptyPatch_TranslationsRemain() {
     OrganizationDto expected = newOrgDTO();
-
-    String id = super.sendPost("organization", mapOrg(expected))
-      .extract().jsonPath().getString("data.id");
+    String id = JsonAPITestHelper.extractId(super.sendPost("organization", mapOrg(expected)));
 
     sendPatch("organization", id, ImmutableMap.of(
       "data", ImmutableMap.of(
