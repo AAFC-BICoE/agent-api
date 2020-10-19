@@ -51,6 +51,13 @@ public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
   }
 
   @Test
+  void post_WithNoNames_ReturnsBadRequest() {
+    OrganizationDto expected = newOrgDTO();
+    expected.getNames().clear();
+    super.sendPost("organization", mapOrg(expected), 400);
+  }
+
+  @Test
   void delete_OrgDeleted_OrphansRemoved() {
     OrganizationDto dto = newOrgDTO();
     String id = JsonAPITestHelper.extractId(super.sendPost("organization", mapOrg(dto)));
@@ -94,7 +101,7 @@ public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
   }
 
   @Test
-  void patch_EmptyTranslationsListSubmitted_AllTranslationsRemoved() {
+  void patch_ToRemoveAllNames_ReturnsBadRequest() {
     OrganizationDto dto = newOrgDTO();
     String id = JsonAPITestHelper.extractId(super.sendPost("organization", mapOrg(dto)));
 
@@ -102,25 +109,7 @@ public class OrganizationNameTranslationsRestIT extends BaseRestAssuredTest {
       "data", ImmutableMap.of(
         "type", "organization",
         "attributes", ImmutableMap.of("names", Collections.emptyList())
-      )));
-
-    dto.getNames().clear();
-    validateResultWithId(dto, id);
-  }
-
-  @Test
-  void patch_NullTranslationsListSubmitted_AllTranslationsRemoved() {
-    OrganizationDto dto = newOrgDTO();
-    String id = JsonAPITestHelper.extractId(super.sendPost("organization", mapOrg(dto)));
-
-    sendPatch("organization", id, ImmutableMap.of(
-      "data", ImmutableMap.of(
-        "type", "organization",
-        "attributes", Collections.singletonMap("names", null)
-      )));
-
-    dto.getNames().clear();
-    validateResultWithId(dto, id);
+      )), 400);
   }
 
   @Test
