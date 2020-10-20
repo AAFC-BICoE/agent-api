@@ -33,7 +33,8 @@ public class PersonRepository extends DinaRepository<PersonDto, Person> {
       new DinaMapper<>(PersonDto.class),
       PersonDto.class,
       Person.class,
-      filterResolver);
+      filterResolver,
+      null);
     this.authenticatedUser = authenticatedUser;
   }
 

@@ -1,11 +1,14 @@
 package ca.gc.aafc.agent.api.repository;
 
 import static org.junit.Assert.assertNull;
+
+import ca.gc.aafc.agent.api.dto.OrganizationNameTranslationDto;
 import io.crnk.core.queryspec.IncludeRelationSpec;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -34,7 +37,7 @@ import ca.gc.aafc.dina.testsupport.security.WithMockKeycloakUser;
 import io.crnk.core.queryspec.QuerySpec;
 
 /**
- * Test suite to validate the {@link PersonResourceRepository} correctly handles
+ * Test suite to validate the {@link PersonRepository} correctly handles
  * CRUD operations for the {@link Person} Entity.
  */
 @ExtendWith(SpringExtension.class)
@@ -71,7 +74,8 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
     personDto.setEmail(TestableEntityFactory.generateRandomNameLettersOnly(5) + "@email.com");
 
     OrganizationDto organizationDto = new OrganizationDto();
-    organizationDto.setName(TestableEntityFactory.generateRandomNameLettersOnly(5));
+    organizationDto.setNames(Collections.singletonList(
+      OrganizationNameTranslationDto.builder().languageCode("te").name("name").build()));
     organizationDto.setUuid(UUID.randomUUID());
     
     organizationResourceRepository.create(organizationDto);
@@ -158,7 +162,7 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
     assertEquals(personUnderTest.getDisplayName(), result.getDisplayName());
     assertEquals(personUnderTest.getEmail(), result.getEmail());
     assertEquals(personUnderTest.getUuid(), result.getUuid());
-    assertEquals(organizationUnderTest.getName(), result.getOrganizations().get(0).getName());
+    assertEquals(organizationUnderTest.getAliases()[0], result.getOrganizations().get(0).getAliases()[0]);
   }
   
 
