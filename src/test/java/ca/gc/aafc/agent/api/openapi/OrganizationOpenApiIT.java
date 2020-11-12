@@ -31,17 +31,7 @@ import java.util.UUID;
 public class OrganizationOpenApiIT extends BaseRestAssuredTest {
 
   public static final String API_BASE_PATH = "/api/v1/organization/";
-  private static final String SPEC_HOST = "raw.githubusercontent.com";
-  private static final String SPEC_PATH = "DINA-Web/agent-specs/master/schema/organization.yml";
   private static final String SCHEMA_NAME = "Organization";
-
-  private static final URIBuilder URI_BUILDER = new URIBuilder();
-
-  static {
-    URI_BUILDER.setScheme("https");
-    URI_BUILDER.setHost(SPEC_HOST);
-    URI_BUILDER.setPath(SPEC_PATH);
-  }
 
   @Inject
   private DatabaseSupportService databaseSupportService;
@@ -51,7 +41,7 @@ public class OrganizationOpenApiIT extends BaseRestAssuredTest {
   @SneakyThrows({MalformedURLException.class, URISyntaxException.class})
   protected OrganizationOpenApiIT() {
     super(API_BASE_PATH);
-    specUrl = URI_BUILDER.build().toURL();
+    specUrl = OpenAPIConstants.getOpenAPISpecsURL();
   }
 
   @Test

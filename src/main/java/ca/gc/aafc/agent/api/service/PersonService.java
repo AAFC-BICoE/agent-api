@@ -2,15 +2,15 @@ package ca.gc.aafc.agent.api.service;
 
 import java.util.UUID;
 
+import ca.gc.aafc.dina.service.DefaultDinaService;
 import org.springframework.stereotype.Service;
 
 import ca.gc.aafc.agent.api.entities.Person;
 import ca.gc.aafc.dina.jpa.BaseDAO;
-import ca.gc.aafc.dina.service.DinaService;
 import lombok.NonNull;
 
 @Service
-public class PersonService extends DinaService<Person> {
+public class PersonService extends DefaultDinaService<Person> {
 
   public PersonService(@NonNull BaseDAO baseDAO) {
     super(baseDAO);
@@ -19,16 +19,6 @@ public class PersonService extends DinaService<Person> {
   @Override
   protected void preCreate(Person entity) {
     entity.setUuid(UUID.randomUUID());
-  }
-
-  @Override
-  protected void preDelete(Person entity) {
-
-  }
-
-  @Override
-  protected void preUpdate(Person entity) {
-
   }
 
 }

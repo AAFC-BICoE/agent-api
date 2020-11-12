@@ -11,9 +11,9 @@ import java.util.UUID;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import ca.gc.aafc.agent.api.openapi.OpenAPIConstants;
 import com.google.common.collect.ImmutableMap;
 
-import org.apache.http.client.utils.URIBuilder;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -49,22 +49,13 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
   private static URL specUrl;
 
   public static final String API_BASE_PATH = "/api/v1/person/";
-  private static final String SPEC_HOST = "raw.githubusercontent.com";
-  private static final String SPEC_PATH = "DINA-Web/agent-specs/master/schema/person.yml";
   private static final String SCHEMA_NAME = "Person";
   public static final String EMAIL_ERROR = "email must be a well-formed email address";
-
-  private static final URIBuilder URI_BUILDER = new URIBuilder();
-  static {
-    URI_BUILDER.setScheme("https");
-    URI_BUILDER.setHost(SPEC_HOST);
-    URI_BUILDER.setPath(SPEC_PATH);
-  }
   
   protected PersonRestJsonIT() {
     super(API_BASE_PATH);
     try {
-      specUrl = URI_BUILDER.build().toURL();
+      specUrl = OpenAPIConstants.getOpenAPISpecsURL();
     } catch (MalformedURLException | URISyntaxException e) {
       fail(e);
     }
