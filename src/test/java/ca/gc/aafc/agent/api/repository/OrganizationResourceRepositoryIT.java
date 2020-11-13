@@ -51,11 +51,12 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
       OrganizationNameTranslationDto.builder().languageCode("te").name("name").build()));
     orgDto.setAliases(new String[]{"test alias"});
 
-    UUID uuid = organizationRepository.create(orgDto).getUuid();
+    OrganizationDto createdOrganization = organizationRepository.create(orgDto);
+    assertNotNull(createdOrganization.getCreatedOn());
 
-    Organization result = dbService.findUnique(Organization.class, "uuid", uuid);
+    Organization result = dbService.findUnique(Organization.class, "uuid", createdOrganization.getUuid());
     assertArrayEquals(orgDto.getAliases(), result.getAliases());
-    assertEquals(uuid, result.getUuid());
+    assertEquals(createdOrganization.getUuid(), result.getUuid());
     assertEquals("user", result.getCreatedBy());
   }
 
