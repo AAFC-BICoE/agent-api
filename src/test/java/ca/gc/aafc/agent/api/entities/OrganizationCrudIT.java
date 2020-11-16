@@ -7,7 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
-import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -46,12 +45,10 @@ public class OrganizationCrudIT extends BaseIntegrationTest {
   @Test
   public void testRemove() {
     orgService.delete(organizationUnderTest);
-    assertThrows(EntityNotFoundException.class, this::findOrgUnderTest);
+    assertNull(findOrgUnderTest());
   }
 
   private Organization findOrgUnderTest() {
-    return orgService.findOneReferenceByNaturalId(
-      Organization.class,
-      organizationUnderTest.getUuid());
+    return orgService.findOne(organizationUnderTest.getUuid(), Organization.class);
   }
 }

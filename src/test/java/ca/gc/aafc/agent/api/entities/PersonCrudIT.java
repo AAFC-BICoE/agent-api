@@ -8,7 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
-import javax.persistence.EntityNotFoundException;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -65,11 +64,11 @@ public class PersonCrudIT extends BaseIntegrationTest {
   @Test
   public void testRemove() {
     personService.delete(personUnderTest);
-    assertThrows(EntityNotFoundException.class, this::getPersonUnderTest);
+    assertNull(getPersonUnderTest());
   }
 
   private Person getPersonUnderTest() {
-    return personService.findOneReferenceByNaturalId(Person.class, personUnderTest.getUuid());
+    return personService.findOne(personUnderTest.getUuid(), Person.class);
   }
 
 }
