@@ -1,47 +1,42 @@
 package ca.gc.aafc.agent.api.entities;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-
 import ca.gc.aafc.agent.api.BaseIntegrationTest;
+import ca.gc.aafc.agent.api.testsupport.factories.OrganizationFactory;
+import ca.gc.aafc.dina.service.DinaService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
-import ca.gc.aafc.agent.api.testsupport.factories.OrganizationFactory;
-import ca.gc.aafc.dina.testsupport.DatabaseSupportService;
+import javax.inject.Inject;
+import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
 public class OrganizationCrudIT extends BaseIntegrationTest {
 
   @Inject
-  private DatabaseSupportService dbService;
+  private DinaService<Organization> orgService;
 
   private Organization organizationUnderTest;
 
   @BeforeEach
   public void setup() {
     organizationUnderTest = OrganizationFactory.newOrganization().build();
-    dbService.save(organizationUnderTest);
+    orgService.create(organizationUnderTest);
   }
 
   @Test
-  public void testSave() {
+  public void testCreate() {
     Organization organization = OrganizationFactory.newOrganization().build();
     assertNull(organization.getId());
-    dbService.save(organization);
+    orgService.create(organization);
     assertNotNull(organization.getId());
   }
 
   @Test
   public void testFind() {
-    Organization fetchedOrganization = dbService.find(Organization.class, organizationUnderTest.getId());
+    Organization fetchedOrganization = findOrgUnderTest();
     assertEquals(organizationUnderTest.getId(), fetchedOrganization.getId());
     assertArrayEquals(organizationUnderTest.getAliases(), fetchedOrganization.getAliases());
     assertEquals(organizationUnderTest.getUuid(), fetchedOrganization.getUuid());
@@ -50,9 +45,13 @@ public class OrganizationCrudIT extends BaseIntegrationTest {
 
   @Test
   public void testRemove() {
-    Integer id = organizationUnderTest.getId();
-    dbService.deleteById(Organization.class, id);
-    assertNull(dbService.find(Organization.class, id));
+    orgService.delete(organizationUnderTest);
+    assertThrows(EntityNotFoundException.class, this::findOrgUnderTest);
   }
 
+  private Organization findOrgUnderTest() {
+    return orgService.findOneReferenceByNaturalId(
+      Organization.class,
+      organizationUnderTest.getUuid());
+  }
 }

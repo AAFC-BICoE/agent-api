@@ -63,11 +63,13 @@ public class Organization implements DinaEntity {
   private OffsetDateTime createdOn;
 
   @ManyToMany(mappedBy = "organizations", fetch = FetchType.LAZY)
+  @ToString.Exclude
   private List<Person> persons;
 
   @OneToMany(
     mappedBy = "organization",
     cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
     fetch = FetchType.EAGER)
+  @ToString.Exclude
   private List<OrganizationNameTranslation> names;
 }
