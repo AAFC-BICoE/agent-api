@@ -1,34 +1,31 @@
 package ca.gc.aafc.agent.api;
 
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.Map;
-import java.util.UUID;
-
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-
-import ca.gc.aafc.agent.api.openapi.OpenAPIConstants;
-import com.google.common.collect.ImmutableMap;
-
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
-
 import ca.gc.aafc.agent.api.entities.Person;
+import ca.gc.aafc.agent.api.openapi.OpenAPIConstants;
 import ca.gc.aafc.dina.testsupport.BaseRestAssuredTest;
 import ca.gc.aafc.dina.testsupport.DatabaseSupportService;
 import ca.gc.aafc.dina.testsupport.PostgresTestContainerInitializer;
 import ca.gc.aafc.dina.testsupport.factories.TestableEntityFactory;
 import ca.gc.aafc.dina.testsupport.jsonapi.JsonAPITestHelper;
 import ca.gc.aafc.dina.testsupport.specs.OpenAPI3Assertions;
+import com.google.common.collect.ImmutableMap;
 import io.crnk.core.engine.http.HttpStatus;
 import io.restassured.response.ValidatableResponse;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
+
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Map;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Test suite to validate correct HTTP and JSON API responses for {@link Person}
@@ -38,8 +35,10 @@ import io.restassured.response.ValidatableResponse;
   classes = AgentModuleApiLauncher.class,
   webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
-@TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
-@ContextConfiguration(initializers = { PostgresTestContainerInitializer.class })
+@TestPropertySource(properties = {
+  "spring.config.additional-location=classpath:application-test.yml",
+  "dev-user.enabled=true"})
+@ContextConfiguration(initializers = {PostgresTestContainerInitializer.class})
 @Transactional
 public class PersonRestJsonIT extends BaseRestAssuredTest {
 
@@ -51,7 +50,7 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
   public static final String API_BASE_PATH = "/api/v1/person/";
   private static final String SCHEMA_NAME = "Person";
   public static final String EMAIL_ERROR = "email must be a well-formed email address";
-  
+
   protected PersonRestJsonIT() {
     super(API_BASE_PATH);
     try {
