@@ -25,7 +25,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-@TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
+@TestPropertySource(properties = {
+  "spring.config.additional-location=classpath:application-test.yml",
+  "dev-user.enabled=true"})
 @ContextConfiguration(initializers = {PostgresTestContainerInitializer.class})
 @Transactional
 public class OrganizationOpenApiIT extends BaseRestAssuredTest {
