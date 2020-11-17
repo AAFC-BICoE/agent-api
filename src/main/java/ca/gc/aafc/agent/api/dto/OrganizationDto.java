@@ -1,7 +1,6 @@
 package ca.gc.aafc.agent.api.dto;
 
 import ca.gc.aafc.agent.api.entities.Organization;
-import ca.gc.aafc.agent.api.entities.OrganizationNameTranslation;
 import ca.gc.aafc.dina.dto.RelatedEntity;
 import ca.gc.aafc.dina.mapper.CustomFieldResolver;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -30,9 +29,9 @@ public class OrganizationDto {
   private OffsetDateTime createdOn;
 
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
+  @CustomFieldResolver(setterMethod = "nameTranslationsToDTO")
   private List<OrganizationNameTranslationDto> names;
 
-  @CustomFieldResolver(fieldName = "names")
   public static List<OrganizationNameTranslationDto> nameTranslationsToDTO(Organization entity) {
     return entity.getNames() == null ? null : entity.getNames()
       .stream()
@@ -42,13 +41,4 @@ public class OrganizationDto {
       .collect(Collectors.toList());
   }
 
-  @CustomFieldResolver(fieldName = "names")
-  public static List<OrganizationNameTranslation> nameTranslationsToEntity(OrganizationDto dto) {
-    return dto.getNames() == null ? null : dto.getNames()
-      .stream()
-      .map(translation -> OrganizationNameTranslation.builder()
-        .languageCode(translation.getLanguageCode())
-        .name(translation.getName()).build())
-      .collect(Collectors.toList());
-  }
 }
