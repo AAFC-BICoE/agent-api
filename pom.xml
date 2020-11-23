@@ -40,6 +40,14 @@
       <url>https://dl.bintray.com/aafc-bice/BICoE</url>
     </repository>
   </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>bintray-aafc-bice</id>
+      <name>bintray</name>
+      <url>https://dl.bintray.com/aafc-bice/BICoE</url>
+    </pluginRepository>
+  </pluginRepositories>
+
 
   <dependencies>
 
@@ -325,6 +333,24 @@
           </annotationProcessorPaths>
         </configuration>
       </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${maven-checkstyle-plugin.version}</version>
+        <dependencies>
+          <dependency>
+            <groupId>ca.gc.aafc</groupId>
+            <artifactId>dina-base-api</artifactId>
+            <version>${dina-base-api.version}</version>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <configLocation>checkstyle.xml</configLocation>
+          <failOnViolation>false</failOnViolation>
+          <logViolationsToConsole>false</logViolationsToConsole>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
@@ -347,17 +373,6 @@
             </reports>
           </reportSet>
         </reportSets>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>${maven-checkstyle-plugin.version}</version>
-        <configuration>
-          <configLocation>checkstyle.xml</configLocation>
-          <failOnViolation>false</failOnViolation>
-          <logViolationsToConsole>false</logViolationsToConsole>
-        </configuration>
       </plugin>
     </plugins>
   </reporting>
