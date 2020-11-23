@@ -347,8 +347,8 @@
         </dependencies>
         <configuration>
           <configLocation>checkstyle.xml</configLocation>
-          <failOnViolation>false</failOnViolation>
-          <logViolationsToConsole>false</logViolationsToConsole>
+          <failOnViolation>true</failOnViolation>
+          <logViolationsToConsole>true</logViolationsToConsole>
         </configuration>
       </plugin>
     </plugins>
