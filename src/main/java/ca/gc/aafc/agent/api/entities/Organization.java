@@ -2,7 +2,6 @@ package ca.gc.aafc.agent.api.entities;
 
 import ca.gc.aafc.agent.api.dto.OrganizationDto;
 import ca.gc.aafc.dina.entity.DinaEntity;
-import ca.gc.aafc.dina.mapper.CustomFieldResolver;
 import com.vladmihalcea.hibernate.type.array.StringArrayType;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.AllArgsConstructor;
@@ -77,7 +76,6 @@ public class Organization implements DinaEntity {
     cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
     fetch = FetchType.EAGER)
   @ToString.Exclude
-  @CustomFieldResolver(setterMethod = "nameTranslationsToEntity")
   private List<OrganizationNameTranslation> names;
 
   public static List<OrganizationNameTranslation> nameTranslationsToEntity(OrganizationDto dto) {
