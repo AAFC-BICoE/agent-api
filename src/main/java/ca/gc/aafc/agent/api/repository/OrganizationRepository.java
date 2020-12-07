@@ -11,6 +11,7 @@ import ca.gc.aafc.dina.service.DinaService;
 import io.crnk.core.exception.BadRequestException;
 import lombok.NonNull;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.boot.info.BuildProperties;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Repository;
@@ -28,7 +29,8 @@ public class OrganizationRepository extends DinaRepository<OrganizationDto, Orga
     @NonNull OrganizationAuthorizationService authorizationService,
     @NonNull DinaFilterResolver filterResolver,
     Optional<DinaAuthenticatedUser> authenticatedUser,
-    MessageSource messageSource
+    MessageSource messageSource,
+    @NonNull BuildProperties props
   ) {
     super(
       dinaService,
@@ -38,7 +40,8 @@ public class OrganizationRepository extends DinaRepository<OrganizationDto, Orga
       OrganizationDto.class,
       Organization.class,
       filterResolver,
-      null);
+      null,
+      props);
     this.authenticatedUser = authenticatedUser;
     this.messageSource = messageSource;
   }

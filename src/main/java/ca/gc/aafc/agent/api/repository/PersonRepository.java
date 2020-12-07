@@ -2,6 +2,7 @@ package ca.gc.aafc.agent.api.repository;
 
 import java.util.Optional;
 
+import org.springframework.boot.info.BuildProperties;
 import org.springframework.stereotype.Repository;
 
 import ca.gc.aafc.agent.api.dto.PersonDto;
@@ -24,7 +25,8 @@ public class PersonRepository extends DinaRepository<PersonDto, Person> {
     @NonNull DinaService<Person> dinaService,
     @NonNull PersonAuthorizationService authorizationService,
     @NonNull DinaFilterResolver filterResolver,
-    Optional<DinaAuthenticatedUser> authenticatedUser
+    Optional<DinaAuthenticatedUser> authenticatedUser,
+    @NonNull BuildProperties props
   ) {
     super(
       dinaService,
@@ -34,7 +36,8 @@ public class PersonRepository extends DinaRepository<PersonDto, Person> {
       PersonDto.class,
       Person.class,
       filterResolver,
-      null);
+      null,
+      props);
     this.authenticatedUser = authenticatedUser;
   }
 
