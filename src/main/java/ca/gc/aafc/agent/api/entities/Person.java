@@ -16,6 +16,7 @@ import javax.persistence.ManyToMany;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
@@ -63,7 +64,6 @@ public class Person implements DinaEntity {
   @Column(name = "created_by")
   private String createdBy;
 
-
   @Column(name = "created_on", insertable = false, updatable = false)
   @Generated(value = GenerationTime.INSERT)
   private OffsetDateTime createdOn;
@@ -72,5 +72,11 @@ public class Person implements DinaEntity {
   @JoinTable(name = "person_organization", joinColumns = {
       @JoinColumn(name = "person_id") }, inverseJoinColumns = { @JoinColumn(name = "organization_id") })
   private List<Organization> organizations;
+
+  @Size(max = 50)
+  private String givenNames;  
+
+  @Size(max = 50)
+  private String familyNames;  
 
 }
