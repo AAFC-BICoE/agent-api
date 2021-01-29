@@ -40,6 +40,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(properties = {"keycloak.enabled: true"})
 public class PersonResourceRepositoryIT extends BaseIntegrationTest {
+  private final static String GIVEN_NAMES = "Anata";
+  private final static String FAMILY_NAMES = "Morgans";
+
 
   @Inject
   private PersonRepository personResourceRepository;
@@ -57,6 +60,8 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
   @BeforeEach
   public void setup() {
     personUnderTest = PersonFactory.newPerson().build();
+    personUnderTest.setGivenNames(GIVEN_NAMES);
+    personUnderTest.setFamilyNames(FAMILY_NAMES);
     organizationUnderTest = OrganizationFactory.newOrganization().build();
     personUnderTest.setOrganizations(Collections.singletonList(organizationUnderTest));
     dbService.save(organizationUnderTest);
@@ -69,6 +74,8 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
     PersonDto personDto = new PersonDto();
     personDto.setDisplayName(TestableEntityFactory.generateRandomNameLettersOnly(10));
     personDto.setEmail(TestableEntityFactory.generateRandomNameLettersOnly(5) + "@email.com");
+    personDto.setGivenNames(GIVEN_NAMES);
+    personDto.setFamilyNames(FAMILY_NAMES);
 
     OrganizationDto organizationDto = new OrganizationDto();
     organizationDto.setNames(Collections.singletonList(
@@ -81,6 +88,8 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
 
     Person result = dbService.findUnique(Person.class, "uuid", uuid);
     assertEquals(personDto.getDisplayName(), result.getDisplayName());
+    assertEquals(personDto.getGivenNames(), result.getGivenNames());
+    assertEquals(personDto.getFamilyNames(), result.getFamilyNames());
     assertEquals(personDto.getEmail(), result.getEmail());
     assertEquals(uuid, result.getUuid());
     assertEquals("user", result.getCreatedBy());

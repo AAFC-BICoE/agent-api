@@ -17,6 +17,9 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class PersonCrudIT extends BaseIntegrationTest {
 
+  private final static String GIVEN_NAMES = "Anata";
+  private final static String FAMILY_NAMES = "Morgans";
+
   @Inject
   private DinaService<Person> personService;
   @Inject
@@ -28,6 +31,8 @@ public class PersonCrudIT extends BaseIntegrationTest {
   @BeforeEach
   public void setup() {
     personUnderTest = PersonFactory.newPerson().build();
+    personUnderTest.setGivenNames(GIVEN_NAMES);
+    personUnderTest.setFamilyNames(FAMILY_NAMES);
     organizationUnderTest = OrganizationFactory.newOrganization().build();
     personUnderTest.setOrganizations(Collections.singletonList(organizationUnderTest));
     orgService.create(organizationUnderTest);
@@ -52,6 +57,8 @@ public class PersonCrudIT extends BaseIntegrationTest {
     Person fetchedPerson = getPersonUnderTest();
     assertEquals(personUnderTest.getId(), fetchedPerson.getId());
     assertEquals(personUnderTest.getDisplayName(), fetchedPerson.getDisplayName());
+    assertEquals(personUnderTest.getGivenNames(), fetchedPerson.getGivenNames());
+    assertEquals(personUnderTest.getFamilyNames(), fetchedPerson.getFamilyNames());    
     assertEquals(personUnderTest.getEmail(), fetchedPerson.getEmail());
     assertEquals(personUnderTest.getUuid(), fetchedPerson.getUuid());
     assertNotNull(fetchedPerson.getCreatedOn());
