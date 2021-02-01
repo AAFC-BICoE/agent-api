@@ -42,7 +42,7 @@ jobs:
           name: build-artifacts
           path: |
             version.txt
-            target/agent.api-*.jar
+            target/agent-api-*.jar
             Dockerfile
 
   push:
