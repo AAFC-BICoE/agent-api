@@ -20,7 +20,7 @@ public class PersonDto {
 
   @JsonApiId
   private UUID uuid;
-
+  
   private String displayName;
   private String email;
   private String createdBy;
@@ -28,4 +28,7 @@ public class PersonDto {
 
   @JsonApiRelation
   private List<OrganizationDto> organizations;  
+
+  private String givenNames;  
+  private String familyNames;  
 }

@@ -2,18 +2,18 @@ version: "3.7"
 
 services:
   agent-db:
-    image: postgres:9.6.15-alpine
+    image: postgres:10-alpine
     env_file:
       - ${BASE_PATH_TO_AGENT:-.}/pg.env
     volumes:
       - ${BASE_PATH_TO_AGENT:-.}/src/test/resources/init-agent-module.sql:/docker-entrypoint-initdb.d/1-init-schema.sql
 
   agent-api:
-    build: ${BASE_PATH_TO_AGENT:-.}
+    image: aafcbicoe/agent-api:0.8
+    # build: ${BASE_PATH_TO_AGENT:-.}
     ports:
       - "8082:8080"
     env_file:
       - ${BASE_PATH_TO_AGENT:-.}/agent-api.env
     networks:
       default:
-
