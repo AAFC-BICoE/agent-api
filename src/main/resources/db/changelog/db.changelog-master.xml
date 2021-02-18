@@ -7,4 +7,5 @@
   <include file="db/changelog/migrations/4-Add_person_to_organization_relationship_table.xml" />
   <include file="db/changelog/migrations/5-Add_Org_Name_Translation_Table.xml" />
   <include file="db/changelog/migrations/6-Add_givenNames_etc_person_table.xml" />
+  <include file="db/changelog/migrations/7-Make_person_email_nullable.xml" />
 </databaseChangeLog>
