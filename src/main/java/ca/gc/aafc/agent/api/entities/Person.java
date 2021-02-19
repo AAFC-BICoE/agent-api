@@ -57,7 +57,6 @@ public class Person implements DinaEntity {
   @NotBlank
   private String displayName;
 
-  @NotBlank
   @Email
   private String email;
 

@@ -23,8 +23,7 @@ public class PersonFactory implements TestableEntityFactory<Person> {
     return Person
       .builder()
       .uuid(UUID.randomUUID())
-      .displayName(TestableEntityFactory.generateRandomNameLettersOnly(15))
-      .email(TestableEntityFactory.generateRandomNameLettersOnly(5) + "@email.com");
+      .displayName(TestableEntityFactory.generateRandomNameLettersOnly(15));
   }
 
 }
