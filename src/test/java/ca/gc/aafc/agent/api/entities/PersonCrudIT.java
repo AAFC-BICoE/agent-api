@@ -57,7 +57,7 @@ public class PersonCrudIT extends BaseIntegrationTest {
   }
 
   @Test
-  public void testFind() {  
+  public void testFind() {
     Person fetchedPerson = getPersonUnderTest();
     assertEquals(personUnderTest.getId(), fetchedPerson.getId());
     assertEquals(personUnderTest.getDisplayName(), fetchedPerson.getDisplayName());

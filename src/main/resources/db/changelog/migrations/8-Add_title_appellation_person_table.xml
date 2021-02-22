@@ -7,8 +7,8 @@
 
     <changeSet context="schema-change" id="8-Add_title_appellation_person_table" author="ganx">
         <addColumn tableName="person">
-            <column name="title" type="varchar(100)"/>
-            <column name="appellation" type="varchar(100)"/>
+            <column name="title" type="varchar(25)"/>
+            <column name="appellation" type="varchar(25)"/>
         </addColumn>
     </changeSet>
 

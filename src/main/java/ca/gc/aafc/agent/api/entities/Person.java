@@ -78,10 +78,10 @@ public class Person implements DinaEntity {
   @Size(max = 50)
   private String familyNames;  
 
-  @Size(max = 100)
+  @Size(max = 25)
   private String title;  
 
-  @Size(max = 100)
+  @Size(max = 25)
   private String appellation;  
 
 }
