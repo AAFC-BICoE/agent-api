@@ -148,7 +148,7 @@
         <dependencies>
           <dependency>
             <groupId>io.github.aafc-bicoe</groupId>
-            <artifactId>dina-test-support</artifactId>
+            <artifactId>dina-base-api</artifactId>
             <version>${dina-base-api.version}</version>
           </dependency>
           <dependency>
