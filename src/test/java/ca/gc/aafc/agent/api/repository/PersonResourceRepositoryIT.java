@@ -42,6 +42,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class PersonResourceRepositoryIT extends BaseIntegrationTest {
   private final static String GIVEN_NAMES = "Anata";
   private final static String FAMILY_NAMES = "Morgans";
+  private final static String TITLE = "Dr";
+  private final static String APPELLATION = "Mr";  
 
 
   @Inject
@@ -62,6 +64,8 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
     personUnderTest = PersonFactory.newPerson().build();
     personUnderTest.setGivenNames(GIVEN_NAMES);
     personUnderTest.setFamilyNames(FAMILY_NAMES);
+    personUnderTest.setTitle(TITLE);
+    personUnderTest.setAppellation(APPELLATION);    
     organizationUnderTest = OrganizationFactory.newOrganization().build();
     personUnderTest.setOrganizations(Collections.singletonList(organizationUnderTest));
     dbService.save(organizationUnderTest);
@@ -76,6 +80,8 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
     personDto.setEmail(TestableEntityFactory.generateRandomNameLettersOnly(5) + "@email.com");
     personDto.setGivenNames(GIVEN_NAMES);
     personDto.setFamilyNames(FAMILY_NAMES);
+    personUnderTest.setTitle(TITLE);
+    personUnderTest.setAppellation(APPELLATION);    
 
     OrganizationDto organizationDto = new OrganizationDto();
     organizationDto.setNames(Collections.singletonList(
@@ -91,6 +97,8 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
     assertEquals(personDto.getGivenNames(), result.getGivenNames());
     assertEquals(personDto.getFamilyNames(), result.getFamilyNames());
     assertEquals(personDto.getEmail(), result.getEmail());
+    assertEquals(personDto.getTitle(), result.getTitle());
+    assertEquals(personDto.getAppellation(), result.getAppellation());    
     assertEquals(uuid, result.getUuid());
     assertEquals("user", result.getCreatedBy());
     assertNotNull(result.getOrganizations());
