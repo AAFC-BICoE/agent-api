@@ -18,7 +18,7 @@ public class PersonServiceIT extends BaseIntegrationTest {
   public void createPerson_whenStringWhitespaceIsNotNormalized_stringWhitespaceIsNormalized() {
     Person person = Person.builder()
         .appellation(" Appellation ")
-        .familyNames(" Family Names ")
+        .familyNames(" Family\nNames ")
         .givenNames("  Given                 Names  ")
         .title("    title")
         .displayName(" Display  Name  ")
