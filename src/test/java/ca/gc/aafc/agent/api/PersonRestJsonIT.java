@@ -22,6 +22,7 @@ import javax.transaction.Transactional;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -64,10 +65,11 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
   public void post_NewPerson_ReturnsOkayAndBody() {
     String displayName = "Albert";
     String email = "Albert@yahoo.com";
+    List<String> aliases = List.of("dina user");
 
-    ValidatableResponse response = super.sendPost("", getPostBody(displayName, email));
+    ValidatableResponse response = super.sendPost("", getPostBody(displayName, email, aliases));
 
-    assertValidResponseBodyAndCode(response, displayName, email, HttpStatus.CREATED_201)
+    assertValidResponseBodyAndCode(response, displayName, email, aliases, HttpStatus.CREATED_201)
       .body("data.id", Matchers.notNullValue());
     OpenAPI3Assertions.assertRemoteSchema(specUrl, SCHEMA_NAME, response.extract().asString());
 
@@ -81,7 +83,7 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
     String displayName = "Albert";
     String email = "AlbertYahoo.com";
 
-    super.sendPost("", getPostBody(displayName, email), HttpStatus.UNPROCESSABLE_ENTITY_422)
+    super.sendPost("", getPostBody(displayName, email, List.of("dina user")), HttpStatus.UNPROCESSABLE_ENTITY_422)
         .body("errors.detail", Matchers.hasItem(EMAIL_ERROR));
   }
 
@@ -91,10 +93,11 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
 
     String newName = "Updated Name";
     String newEmail = "Updated@yahoo.nz";
-    super.sendPatch("", id, getPostBody(newName, newEmail));
+    List<String> newAliases = List.of("dina user");
+    super.sendPatch("", id, getPostBody(newName, newEmail, newAliases));
 
     ValidatableResponse response = super.sendGet("", id);
-    assertValidResponseBodyAndCode(response, newName, newEmail, HttpStatus.OK_200);
+    assertValidResponseBodyAndCode(response, newName, newEmail, newAliases, HttpStatus.OK_200);
     OpenAPI3Assertions.assertRemoteSchema(specUrl, SCHEMA_NAME, response.extract().asString());
 
     // Cleanup:
@@ -109,7 +112,7 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
 
     ValidatableResponse response = super.sendGet("", id);
 
-    assertValidResponseBodyAndCode(response, displayName, email, HttpStatus.OK_200)
+    assertValidResponseBodyAndCode(response, displayName, email, List.of("dina user"), HttpStatus.OK_200)
         .body("data.id", Matchers.equalTo(id));
     OpenAPI3Assertions.assertRemoteSchema(specUrl, SCHEMA_NAME, response.extract().asString());
 
@@ -148,10 +151,11 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
    * @return - A validatable response from the request.
    */
   private static ValidatableResponse assertValidResponseBodyAndCode(ValidatableResponse response,
-      String expectedName, String expectedEmail, int httpCode) {
+      String expectedName, String expectedEmail,List<String> aliases, int httpCode) {
     return response.statusCode(httpCode)
         .body("data.attributes.displayName", Matchers.equalTo(expectedName))
-        .body("data.attributes.email", Matchers.equalTo(expectedEmail));
+        .body("data.attributes.email", Matchers.equalTo(expectedEmail))
+        .body("data.attributes.aliases", Matchers.containsInAnyOrder(aliases.toArray()));
   }
 
   /**
@@ -161,12 +165,14 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
    *                      - name for the post body
    * @param email
    *                      - email for the post body
+   * @param aliases
    * @return - serializable JSON API map
    */
-  private static Map<String, Object> getPostBody(String displayName, String email) {
+  private static Map<String, Object> getPostBody(String displayName, String email, List<String> aliases) {
     ImmutableMap.Builder<String, Object> objAttribMap = new ImmutableMap.Builder<>();
     objAttribMap.put("displayName", displayName);
     objAttribMap.put("email", email);
+    objAttribMap.put("aliases", aliases);
     return JsonAPITestHelper.toJsonAPIMap("person", objAttribMap.build(), null, null);
   }
 
@@ -180,7 +186,7 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
    * @return - id of the persisted person
    */
   private String persistPerson(String name, String email) {
-    return super.sendPost("", getPostBody(name, email)).extract().jsonPath().get("data.id");
+    return super.sendPost("", getPostBody(name, email, List.of("dina user"))).extract().jsonPath().get("data.id");
   }
 
 }
