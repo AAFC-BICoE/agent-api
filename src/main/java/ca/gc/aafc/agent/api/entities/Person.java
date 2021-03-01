@@ -1,8 +1,21 @@
 package ca.gc.aafc.agent.api.entities;
 
-import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.UUID;
+import ca.gc.aafc.dina.entity.DinaEntity;
+import com.vladmihalcea.hibernate.type.array.ListArrayType;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
+import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.NaturalIdCache;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,21 +30,9 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.GenerationTime;
-import org.hibernate.annotations.NaturalId;
-import org.hibernate.annotations.NaturalIdCache;
-
-import ca.gc.aafc.dina.entity.DinaEntity;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -43,6 +44,10 @@ import lombok.ToString;
 @Builder
 @SuppressFBWarnings(justification = "ok for Hibernate Entity", value = { "EI_EXPOSE_REP", "EI_EXPOSE_REP2" })
 @NaturalIdCache
+@TypeDef(
+  name = "list-array",
+  typeClass = ListArrayType.class
+)
 public class Person implements DinaEntity {  
 
   @Id
@@ -82,6 +87,8 @@ public class Person implements DinaEntity {
   private String title;  
 
   @Size(max = 25)
-  private String appellation;  
+  private String appellation;
 
+  @Type(type = "string-array")
+  private String[] aliases;
 }
