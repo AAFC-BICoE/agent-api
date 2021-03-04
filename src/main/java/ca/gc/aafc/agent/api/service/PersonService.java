@@ -36,7 +36,9 @@ public class PersonService extends DefaultDinaService<Person> {
     entity.setGivenNames(StringUtils.normalizeSpace(entity.getGivenNames()));
     entity.setTitle(StringUtils.normalizeSpace(entity.getTitle()));
     entity.setDisplayName(StringUtils.normalizeSpace(entity.getDisplayName()));
-    entity.setAliases(Stream.of(entity.getAliases()).map(StringUtils::normalizeSpace).toArray(String[]::new));
+    entity.setAliases(entity.getAliases() != null
+        ? Stream.of(entity.getAliases()).map(StringUtils::normalizeSpace).toArray(String[]::new)
+        : null);
   }
 
 }
