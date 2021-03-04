@@ -1,6 +1,7 @@
 package ca.gc.aafc.agent.api.service;
 
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import ca.gc.aafc.dina.service.DefaultDinaService;
 
@@ -35,6 +36,7 @@ public class PersonService extends DefaultDinaService<Person> {
     entity.setGivenNames(StringUtils.normalizeSpace(entity.getGivenNames()));
     entity.setTitle(StringUtils.normalizeSpace(entity.getTitle()));
     entity.setDisplayName(StringUtils.normalizeSpace(entity.getDisplayName()));
+    entity.setAliases(Stream.of(entity.getAliases()).map(StringUtils::normalizeSpace).toArray(String[]::new));
   }
 
 }
