@@ -3,7 +3,6 @@ package ca.gc.aafc.agent.api.repository;
 import ca.gc.aafc.agent.api.dto.OrganizationDto;
 import ca.gc.aafc.agent.api.entities.Organization;
 import ca.gc.aafc.agent.api.service.OrganizationAuthorizationService;
-import ca.gc.aafc.dina.filter.DinaFilterResolver;
 import ca.gc.aafc.dina.mapper.DinaMapper;
 import ca.gc.aafc.dina.repository.DinaRepository;
 import ca.gc.aafc.dina.security.DinaAuthenticatedUser;
@@ -27,7 +26,6 @@ public class OrganizationRepository extends DinaRepository<OrganizationDto, Orga
   public OrganizationRepository(
     @NonNull DinaService<Organization> dinaService,
     @NonNull OrganizationAuthorizationService authorizationService,
-    @NonNull DinaFilterResolver filterResolver,
     Optional<DinaAuthenticatedUser> authenticatedUser,
     MessageSource messageSource,
     @NonNull BuildProperties props
@@ -39,7 +37,7 @@ public class OrganizationRepository extends DinaRepository<OrganizationDto, Orga
       new DinaMapper<>(OrganizationDto.class),
       OrganizationDto.class,
       Organization.class,
-      filterResolver,
+      null,
       null,
       props);
     this.authenticatedUser = authenticatedUser;
