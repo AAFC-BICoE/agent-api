@@ -31,10 +31,8 @@ public class PersonService extends DefaultDinaService<Person> {
   }
 
   private void normalizeStrings(Person entity) {
-    entity.setAppellation(StringUtils.normalizeSpace(entity.getAppellation()));
     entity.setFamilyNames(StringUtils.normalizeSpace(entity.getFamilyNames()));
     entity.setGivenNames(StringUtils.normalizeSpace(entity.getGivenNames()));
-    entity.setTitle(StringUtils.normalizeSpace(entity.getTitle()));
     entity.setDisplayName(StringUtils.normalizeSpace(entity.getDisplayName()));
     entity.setAliases(entity.getAliases() != null
         ? Stream.of(entity.getAliases()).map(StringUtils::normalizeSpace).toArray(String[]::new)
