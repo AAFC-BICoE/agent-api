@@ -32,7 +32,5 @@ public class PersonDto {
   private String givenNames;  
   private String familyNames;  
 
-  private String title;  
-  private String appellation;
   private String[] aliases;
 }

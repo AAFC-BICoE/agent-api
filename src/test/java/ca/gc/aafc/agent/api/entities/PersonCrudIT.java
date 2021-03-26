@@ -35,8 +35,6 @@ public class PersonCrudIT extends BaseIntegrationTest {
     personUnderTest = PersonFactory.newPerson().build();
     personUnderTest.setGivenNames(GIVEN_NAMES);
     personUnderTest.setFamilyNames(FAMILY_NAMES);
-    personUnderTest.setTitle(TITLE);
-    personUnderTest.setAppellation(APPELLATION);
     organizationUnderTest = OrganizationFactory.newOrganization().build();
     personUnderTest.setOrganizations(Collections.singletonList(organizationUnderTest));
     orgService.create(organizationUnderTest);
@@ -63,8 +61,6 @@ public class PersonCrudIT extends BaseIntegrationTest {
     assertEquals(personUnderTest.getDisplayName(), fetchedPerson.getDisplayName());
     assertEquals(personUnderTest.getGivenNames(), fetchedPerson.getGivenNames());
     assertEquals(personUnderTest.getFamilyNames(), fetchedPerson.getFamilyNames());    
-    assertEquals(personUnderTest.getTitle(), fetchedPerson.getTitle());
-    assertEquals(personUnderTest.getAppellation(), fetchedPerson.getAppellation());    
     assertEquals(personUnderTest.getEmail(), fetchedPerson.getEmail());
     assertEquals(personUnderTest.getUuid(), fetchedPerson.getUuid());
     assertNotNull(fetchedPerson.getCreatedOn());
