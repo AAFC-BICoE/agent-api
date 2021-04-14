@@ -2,7 +2,6 @@ package ca.gc.aafc.agent.api.entities;
 
 import ca.gc.aafc.agent.api.dto.OrganizationDto;
 import ca.gc.aafc.dina.entity.DinaEntity;
-import ca.gc.aafc.dina.service.OnCreate;
 import ca.gc.aafc.dina.service.OnUpdate;
 
 import com.vladmihalcea.hibernate.type.array.StringArrayType;
@@ -31,7 +30,6 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -57,7 +55,6 @@ public class Organization implements DinaEntity {
   private Integer id;
 
   @NaturalId
-  @Null(groups = OnCreate.class)
   @NotNull(groups = OnUpdate.class)
   @Column(name = "uuid", unique = true)
   private UUID uuid;
