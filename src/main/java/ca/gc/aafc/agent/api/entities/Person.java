@@ -1,6 +1,9 @@
 package ca.gc.aafc.agent.api.entities;
 
 import ca.gc.aafc.dina.entity.DinaEntity;
+import ca.gc.aafc.dina.service.OnCreate;
+import ca.gc.aafc.dina.service.OnUpdate;
+
 import com.vladmihalcea.hibernate.type.array.ListArrayType;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.AllArgsConstructor;
@@ -29,6 +32,7 @@ import javax.persistence.ManyToMany;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -55,7 +59,8 @@ public class Person implements DinaEntity {
   private Integer id;
 
   @NaturalId
-  @NotNull
+  @Null(groups = OnCreate.class)
+  @NotNull(groups = OnUpdate.class)
   @Column(name = "uuid", unique = true)
   private UUID uuid;
 

@@ -37,6 +37,7 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
   @BeforeEach
   public void setup() {
     organizationUnderTest = OrganizationFactory.newOrganization().build();
+    organizationUnderTest.setUuid(UUID.randomUUID());
     dbService.save(organizationUnderTest);
     dbService.save(OrganizationNameTranslation.builder()
       .languageCode("le").name("name").organization(organizationUnderTest).build()
