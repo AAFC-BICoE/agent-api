@@ -64,6 +64,8 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
     personUnderTest.setFamilyNames(FAMILY_NAMES);
     organizationUnderTest = OrganizationFactory.newOrganization().build();
     personUnderTest.setOrganizations(Collections.singletonList(organizationUnderTest));
+    organizationUnderTest.setUuid(UUID.randomUUID());
+    personUnderTest.setUuid(UUID.randomUUID());
     dbService.save(organizationUnderTest);
     dbService.save(personUnderTest);
   }
@@ -80,7 +82,6 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
     OrganizationDto organizationDto = new OrganizationDto();
     organizationDto.setNames(Collections.singletonList(
       OrganizationNameTranslationDto.builder().languageCode("te").name("name").build()));
-    organizationDto.setUuid(UUID.randomUUID());
     OrganizationDto dto = organizationResourceRepository.create(organizationDto);
 
     personDto.setOrganizations(Collections.singletonList(dto));

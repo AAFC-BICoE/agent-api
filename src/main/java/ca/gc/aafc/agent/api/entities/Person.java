@@ -1,6 +1,8 @@
 package ca.gc.aafc.agent.api.entities;
 
 import ca.gc.aafc.dina.entity.DinaEntity;
+import ca.gc.aafc.dina.service.OnUpdate;
+
 import com.vladmihalcea.hibernate.type.array.ListArrayType;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.AllArgsConstructor;
@@ -55,7 +57,7 @@ public class Person implements DinaEntity {
   private Integer id;
 
   @NaturalId
-  @NotNull
+  @NotNull(groups = OnUpdate.class)
   @Column(name = "uuid", unique = true)
   private UUID uuid;
 

@@ -22,7 +22,6 @@ public class PersonFactory implements TestableEntityFactory<Person> {
   public static Person.PersonBuilder newPerson() {
     return Person
       .builder()
-      .uuid(UUID.randomUUID())
       .displayName(TestableEntityFactory.generateRandomNameLettersOnly(15));
   }
 

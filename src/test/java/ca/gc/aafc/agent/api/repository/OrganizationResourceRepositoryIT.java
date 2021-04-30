@@ -9,6 +9,7 @@ import ca.gc.aafc.agent.api.testsupport.factories.OrganizationFactory;
 import ca.gc.aafc.dina.testsupport.DatabaseSupportService;
 import ca.gc.aafc.dina.testsupport.security.WithMockKeycloakUser;
 import io.crnk.core.queryspec.QuerySpec;
+import io.crnk.core.exception.BadRequestException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,6 +38,7 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
   @BeforeEach
   public void setup() {
     organizationUnderTest = OrganizationFactory.newOrganization().build();
+    organizationUnderTest.setUuid(UUID.randomUUID());
     dbService.save(organizationUnderTest);
     dbService.save(OrganizationNameTranslation.builder()
       .languageCode("le").name("name").organization(organizationUnderTest).build()
@@ -59,6 +61,21 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
     assertEquals(createdOrganization.getUuid(), result.getUuid());
     assertEquals("user", result.getCreatedBy());
   }
+
+  @Test
+  @WithMockKeycloakUser(username = "user", groupRole = {"group 1:staff"})
+  public void createOrganization_When_NameIsNull_throwBadRequestException() {
+    OrganizationDto orgDto = new OrganizationDto();
+    orgDto.setNames(Collections.emptyList());
+    orgDto.setAliases(new String[]{"test alias"});
+    BadRequestException exception = Assertions.assertThrows(BadRequestException.class, ()-> organizationRepository.create(orgDto));
+
+    String expectedMessage = "An organization must have at least one name";
+    String actualMessage = exception.getMessage();
+
+    assertTrue(actualMessage.contains(expectedMessage));
+  }
+
 
   @Test
   @WithMockKeycloakUser(username = "user", groupRole = {"group 1:COLLECTION_MANAGER"})
