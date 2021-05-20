@@ -130,7 +130,7 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
     String id = persistPerson("person", "person@agen.ca");
     super.sendGet("", id);
     super.sendDelete("", id);
-    super.sendGet("", id, HttpStatus.NOT_FOUND_404);
+    super.sendGet("", id,  410);
 
     // Cleanup:
     databaseSupportService.deleteByProperty(Person.class, "uuid", UUID.fromString(id));

@@ -183,6 +183,8 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
       new QuerySpec(PersonDto.class)
     );
 
+    personResourceRepository.save(persistedPerson);
+
     assertNotNull(personService.findOne(personUnderTest.getUuid(), Person.class));
     personResourceRepository.delete(persistedPerson.getUuid());
     assertNull(personService.findOne(personUnderTest.getUuid(), Person.class));

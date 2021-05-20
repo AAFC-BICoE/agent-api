@@ -5,6 +5,7 @@ import ca.gc.aafc.agent.api.dto.OrganizationDto;
 import ca.gc.aafc.agent.api.dto.OrganizationNameTranslationDto;
 import ca.gc.aafc.agent.api.entities.Organization;
 import ca.gc.aafc.agent.api.entities.OrganizationNameTranslation;
+import ca.gc.aafc.agent.api.service.OrganizationService;
 import ca.gc.aafc.agent.api.testsupport.factories.OrganizationFactory;
 import ca.gc.aafc.dina.testsupport.DatabaseSupportService;
 import ca.gc.aafc.dina.testsupport.security.WithMockKeycloakUser;
@@ -31,7 +32,10 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
   private OrganizationRepository organizationRepository;
 
   @Inject
-  private DatabaseSupportService dbService;
+  private OrganizationService organizationService;
+
+  @Inject
+  private DatabaseSupportService dService;
 
   private Organization organizationUnderTest;
 
@@ -39,8 +43,8 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
   public void setup() {
     organizationUnderTest = OrganizationFactory.newOrganization().build();
     organizationUnderTest.setUuid(UUID.randomUUID());
-    dbService.save(organizationUnderTest);
-    dbService.save(OrganizationNameTranslation.builder()
+    dService.save(organizationUnderTest);
+    dService.save(OrganizationNameTranslation.builder()
       .languageCode("le").name("name").organization(organizationUnderTest).build()
     );
   }
@@ -56,7 +60,7 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
     OrganizationDto createdOrganization = organizationRepository.create(orgDto);
     assertNotNull(createdOrganization.getCreatedOn());
 
-    Organization result = dbService.findUnique(Organization.class, "uuid", createdOrganization.getUuid());
+    Organization result = organizationService.findOne(createdOrganization.getUuid(), Organization.class);
     assertArrayEquals(orgDto.getAliases(), result.getAliases());
     assertEquals(createdOrganization.getUuid(), result.getUuid());
     assertEquals("user", result.getCreatedBy());
@@ -90,7 +94,7 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
 
     organizationRepository.save(updatedDto);
 
-    Organization result = dbService.findUnique(Organization.class, "uuid", updatedDto.getUuid());
+    Organization result = organizationService.findOne(updatedDto.getUuid(), Organization.class);
     assertArrayEquals(newAliases, result.getAliases());
   }
 
@@ -127,9 +131,11 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
       new QuerySpec(OrganizationDto.class)
     );
 
-    assertNotNull(dbService.find(Organization.class, organizationUnderTest.getId()));
+    organizationRepository.save(persistedOrg);
+
+    assertNotNull(organizationService.findOne(organizationUnderTest.getUuid(), Organization.class));
     organizationRepository.delete(persistedOrg.getUuid());
-    assertNull(dbService.find(Organization.class, organizationUnderTest.getId()));
+    assertNull(organizationService.findOne(organizationUnderTest.getUuid(), Organization.class));
   }
 
   @Test
@@ -140,9 +146,9 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
       new QuerySpec(OrganizationDto.class)
     );
 
-    assertNotNull(dbService.find(Organization.class, organizationUnderTest.getId()));
+    assertNotNull(organizationService.findOne(organizationUnderTest.getUuid(), Organization.class));
     Assertions.assertThrows(AccessDeniedException.class,() -> organizationRepository.delete(persistedOrg.getUuid()));
-    assertNotNull(dbService.find(Organization.class, organizationUnderTest.getId()));
+    assertNotNull(organizationService.findOne(organizationUnderTest.getUuid(), Organization.class));
   }
 
 }
