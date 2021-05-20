@@ -6,6 +6,8 @@ import ca.gc.aafc.agent.api.dto.OrganizationNameTranslationDto;
 import ca.gc.aafc.agent.api.dto.PersonDto;
 import ca.gc.aafc.agent.api.entities.Organization;
 import ca.gc.aafc.agent.api.entities.Person;
+import ca.gc.aafc.agent.api.service.PersonService;
+import ca.gc.aafc.agent.api.service.OrganizationService;
 import ca.gc.aafc.agent.api.testsupport.factories.OrganizationFactory;
 import ca.gc.aafc.agent.api.testsupport.factories.PersonFactory;
 import ca.gc.aafc.dina.testsupport.DatabaseSupportService;
@@ -51,7 +53,10 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
   private OrganizationRepository organizationResourceRepository;
 
   @Inject
-  private DatabaseSupportService dbService;
+  private PersonService personService;
+
+  @Inject
+  private OrganizationService organizationService;
 
   private Person personUnderTest;
 
@@ -66,8 +71,8 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
     personUnderTest.setOrganizations(Collections.singletonList(organizationUnderTest));
     organizationUnderTest.setUuid(UUID.randomUUID());
     personUnderTest.setUuid(UUID.randomUUID());
-    dbService.save(organizationUnderTest);
-    dbService.save(personUnderTest);
+    organizationService.create(organizationUnderTest);
+    personService.create(personUnderTest);
   }
 
   @Test
@@ -87,7 +92,7 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
     personDto.setOrganizations(Collections.singletonList(dto));
     UUID uuid = personResourceRepository.create(personDto).getUuid();
 
-    Person result = dbService.findUnique(Person.class, "uuid", uuid);
+    Person result = personService.findOne(uuid, Person.class);
     assertEquals(personDto.getDisplayName(), result.getDisplayName());
     assertEquals(personDto.getGivenNames(), result.getGivenNames());
     assertEquals(personDto.getFamilyNames(), result.getFamilyNames());
@@ -111,7 +116,7 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
 
     personResourceRepository.save(updatedPerson);
 
-    Person result = dbService.findUnique(Person.class, "uuid", updatedPerson.getUuid());
+    Person result = personService.findOne(updatedPerson.getUuid(), Person.class);
     assertEquals(updatedName, result.getDisplayName());
     assertEquals(updatedEmail, result.getEmail());
   }
@@ -178,9 +183,9 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
       new QuerySpec(PersonDto.class)
     );
 
-    assertNotNull(dbService.find(Person.class, personUnderTest.getId()));
+    assertNotNull(personService.findOne(personUnderTest.getUuid(), Person.class));
     personResourceRepository.delete(persistedPerson.getUuid());
-    assertNull(dbService.find(Person.class, personUnderTest.getId()));
+    assertNull(personService.findOne(personUnderTest.getUuid(), Person.class));
   }
 
   @Test
@@ -191,9 +196,9 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
       new QuerySpec(PersonDto.class)
     );
 
-    assertNotNull(dbService.find(Person.class, personUnderTest.getId()));
+    assertNotNull(personService.findOne(personUnderTest.getUuid(), Person.class));
     Assertions.assertThrows(AccessDeniedException.class,()-> personResourceRepository.delete(persistedPerson.getUuid()));
-    assertNotNull(dbService.find(Person.class, personUnderTest.getId()));
+    assertNotNull(personService.findOne(personUnderTest.getUuid(), Person.class));
   }
 
 }
