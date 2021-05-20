@@ -4,6 +4,10 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import org.javers.core.metamodel.annotation.Id;
+import org.javers.core.metamodel.annotation.PropertyName;
+import org.javers.core.metamodel.annotation.TypeName;
+
 import ca.gc.aafc.agent.api.entities.Person;
 import ca.gc.aafc.dina.dto.RelatedEntity;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -15,10 +19,15 @@ import lombok.Data;
 @RelatedEntity(Person.class)
 @SuppressFBWarnings({ "EI_EXPOSE_REP", "EI_EXPOSE_REP2" })
 @Data
-@JsonApiResource(type = "person")
+@JsonApiResource(type = PersonDto.TYPENAME)
+@TypeName(PersonDto.TYPENAME)
 public class PersonDto {
 
+  public static final String TYPENAME = "person";
+
   @JsonApiId
+  @Id
+  @PropertyName("id")
   private UUID uuid;
   
   private String displayName;

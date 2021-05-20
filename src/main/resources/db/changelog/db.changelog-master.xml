@@ -11,4 +11,5 @@
   <include file="db/changelog/migrations/8-Add_title_appellation_person_table.xml" />
   <include file="db/changelog/migrations/9-Add_alias_to_person.xml" />
   <include file="db/changelog/migrations/10-Remove_title_and_appellation_from_person.xml" />
+  <include file="db/changelog/migrations/11-Add_Javers_audit_tables.xml" />
 </databaseChangeLog>

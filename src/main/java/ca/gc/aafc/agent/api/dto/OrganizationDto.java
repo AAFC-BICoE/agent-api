@@ -1,17 +1,5 @@
 package ca.gc.aafc.agent.api.dto;
 
-import ca.gc.aafc.agent.api.entities.Organization;
-import ca.gc.aafc.agent.api.entities.OrganizationNameTranslation;
-import ca.gc.aafc.dina.dto.RelatedEntity;
-import ca.gc.aafc.dina.mapper.CustomFieldAdapter;
-import ca.gc.aafc.dina.mapper.DinaFieldAdapter;
-import ca.gc.aafc.dina.mapper.IgnoreDinaMapping;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import io.crnk.core.resource.annotations.JsonApiId;
-import io.crnk.core.resource.annotations.JsonApiResource;
-import lombok.Data;
-
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -19,14 +7,36 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import org.javers.core.metamodel.annotation.Id;
+import org.javers.core.metamodel.annotation.PropertyName;
+import org.javers.core.metamodel.annotation.TypeName;
+
+import ca.gc.aafc.agent.api.entities.Organization;
+import ca.gc.aafc.agent.api.entities.OrganizationNameTranslation;
+import ca.gc.aafc.dina.dto.RelatedEntity;
+import ca.gc.aafc.dina.mapper.CustomFieldAdapter;
+import ca.gc.aafc.dina.mapper.DinaFieldAdapter;
+import ca.gc.aafc.dina.mapper.IgnoreDinaMapping;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.crnk.core.resource.annotations.JsonApiId;
+import io.crnk.core.resource.annotations.JsonApiResource;
+import lombok.Data;
+
 @RelatedEntity(Organization.class)
 @SuppressFBWarnings({"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 @Data
-@JsonApiResource(type = "organization")
+@JsonApiResource(type = OrganizationDto.TYPENAME)
 @CustomFieldAdapter(adapters = OrganizationDto.NamesAdapter.class)
+@TypeName(OrganizationDto.TYPENAME)
 public class OrganizationDto {
 
+  public static final String TYPENAME = "organization";
+
   @JsonApiId
+  @Id
+  @PropertyName("id")
   private UUID uuid;
 
   private String[] aliases;

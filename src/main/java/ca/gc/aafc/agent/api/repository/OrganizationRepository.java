@@ -6,6 +6,7 @@ import ca.gc.aafc.agent.api.service.OrganizationAuthorizationService;
 import ca.gc.aafc.dina.mapper.DinaMapper;
 import ca.gc.aafc.dina.repository.DinaRepository;
 import ca.gc.aafc.dina.security.DinaAuthenticatedUser;
+import ca.gc.aafc.dina.service.AuditService;
 import ca.gc.aafc.dina.service.DinaService;
 import io.crnk.core.exception.BadRequestException;
 import lombok.NonNull;
@@ -28,12 +29,13 @@ public class OrganizationRepository extends DinaRepository<OrganizationDto, Orga
     @NonNull OrganizationAuthorizationService authorizationService,
     Optional<DinaAuthenticatedUser> authenticatedUser,
     MessageSource messageSource,
-    @NonNull BuildProperties props
+    @NonNull BuildProperties props,
+    @NonNull AuditService auditService
   ) {
     super(
       dinaService,
       Optional.of(authorizationService),
-      Optional.empty(), //no auditing for now
+      Optional.of(auditService),
       new DinaMapper<>(OrganizationDto.class),
       OrganizationDto.class,
       Organization.class,
