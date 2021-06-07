@@ -11,7 +11,7 @@ public final class OpenAPIConstants {
   private OpenAPIConstants(){}
 
   private static final String SPEC_HOST = "raw.githubusercontent.com";
-  private static final String SPEC_PATH = "DINA-Web/agent-specs/master/schema/agent.yml";
+  private static final String SPEC_PATH = "luusteve/agent-specs/22830_update_api_specs-Person/schema/agent.yml";
   private static final URIBuilder URI_BUILDER = new URIBuilder();
 
   static {

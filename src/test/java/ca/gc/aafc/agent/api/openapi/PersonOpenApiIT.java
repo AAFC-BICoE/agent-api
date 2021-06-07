@@ -93,6 +93,7 @@ public class PersonOpenApiIT extends BaseRestAssuredTest {
     // Cleanup:
     UUID uuid = response.extract().jsonPath().getUUID("data.id");
     databaseSupportService.deleteByProperty(Person.class, "uuid", uuid);
+    databaseSupportService.deleteByProperty(OrganizationNameTranslation.class, "name", "test");
     databaseSupportService.deleteByProperty(Organization.class, "uuid", organizationUuid);
   }
 
