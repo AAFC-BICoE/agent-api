@@ -2,6 +2,7 @@ package ca.gc.aafc.agent.api.openapi;
 
 import ca.gc.aafc.agent.api.entities.Organization;
 import ca.gc.aafc.agent.api.entities.OrganizationNameTranslation;
+import ca.gc.aafc.agent.api.entities.Person;
 import ca.gc.aafc.dina.testsupport.BaseRestAssuredTest;
 import ca.gc.aafc.dina.testsupport.DatabaseSupportService;
 import ca.gc.aafc.dina.testsupport.PostgresTestContainerInitializer;
@@ -22,6 +23,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @TestPropertySource(properties = {
@@ -29,10 +31,11 @@ import java.util.UUID;
   "dev-user.enabled=true"})
 @ContextConfiguration(initializers = {PostgresTestContainerInitializer.class})
 @Transactional
-public class OrganizationOpenApiIT extends BaseRestAssuredTest {
+public class PersonOpenApiIT extends BaseRestAssuredTest {
 
-  public static final String API_BASE_PATH = "/api/v1/organization/";
-  private static final String SCHEMA_NAME = "Organization";
+  public static final String API_BASE_PATH_PERSON = "/api/v1/person/";
+  public static final String API_BASE_PATH_ORGANIZATION = "/api/v1/organization/";
+  private static final String SCHEMA_NAME = "Person";
 
   @Inject
   private DatabaseSupportService databaseSupportService;
@@ -40,17 +43,21 @@ public class OrganizationOpenApiIT extends BaseRestAssuredTest {
   private static URL specUrl;
 
   @SneakyThrows({MalformedURLException.class, URISyntaxException.class})
-  protected OrganizationOpenApiIT() {
-    super(API_BASE_PATH);
+  protected PersonOpenApiIT() {
+    super(null);
     specUrl = OpenAPIConstants.getOpenAPISpecsURL();
   }
 
   @Test
   public void post_NewOrganization_ReturnsOkayAndBody() {
+    String email = "test@canada.ca";
+    String displayName = "test user";
+    String givenNames = "Jane";
+    String familyNames = "Doe";
     List<String> aliases = List.of("alias1", "alias2");
 
-    ValidatableResponse response = super.sendPost(
-      "",
+    ValidatableResponse organizationResponse = sendPost(
+      API_BASE_PATH_ORGANIZATION, 
       JsonAPITestHelper.toJsonAPIMap(
         "organization",
         new ImmutableMap.Builder<String, Object>()
@@ -63,16 +70,43 @@ public class OrganizationOpenApiIT extends BaseRestAssuredTest {
         null
       )
     );
+    UUID organizationUuid = organizationResponse.extract().jsonPath().getUUID("data.id");
+
+    ValidatableResponse response = super.sendPost(
+      API_BASE_PATH_PERSON,
+      JsonAPITestHelper.toJsonAPIMap(
+        "person",
+        new ImmutableMap.Builder<String, Object>()
+          .put("email", email)
+          .put("displayName", displayName)
+          .put("givenNames", givenNames)
+          .put("familyNames", familyNames)
+          .build(),
+        Map.of(
+          "organizations", getRelationshipListType("organization", organizationUuid.toString())),
+        null
+      )
+    );
 
     response
-      .body("data.attributes.aliases", Matchers.equalTo(aliases))
+      .body("data.attributes.displayName", Matchers.equalTo(displayName))
+      .body("data.attributes.email", Matchers.equalTo(email))
+      .body("data.attributes.givenNames", Matchers.equalTo(givenNames))
+      .body("data.attributes.familyNames", Matchers.equalTo(familyNames))
       .body("data.id", Matchers.notNullValue());
     OpenAPI3Assertions.assertRemoteSchema(specUrl, SCHEMA_NAME, response.extract().asString());
 
     // Cleanup:
     UUID uuid = response.extract().jsonPath().getUUID("data.id");
+    databaseSupportService.deleteByProperty(Person.class, "uuid", uuid);
     databaseSupportService.deleteByProperty(OrganizationNameTranslation.class, "name", "test");
-    databaseSupportService.deleteByProperty(Organization.class, "uuid", uuid);
+    databaseSupportService.deleteByProperty(Organization.class, "uuid", organizationUuid);
+  }
+
+  private Map<String, Object> getRelationshipListType(String type, String uuid) {
+    return Map.of("data", List.of(Map.of(
+      "id", uuid,
+      "type", type)));
   }
 
 }
