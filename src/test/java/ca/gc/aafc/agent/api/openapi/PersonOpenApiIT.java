@@ -52,6 +52,8 @@ public class PersonOpenApiIT extends BaseRestAssuredTest {
   public void post_NewOrganization_ReturnsOkayAndBody() {
     String email = "test@canada.ca";
     String displayName = "test user";
+    String givenNames = "Jane";
+    String familyNames = "Doe";
     List<String> aliases = List.of("alias1", "alias2");
 
     ValidatableResponse organizationResponse = sendPost(
@@ -77,6 +79,8 @@ public class PersonOpenApiIT extends BaseRestAssuredTest {
         new ImmutableMap.Builder<String, Object>()
           .put("email", email)
           .put("displayName", displayName)
+          .put("givenNames", givenNames)
+          .put("familyNames", familyNames)
           .build(),
         Map.of(
           "organizations", getRelationshipListType("organization", organizationUuid.toString())),
@@ -87,6 +91,8 @@ public class PersonOpenApiIT extends BaseRestAssuredTest {
     response
       .body("data.attributes.displayName", Matchers.equalTo(displayName))
       .body("data.attributes.email", Matchers.equalTo(email))
+      .body("data.attributes.givenNames", Matchers.equalTo(givenNames))
+      .body("data.attributes.familyNames", Matchers.equalTo(familyNames))
       .body("data.id", Matchers.notNullValue());
     OpenAPI3Assertions.assertRemoteSchema(specUrl, SCHEMA_NAME, response.extract().asString());
 
