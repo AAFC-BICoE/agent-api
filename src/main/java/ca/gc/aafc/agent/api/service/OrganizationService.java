@@ -8,6 +8,7 @@ import lombok.NonNull;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.SmartValidator;
 
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
@@ -22,8 +23,8 @@ public class OrganizationService extends DefaultDinaService<Organization> {
 
   private final BaseDAO dao;
 
-  public OrganizationService(@NonNull BaseDAO baseDAO) {
-    super(baseDAO);
+  public OrganizationService(@NonNull BaseDAO baseDAO, @NonNull SmartValidator smartValidator) {
+    super(baseDAO, smartValidator);
     this.dao = baseDAO;
   }
 
