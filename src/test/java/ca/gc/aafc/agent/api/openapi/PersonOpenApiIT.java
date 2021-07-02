@@ -8,6 +8,7 @@ import ca.gc.aafc.dina.testsupport.DatabaseSupportService;
 import ca.gc.aafc.dina.testsupport.PostgresTestContainerInitializer;
 import ca.gc.aafc.dina.testsupport.jsonapi.JsonAPITestHelper;
 import ca.gc.aafc.dina.testsupport.specs.OpenAPI3Assertions;
+import ca.gc.aafc.dina.testsupport.specs.ValidationRestrictionOptions;
 import com.google.common.collect.ImmutableMap;
 import io.restassured.response.ValidatableResponse;
 import lombok.SneakyThrows;
@@ -94,7 +95,8 @@ public class PersonOpenApiIT extends BaseRestAssuredTest {
       .body("data.attributes.givenNames", Matchers.equalTo(givenNames))
       .body("data.attributes.familyNames", Matchers.equalTo(familyNames))
       .body("data.id", Matchers.notNullValue());
-    OpenAPI3Assertions.assertRemoteSchema(specUrl, SCHEMA_NAME, response.extract().asString());
+    OpenAPI3Assertions.assertRemoteSchema(specUrl, SCHEMA_NAME, response.extract().asString(),
+      ValidationRestrictionOptions.builder().allowAdditionalFields(true).build());
 
     // Cleanup:
     UUID uuid = response.extract().jsonPath().getUUID("data.id");
