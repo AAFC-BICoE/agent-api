@@ -8,7 +8,6 @@ import ca.gc.aafc.dina.testsupport.DatabaseSupportService;
 import ca.gc.aafc.dina.testsupport.PostgresTestContainerInitializer;
 import ca.gc.aafc.dina.testsupport.jsonapi.JsonAPITestHelper;
 import ca.gc.aafc.dina.testsupport.specs.OpenAPI3Assertions;
-import ca.gc.aafc.dina.testsupport.specs.ValidationRestrictionOptions;
 import com.google.common.collect.ImmutableMap;
 import io.restassured.response.ValidatableResponse;
 import lombok.SneakyThrows;
