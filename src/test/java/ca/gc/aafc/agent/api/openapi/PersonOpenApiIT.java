@@ -95,8 +95,7 @@ public class PersonOpenApiIT extends BaseRestAssuredTest {
       .body("data.attributes.givenNames", Matchers.equalTo(givenNames))
       .body("data.attributes.familyNames", Matchers.equalTo(familyNames))
       .body("data.id", Matchers.notNullValue());
-    OpenAPI3Assertions.assertRemoteSchema(specUrl, SCHEMA_NAME, response.extract().asString(),
-      ValidationRestrictionOptions.builder().allowAdditionalFields(true).build());
+    OpenAPI3Assertions.assertRemoteSchema(specUrl, SCHEMA_NAME, response.extract().asString());
 
     // Cleanup:
     UUID uuid = response.extract().jsonPath().getUUID("data.id");
