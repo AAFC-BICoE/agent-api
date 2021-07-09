@@ -45,7 +45,8 @@ public class PersonOpenApiIT extends BaseRestAssuredTest {
   @SneakyThrows({MalformedURLException.class, URISyntaxException.class})
   protected PersonOpenApiIT() {
     super(null);
-    specUrl = OpenAPIConstants.getOpenAPISpecsURL();
+    specUrl = createSchemaUriBuilder(OpenAPIConstants.SPEC_HOST, OpenAPIConstants.SPEC_PATH).build()
+        .toURL();
   }
 
   @Test

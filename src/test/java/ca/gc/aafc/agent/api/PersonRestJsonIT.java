@@ -1,7 +1,6 @@
 package ca.gc.aafc.agent.api;
 
 import ca.gc.aafc.agent.api.entities.Person;
-import ca.gc.aafc.agent.api.openapi.OpenAPIConstants;
 import ca.gc.aafc.dina.testsupport.BaseRestAssuredTest;
 import ca.gc.aafc.dina.testsupport.DatabaseSupportService;
 import ca.gc.aafc.dina.testsupport.PostgresTestContainerInitializer;
@@ -18,14 +17,9 @@ import org.springframework.test.context.TestPropertySource;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Test suite to validate correct HTTP and JSON API responses for {@link Person}
@@ -45,19 +39,12 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
   @Inject
   private DatabaseSupportService databaseSupportService;
 
-  private static URL specUrl;
-
   public static final String API_BASE_PATH = "/api/v1/person/";
   private static final String SCHEMA_NAME = "Person";
   public static final String EMAIL_ERROR = "email must be a well-formed email address";
 
   protected PersonRestJsonIT() {
     super(API_BASE_PATH);
-    try {
-      specUrl = OpenAPIConstants.getOpenAPISpecsURL();
-    } catch (MalformedURLException | URISyntaxException e) {
-      fail(e);
-    }
   }
 
   @Test
