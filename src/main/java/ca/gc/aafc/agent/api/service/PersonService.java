@@ -1,23 +1,28 @@
 package ca.gc.aafc.agent.api.service;
 
+import ca.gc.aafc.agent.api.dto.PersonDto;
+import ca.gc.aafc.agent.api.entities.Person;
+import ca.gc.aafc.dina.jpa.BaseDAO;
+import ca.gc.aafc.dina.search.messaging.producer.MessageProducer;
+import ca.gc.aafc.dina.service.MessageProducingService;
+import lombok.NonNull;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.validation.SmartValidator;
+
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-import ca.gc.aafc.dina.service.DefaultDinaService;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
-
-import ca.gc.aafc.agent.api.entities.Person;
-import ca.gc.aafc.dina.jpa.BaseDAO;
-import lombok.NonNull;
-import org.springframework.validation.SmartValidator;
-
 @Service
-public class PersonService extends DefaultDinaService<Person> {
+public class PersonService extends MessageProducingService<Person> {
 
-  public PersonService(@NonNull BaseDAO baseDAO, @NonNull SmartValidator smartValidator) {
-    super(baseDAO, smartValidator);
+  public PersonService(
+    @NonNull BaseDAO baseDAO,
+    @NonNull SmartValidator smartValidator,
+    Optional<MessageProducer> producer
+  ) {
+    super(baseDAO, smartValidator, producer, PersonDto.TYPENAME);
   }
 
   @Override
@@ -36,8 +41,8 @@ public class PersonService extends DefaultDinaService<Person> {
     entity.setGivenNames(StringUtils.normalizeSpace(entity.getGivenNames()));
     entity.setDisplayName(StringUtils.normalizeSpace(entity.getDisplayName()));
     entity.setAliases(entity.getAliases() != null
-        ? Stream.of(entity.getAliases()).map(StringUtils::normalizeSpace).toArray(String[]::new)
-        : null);
+      ? Stream.of(entity.getAliases()).map(StringUtils::normalizeSpace).toArray(String[]::new)
+      : null);
   }
 
 }
