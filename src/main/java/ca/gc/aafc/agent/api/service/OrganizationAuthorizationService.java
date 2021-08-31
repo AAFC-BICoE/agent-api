@@ -1,12 +1,11 @@
 package ca.gc.aafc.agent.api.service;
 
+import ca.gc.aafc.dina.security.PermissionAuthorizationService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import ca.gc.aafc.dina.service.DinaAuthorizationService;
-
 @Service
-public class OrganizationAuthorizationService implements DinaAuthorizationService {
+public class OrganizationAuthorizationService extends PermissionAuthorizationService {
 
   @Override
   @PreAuthorize("hasDinaRole(@currentUser, 'COLLECTION_MANAGER')")

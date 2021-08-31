@@ -10,6 +10,7 @@ import ca.gc.aafc.dina.testsupport.specs.OpenAPI3Assertions;
 import com.google.common.collect.ImmutableMap;
 import io.restassured.response.ValidatableResponse;
 import lombok.SneakyThrows;
+import org.apache.http.client.utils.URIBuilder;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ContextConfiguration;
@@ -42,7 +43,8 @@ public class OrganizationOpenApiIT extends BaseRestAssuredTest {
   @SneakyThrows({MalformedURLException.class, URISyntaxException.class})
   protected OrganizationOpenApiIT() {
     super(API_BASE_PATH);
-    specUrl = OpenAPIConstants.getOpenAPISpecsURL();
+    specUrl = createSchemaUriBuilder(OpenAPIConstants.SPEC_HOST, OpenAPIConstants.SPEC_PATH).build()
+        .toURL();
   }
 
   @Test

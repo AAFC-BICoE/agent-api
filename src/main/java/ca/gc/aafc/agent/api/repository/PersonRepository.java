@@ -29,7 +29,7 @@ public class PersonRepository extends DinaRepository<PersonDto, Person> {
   ) {
     super(
       dinaService,
-      Optional.of(authorizationService),
+      authorizationService,
       Optional.of(auditService),
       new DinaMapper<>(PersonDto.class),
       PersonDto.class,

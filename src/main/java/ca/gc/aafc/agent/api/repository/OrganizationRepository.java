@@ -34,7 +34,7 @@ public class OrganizationRepository extends DinaRepository<OrganizationDto, Orga
   ) {
     super(
       dinaService,
-      Optional.of(authorizationService),
+      authorizationService,
       Optional.of(auditService),
       new DinaMapper<>(OrganizationDto.class),
       OrganizationDto.class,
