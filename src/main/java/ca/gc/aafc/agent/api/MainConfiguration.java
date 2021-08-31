@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ComponentScan(basePackageClasses = DinaBaseApiAutoConfiguration.class)
 @ImportAutoConfiguration(DinaBaseApiAutoConfiguration.class)
-@MapperScan(basePackageClasses = JaversDataService.class )  // Application is not generating this service for an unknown reason.
+@MapperScan(basePackageClasses = JaversDataService.class)
 public class MainConfiguration {
 
   /**
