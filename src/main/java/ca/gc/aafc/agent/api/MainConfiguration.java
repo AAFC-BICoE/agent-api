@@ -15,8 +15,7 @@ import org.springframework.context.annotation.Configuration;
 public class MainConfiguration {
 
   /**
-   * Provides a fallback MessageProducer when messaging.isProducer is false
-   * To be replaced by LogBasedMessageProducer in search-messaging 0.3
+   * Provides a fallback MessageProducer when messaging.isProducer is false.
    */
   @Configuration
   public static class FallbackMessageProducer {
