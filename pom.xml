@@ -21,7 +21,7 @@
     <spotbugs-maven-plugin.version>4.2.0</spotbugs-maven-plugin.version>
     <spotbugs.version>4.2.0</spotbugs.version>
     <jcip-annotations.version>1.0</jcip-annotations.version>
-    <dependency-check-maven.version>6.1.0</dependency-check-maven.version>
+    <dependency.check.version>6.3.0</dependency.check.version>
     <jacoco-maven-plugin.version>0.8.6</jacoco-maven-plugin.version>
     <maven-checkstyle-plugin.version>3.1.1</maven-checkstyle-plugin.version>
     <checkstyle.version>8.44</checkstyle.version>
@@ -32,6 +32,18 @@
 
     <spring-boot-maven-plugin.fork>false</spring-boot-maven-plugin.fork>
   </properties>
+
+  <!--  temporary until we can migrate to a newer version of Crnk-->
+  <repositories>
+    <repository>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>jcenter central</id>
+      <name>bintray</name>
+      <url>https://jcenter.bintray.com</url>
+    </repository>
+  </repositories>
 
   <dependencies>
     <dependency>
@@ -140,6 +152,18 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.owasp</groupId>
+        <artifactId>dependency-check-maven</artifactId>
+        <version>${dependency.check.version}</version>
+        <configuration>
+          <format>xml</format>
+          <failBuildOnCVSS>8</failBuildOnCVSS>
+          <suppressionFiles>
+            <suppressionFile>owasp-suppression.xml</suppressionFile>
+          </suppressionFiles>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -367,7 +391,7 @@
       <plugin>
         <groupId>org.owasp</groupId>
         <artifactId>dependency-check-maven</artifactId>
-        <version>${dependency-check-maven.version}</version>
+        <version>${dependency.check.version}</version>
         <reportSets>
           <reportSet>
             <reports>
