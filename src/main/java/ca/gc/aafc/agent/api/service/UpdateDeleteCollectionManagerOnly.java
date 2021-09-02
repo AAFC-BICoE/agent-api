@@ -19,7 +19,7 @@ public class UpdateDeleteCollectionManagerOnly extends PermissionAuthorizationSe
 
   @Override
   public String getName() {
-    return "PersonAuthorizationService";
+    return "UpdateDeleteCollectionManagerOnly";
   }
 
   @Override
