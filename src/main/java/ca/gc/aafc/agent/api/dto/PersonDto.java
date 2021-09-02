@@ -4,6 +4,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import ca.gc.aafc.dina.repository.meta.AttributeMetaInfoProvider;
 import org.javers.core.metamodel.annotation.Id;
 import org.javers.core.metamodel.annotation.PropertyName;
 import org.javers.core.metamodel.annotation.TypeName;
@@ -21,7 +22,7 @@ import lombok.Data;
 @Data
 @JsonApiResource(type = PersonDto.TYPENAME)
 @TypeName(PersonDto.TYPENAME)
-public class PersonDto {
+public class PersonDto extends AttributeMetaInfoProvider {
 
   public static final String TYPENAME = "person";
 
