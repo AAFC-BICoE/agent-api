@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import ca.gc.aafc.dina.repository.meta.AttributeMetaInfoProvider;
 import org.javers.core.metamodel.annotation.Id;
 import org.javers.core.metamodel.annotation.PropertyName;
@@ -46,6 +48,7 @@ public class PersonDto extends AttributeMetaInfoProvider {
 
   private String[] aliases;
 
+  @JsonInclude(JsonInclude.Include.NON_EMPTY)
   private List<Identifier> identifiers = new ArrayList<>();
 
 }
