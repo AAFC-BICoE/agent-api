@@ -2,7 +2,6 @@ package ca.gc.aafc.agent.api.openapi;
 
 import ca.gc.aafc.agent.api.dto.PersonDto;
 import ca.gc.aafc.agent.api.entities.Identifier;
-import ca.gc.aafc.agent.api.entities.Identifiers;
 import ca.gc.aafc.agent.api.entities.Organization;
 import ca.gc.aafc.agent.api.entities.OrganizationNameTranslation;
 import ca.gc.aafc.agent.api.entities.Person;
@@ -66,10 +65,8 @@ public class PersonOpenApiIT extends BaseRestAssuredTest {
       .type(IdentifierType.WIKIDATA)
       .uri(URI.create("https://www.wikidata.org/wiki/Q51044"))
       .build();
-
-    Identifiers identifiers = Identifiers.builder()
-      .identifiers(List.of(identifier))
-      .build();
+    
+    List<Identifier> identifiers = Collections.singletonList(identifier);
 
     ValidatableResponse organizationResponse = sendPost(
       API_BASE_PATH_ORGANIZATION, 

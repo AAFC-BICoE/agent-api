@@ -36,6 +36,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -98,5 +99,5 @@ public class Person implements DinaEntity {
 
   @Type(type = "jsonb")
   @Valid
-  private Identifiers identifiers;
+  private List<Identifier> identifiers = new ArrayList<>();
 }

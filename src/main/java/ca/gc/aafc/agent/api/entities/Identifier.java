@@ -7,8 +7,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
-@Builder
 @RequiredArgsConstructor
+@Builder
 public class Identifier {
   
   public enum IdentifierType {
@@ -16,7 +16,7 @@ public class Identifier {
     WIKIDATA;
   }
 
-  private final IdentifierType type;
+  private final IdentifierType type ;
   private final URI uri;
 
 }

@@ -27,9 +27,7 @@ public class PersonCrudIT extends BaseIntegrationTest {
     .type(IdentifierType.WIKIDATA)
     .uri(URI.create("https://www.wikidata.org/wiki/Q51044"))
     .build();
-  private final static Identifiers IDENTIFIERS = Identifiers.builder()
-    .identifiers(List.of(IDENTIFIER))
-    .build();
+  private final static List<Identifier> IDENTIFIERS = Collections.singletonList(IDENTIFIER);
 
   @Inject
   private DinaService<Person> personService;
