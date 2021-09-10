@@ -1,8 +1,11 @@
 package ca.gc.aafc.agent.api.openapi;
 
+import ca.gc.aafc.agent.api.dto.PersonDto;
+import ca.gc.aafc.agent.api.entities.Identifier;
 import ca.gc.aafc.agent.api.entities.Organization;
 import ca.gc.aafc.agent.api.entities.OrganizationNameTranslation;
 import ca.gc.aafc.agent.api.entities.Person;
+import ca.gc.aafc.agent.api.entities.Identifier.IdentifierType;
 import ca.gc.aafc.dina.testsupport.BaseRestAssuredTest;
 import ca.gc.aafc.dina.testsupport.DatabaseSupportService;
 import ca.gc.aafc.dina.testsupport.PostgresTestContainerInitializer;
@@ -19,6 +22,7 @@ import org.springframework.test.context.TestPropertySource;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collections;
@@ -57,6 +61,13 @@ public class PersonOpenApiIT extends BaseRestAssuredTest {
     String familyNames = "Doe";
     List<String> aliases = List.of("alias1", "alias2");
 
+    Identifier identifier = Identifier.builder()
+      .type(IdentifierType.WIKIDATA)
+      .uri(URI.create("https://www.wikidata.org/wiki/Q51044"))
+      .build();
+    
+    List<Identifier> identifiers = Collections.singletonList(identifier);
+
     ValidatableResponse organizationResponse = sendPost(
       API_BASE_PATH_ORGANIZATION, 
       JsonAPITestHelper.toJsonAPIMap(
@@ -73,16 +84,19 @@ public class PersonOpenApiIT extends BaseRestAssuredTest {
     );
     UUID organizationUuid = organizationResponse.extract().jsonPath().getUUID("data.id");
 
+    PersonDto person = new PersonDto();
+
+    person.setEmail(email);
+    person.setDisplayName(displayName);
+    person.setGivenNames(givenNames);
+    person.setFamilyNames(familyNames);
+    person.setIdentifiers(identifiers);
+    
     ValidatableResponse response = super.sendPost(
       API_BASE_PATH_PERSON,
       JsonAPITestHelper.toJsonAPIMap(
         "person",
-        new ImmutableMap.Builder<String, Object>()
-          .put("email", email)
-          .put("displayName", displayName)
-          .put("givenNames", givenNames)
-          .put("familyNames", familyNames)
-          .build(),
+        JsonAPITestHelper.toAttributeMap(person),
         Map.of(
           "organizations", getRelationshipListType("organization", organizationUuid.toString())),
         null

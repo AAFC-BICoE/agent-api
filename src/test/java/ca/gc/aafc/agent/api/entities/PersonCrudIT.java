@@ -1,6 +1,7 @@
 package ca.gc.aafc.agent.api.entities;
 
 import ca.gc.aafc.agent.api.BaseIntegrationTest;
+import ca.gc.aafc.agent.api.entities.Identifier.IdentifierType;
 import ca.gc.aafc.agent.api.testsupport.factories.OrganizationFactory;
 import ca.gc.aafc.agent.api.testsupport.factories.PersonFactory;
 import ca.gc.aafc.dina.service.DinaService;
@@ -8,7 +9,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
+
+import java.net.URI;
 import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,8 +23,11 @@ public class PersonCrudIT extends BaseIntegrationTest {
 
   private final static String GIVEN_NAMES = "Anata";
   private final static String FAMILY_NAMES = "Morgans";
-  private final static String TITLE = "Dr";
-  private final static String APPELLATION = "Mr";
+  private final static Identifier IDENTIFIER = Identifier.builder()
+    .type(IdentifierType.WIKIDATA)
+    .uri(URI.create("https://www.wikidata.org/wiki/Q51044"))
+    .build();
+  private final static List<Identifier> IDENTIFIERS = Collections.singletonList(IDENTIFIER);
 
   @Inject
   private DinaService<Person> personService;
@@ -32,9 +39,11 @@ public class PersonCrudIT extends BaseIntegrationTest {
 
   @BeforeEach
   public void setup() {
+
     personUnderTest = PersonFactory.newPerson().build();
     personUnderTest.setGivenNames(GIVEN_NAMES);
     personUnderTest.setFamilyNames(FAMILY_NAMES);
+    personUnderTest.setIdentifiers(IDENTIFIERS);
     organizationUnderTest = OrganizationFactory.newOrganization().build();
     personUnderTest.setOrganizations(Collections.singletonList(organizationUnderTest));
     orgService.create(organizationUnderTest);
@@ -68,6 +77,7 @@ public class PersonCrudIT extends BaseIntegrationTest {
     assertEquals(
       organizationUnderTest.getId(),
       fetchedPerson.getOrganizations().iterator().next().getId());
+    assertEquals(personUnderTest.getIdentifiers(), fetchedPerson.getIdentifiers());
   }
 
   @Test
