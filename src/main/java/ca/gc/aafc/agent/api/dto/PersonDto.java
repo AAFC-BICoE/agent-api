@@ -9,6 +9,7 @@ import org.javers.core.metamodel.annotation.Id;
 import org.javers.core.metamodel.annotation.PropertyName;
 import org.javers.core.metamodel.annotation.TypeName;
 
+import ca.gc.aafc.agent.api.entities.Identifiers;
 import ca.gc.aafc.agent.api.entities.Person;
 import ca.gc.aafc.dina.dto.RelatedEntity;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -43,4 +44,7 @@ public class PersonDto extends AttributeMetaInfoProvider {
   private String familyNames;  
 
   private String[] aliases;
+
+  private Identifiers identifiers;
+
 }
