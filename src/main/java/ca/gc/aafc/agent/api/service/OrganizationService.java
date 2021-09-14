@@ -1,9 +1,11 @@
 package ca.gc.aafc.agent.api.service;
 
+import ca.gc.aafc.agent.api.dto.OrganizationDto;
 import ca.gc.aafc.agent.api.entities.Organization;
 import ca.gc.aafc.agent.api.entities.OrganizationNameTranslation;
 import ca.gc.aafc.dina.jpa.BaseDAO;
-import ca.gc.aafc.dina.service.DefaultDinaService;
+import ca.gc.aafc.dina.search.messaging.producer.MessageProducer;
+import ca.gc.aafc.dina.service.MessageProducingService;
 import lombok.NonNull;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -19,12 +21,16 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
-public class OrganizationService extends DefaultDinaService<Organization> {
+public class OrganizationService extends MessageProducingService<Organization> {
 
   private final BaseDAO dao;
 
-  public OrganizationService(@NonNull BaseDAO baseDAO, @NonNull SmartValidator smartValidator) {
-    super(baseDAO, smartValidator);
+  public OrganizationService(
+    @NonNull BaseDAO baseDAO,
+    @NonNull SmartValidator smartValidator,
+    MessageProducer producer
+  ) {
+    super(baseDAO, smartValidator, OrganizationDto.TYPENAME, producer);
     this.dao = baseDAO;
   }
 
