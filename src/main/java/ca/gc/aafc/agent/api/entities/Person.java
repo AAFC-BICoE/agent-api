@@ -35,6 +35,8 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import java.net.URL;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -100,4 +102,9 @@ public class Person implements DinaEntity {
   @Type(type = "jsonb")
   @Valid
   private List<Identifier> identifiers = new ArrayList<>();
+
+  private URL webpage;
+
+  @Size(max = 500)
+  private String remarks;
 }

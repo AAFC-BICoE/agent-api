@@ -54,12 +54,15 @@ public class PersonOpenApiIT extends BaseRestAssuredTest {
   }
 
   @Test
+  @SneakyThrows(MalformedURLException.class)
   public void post_NewOrganization_ReturnsOkayAndBody() {
     String email = "test@canada.ca";
     String displayName = "test user";
     String givenNames = "Jane";
     String familyNames = "Doe";
     List<String> aliases = List.of("alias1", "alias2");
+    URL webpage = new URL("https://github.com/DINA-Web");
+    String remarks = "this is a mock remark";
 
     Identifier identifier = Identifier.builder()
       .type(IdentifierType.WIKIDATA)
@@ -91,6 +94,8 @@ public class PersonOpenApiIT extends BaseRestAssuredTest {
     person.setGivenNames(givenNames);
     person.setFamilyNames(familyNames);
     person.setIdentifiers(identifiers);
+    person.setWebpage(webpage);
+    person.setRemarks(remarks);
     
     ValidatableResponse response = super.sendPost(
       API_BASE_PATH_PERSON,
