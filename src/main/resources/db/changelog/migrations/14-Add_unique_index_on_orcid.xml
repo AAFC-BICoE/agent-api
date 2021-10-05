@@ -7,7 +7,7 @@
 
     <changeSet id="14-Add_unique_index_on_orcid" context="schema-change" author="keyuk jon">
         <sql>
-            CREATE OR REPLACE FUNCTION get_orcid_id(data jsonb)
+            CREATE OR REPLACE FUNCTION get_identifier_uri(data jsonb, idName text)
             RETURNS TEXT AS
             '
             declare
@@ -17,7 +17,7 @@
                 for ele in select * from jsonb_array_elements(data)
                 loop
                     type := ele->>''type'';
-                    if lower(type) = ''orcid'' then
+                    if lower(type) = idName then
                         RETURN ele->>''uri'';
                     END if;
                 end loop;
@@ -26,21 +26,20 @@
             '
             LANGUAGE plpgsql IMMUTABLE;
 
+            CREATE OR REPLACE FUNCTION get_orcid_id(data jsonb)
+            RETURNS TEXT AS
+            '
+            BEGIN
+                RETURN get_identifier_uri(data, ''orcid'');
+            END
+            '
+            LANGUAGE plpgsql IMMUTABLE;
+
             CREATE OR REPLACE FUNCTION get_wikidata_id(data jsonb)
             RETURNS TEXT AS
             '
-            declare
-                ele jsonb;
-                type text;
             BEGIN
-                for ele in select * from jsonb_array_elements(data)
-                loop
-                    type := ele->>''type'';
-                    if lower(type) = ''wikidata'' then
-                        RETURN ele->>''uri'';
-                    END if;
-                end loop;
-                RETURN null;
+                RETURN get_identifier_uri(data, ''wikidata'');
             END
             '
             LANGUAGE plpgsql IMMUTABLE;
