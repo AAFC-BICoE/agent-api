@@ -86,7 +86,7 @@ public class PersonCrudIT extends BaseIntegrationTest {
   public void wikiDataUniqueIndex() {
     Identifier wikiId = Identifier.builder()
       .type(IdentifierType.WIKIDATA)
-      .uri(URI.create("https://www.wikidata.org/wiki/Q51044"))
+      .uri(URI.create("https://www.wikidata.org/wiki/dinaRocks"))
       .build();
     Person wikiUser = PersonFactory.newPerson().build();
     wikiUser.setIdentifiers(Collections.singletonList(wikiId));

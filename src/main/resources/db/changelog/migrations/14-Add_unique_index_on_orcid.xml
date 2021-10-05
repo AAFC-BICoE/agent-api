@@ -26,8 +26,30 @@
             '
             LANGUAGE plpgsql IMMUTABLE;
 
+            CREATE OR REPLACE FUNCTION get_wikidata_id(data jsonb)
+            RETURNS TEXT AS
+            '
+            declare
+                ele jsonb;
+                type text;
+            BEGIN
+                for ele in select * from jsonb_array_elements(data)
+                loop
+                    type := ele->>''type'';
+                    if lower(type) = ''wikidata'' then
+                        RETURN ele->>''uri'';
+                    END if;
+                end loop;
+                RETURN null;
+            END
+            '
+            LANGUAGE plpgsql IMMUTABLE;
+
             CREATE UNIQUE INDEX person_unique_identifier_orcid
             ON person (lower(get_orcid_id(identifiers)));
+
+            CREATE UNIQUE INDEX person_unique_identifier_wikidata
+            ON person (lower(get_wikidata_id(identifiers)));
         </sql>
     </changeSet>
 
