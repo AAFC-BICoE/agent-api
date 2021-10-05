@@ -71,7 +71,7 @@ public class PersonCrudIT extends BaseIntegrationTest {
     assertEquals(personUnderTest.getId(), fetchedPerson.getId());
     assertEquals(personUnderTest.getDisplayName(), fetchedPerson.getDisplayName());
     assertEquals(personUnderTest.getGivenNames(), fetchedPerson.getGivenNames());
-    assertEquals(personUnderTest.getFamilyNames(), fetchedPerson.getFamilyNames());    
+    assertEquals(personUnderTest.getFamilyNames(), fetchedPerson.getFamilyNames());
     assertEquals(personUnderTest.getEmail(), fetchedPerson.getEmail());
     assertEquals(personUnderTest.getUuid(), fetchedPerson.getUuid());
     assertNotNull(fetchedPerson.getCreatedOn());
@@ -80,6 +80,16 @@ public class PersonCrudIT extends BaseIntegrationTest {
       organizationUnderTest.getId(),
       fetchedPerson.getOrganizations().iterator().next().getId());
     assertEquals(personUnderTest.getIdentifiers(), fetchedPerson.getIdentifiers());
+  }
+
+  @Test
+  public void whenNoIdentifiers_OperationAllowed() {
+    Person person1 = PersonFactory.newPerson().build();
+    person1.setIdentifiers(null);
+    Person person2 = PersonFactory.newPerson().build();
+    person2.setIdentifiers(null);
+    Assertions.assertDoesNotThrow(() -> personService.create(person1));
+    Assertions.assertDoesNotThrow(() -> personService.create(person2));
   }
 
   @Test
