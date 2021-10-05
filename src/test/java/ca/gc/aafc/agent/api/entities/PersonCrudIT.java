@@ -5,10 +5,12 @@ import ca.gc.aafc.agent.api.entities.Identifier.IdentifierType;
 import ca.gc.aafc.agent.api.testsupport.factories.OrganizationFactory;
 import ca.gc.aafc.agent.api.testsupport.factories.PersonFactory;
 import ca.gc.aafc.dina.service.DinaService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
+import javax.persistence.PersistenceException;
 
 import java.net.URI;
 import java.util.Collections;
@@ -78,6 +80,34 @@ public class PersonCrudIT extends BaseIntegrationTest {
       organizationUnderTest.getId(),
       fetchedPerson.getOrganizations().iterator().next().getId());
     assertEquals(personUnderTest.getIdentifiers(), fetchedPerson.getIdentifiers());
+  }
+
+  @Test
+  public void wikiDataUniqueIndex() {
+    Identifier wikiId = Identifier.builder()
+      .type(IdentifierType.WIKIDATA)
+      .uri(URI.create("https://www.wikidata.org/wiki/Q51044"))
+      .build();
+    Person wikiUser = PersonFactory.newPerson().build();
+    wikiUser.setIdentifiers(Collections.singletonList(wikiId));
+    Person wikiUser2 = PersonFactory.newPerson().build();
+    wikiUser2.setIdentifiers(Collections.singletonList(wikiId));
+    personService.create(wikiUser);
+    Assertions.assertThrows(PersistenceException.class, () -> personService.create(wikiUser2));
+  }
+
+  @Test
+  public void orcidUniqueIndex() {
+    Identifier orcid = Identifier.builder()
+      .type(IdentifierType.ORCID)
+      .uri(URI.create("https://www.ORCID.org/ORCID/Q51044"))
+      .build();
+    Person orcidUser = PersonFactory.newPerson().build();
+    orcidUser.setIdentifiers(Collections.singletonList(orcid));
+    Person orcidUser2 = PersonFactory.newPerson().build();
+    orcidUser2.setIdentifiers(Collections.singletonList(orcid));
+    personService.create(orcidUser);
+    Assertions.assertThrows(PersistenceException.class, () -> personService.create(orcidUser2));
   }
 
   @Test
