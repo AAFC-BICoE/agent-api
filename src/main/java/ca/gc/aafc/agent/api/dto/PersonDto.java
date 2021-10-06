@@ -52,7 +52,7 @@ public class PersonDto extends AttributeMetaInfoProvider {
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
   private List<Identifier> identifiers = new ArrayList<>();
 
-  private URL webpage;
+  private String webpage;
 
   private String remarks;
 }
