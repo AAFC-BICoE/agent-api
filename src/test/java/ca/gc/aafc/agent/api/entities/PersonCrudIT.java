@@ -5,6 +5,8 @@ import ca.gc.aafc.agent.api.entities.Identifier.IdentifierType;
 import ca.gc.aafc.agent.api.testsupport.factories.OrganizationFactory;
 import ca.gc.aafc.agent.api.testsupport.factories.PersonFactory;
 import ca.gc.aafc.dina.service.DinaService;
+import ca.gc.aafc.dina.testsupport.factories.TestableEntityFactory;
+import org.apache.commons.lang3.RandomUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,14 +27,10 @@ public class PersonCrudIT extends BaseIntegrationTest {
 
   private final static String GIVEN_NAMES = "Anata";
   private final static String FAMILY_NAMES = "Morgans";
-  private final static Identifier IDENTIFIER = Identifier.builder()
-    .type(IdentifierType.WIKIDATA)
-    .uri(URI.create("https://www.wikidata.org/wiki/Q51044"))
-    .build();
-  private final static List<Identifier> IDENTIFIERS = Collections.singletonList(IDENTIFIER);
 
   @Inject
   private DinaService<Person> personService;
+
   @Inject
   private DinaService<Organization> orgService;
 
@@ -41,11 +39,10 @@ public class PersonCrudIT extends BaseIntegrationTest {
 
   @BeforeEach
   public void setup() {
-
     personUnderTest = PersonFactory.newPerson().build();
     personUnderTest.setGivenNames(GIVEN_NAMES);
     personUnderTest.setFamilyNames(FAMILY_NAMES);
-    personUnderTest.setIdentifiers(IDENTIFIERS);
+    personUnderTest.setIdentifiers(Collections.singletonList(getUniqueIdentifier(IdentifierType.ORCID)));
     organizationUnderTest = OrganizationFactory.newOrganization().build();
     personUnderTest.setOrganizations(Collections.singletonList(organizationUnderTest));
     orgService.create(organizationUnderTest);
@@ -94,10 +91,8 @@ public class PersonCrudIT extends BaseIntegrationTest {
 
   @Test
   public void wikiDataUniqueIndex() {
-    Identifier wikiId = Identifier.builder()
-      .type(IdentifierType.WIKIDATA)
-      .uri(URI.create("https://www.wikidata.org/wiki/dinaRocks"))
-      .build();
+    Identifier wikiId = getUniqueIdentifier(IdentifierType.WIKIDATA);
+
     Person wikiUser = PersonFactory.newPerson().build();
     wikiUser.setIdentifiers(Collections.singletonList(wikiId));
     Person wikiUser2 = PersonFactory.newPerson().build();
@@ -108,10 +103,8 @@ public class PersonCrudIT extends BaseIntegrationTest {
 
   @Test
   public void orcidUniqueIndex() {
-    Identifier orcid = Identifier.builder()
-      .type(IdentifierType.ORCID)
-      .uri(URI.create("https://www.ORCID.org/ORCID/Q51044"))
-      .build();
+    Identifier orcid = getUniqueIdentifier(IdentifierType.ORCID);
+
     Person orcidUser = PersonFactory.newPerson().build();
     orcidUser.setIdentifiers(Collections.singletonList(orcid));
     Person orcidUser2 = PersonFactory.newPerson().build();
@@ -128,6 +121,14 @@ public class PersonCrudIT extends BaseIntegrationTest {
 
   private Person getPersonUnderTest() {
     return personService.findOne(personUnderTest.getUuid(), Person.class);
+  }
+
+  private static Identifier getUniqueIdentifier(IdentifierType type) {
+    return Identifier.builder()
+        .type(type)
+        .uri(URI.create("https://www.ORCID.org/ORCID/" +
+            TestableEntityFactory.generateRandomName(5)))
+        .build();
   }
 
 }
