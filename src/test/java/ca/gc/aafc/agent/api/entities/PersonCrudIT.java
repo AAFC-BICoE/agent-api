@@ -98,7 +98,6 @@ public class PersonCrudIT extends BaseIntegrationTest {
     assertThrows(ConstraintViolationException.class, 
       () -> personService.create(person));
 
-    ;
   }
 
   private Person getPersonUnderTest() {
