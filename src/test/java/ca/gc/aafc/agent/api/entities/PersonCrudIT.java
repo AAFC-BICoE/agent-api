@@ -6,17 +6,15 @@ import ca.gc.aafc.agent.api.testsupport.factories.OrganizationFactory;
 import ca.gc.aafc.agent.api.testsupport.factories.PersonFactory;
 import ca.gc.aafc.dina.service.DinaService;
 import ca.gc.aafc.dina.testsupport.factories.TestableEntityFactory;
-import org.apache.commons.lang3.RandomUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
+import javax.validation.ConstraintViolationException;
 import javax.persistence.PersistenceException;
-
 import java.net.URI;
 import java.util.Collections;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -117,6 +115,18 @@ public class PersonCrudIT extends BaseIntegrationTest {
   public void testRemove() {
     personService.delete(personUnderTest);
     assertNull(getPersonUnderTest());
+  }
+
+  @Test
+  public void testInvalidURLValidation_throwsConstraintValidation() {
+
+    Person person = PersonFactory.newPerson()
+      .webpage("invalidurl")
+      .build();
+
+    assertThrows(ConstraintViolationException.class, 
+      () -> personService.create(person));
+
   }
 
   private Person getPersonUnderTest() {

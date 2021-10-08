@@ -20,6 +20,7 @@ import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.NaturalIdCache;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -36,7 +37,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import java.net.URL;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -103,7 +103,8 @@ public class Person implements DinaEntity {
   @Valid
   private List<Identifier> identifiers = new ArrayList<>();
 
-  private URL webpage;
+  @URL
+  private String webpage;
 
   @Size(max = 500)
   private String remarks;
