@@ -1,13 +1,18 @@
 package ca.gc.aafc.agent.api.dto;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import ca.gc.aafc.dina.repository.meta.AttributeMetaInfoProvider;
 import org.javers.core.metamodel.annotation.Id;
 import org.javers.core.metamodel.annotation.PropertyName;
 import org.javers.core.metamodel.annotation.TypeName;
 
+import ca.gc.aafc.agent.api.entities.Identifier;
 import ca.gc.aafc.agent.api.entities.Person;
 import ca.gc.aafc.dina.dto.RelatedEntity;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -21,7 +26,7 @@ import lombok.Data;
 @Data
 @JsonApiResource(type = PersonDto.TYPENAME)
 @TypeName(PersonDto.TYPENAME)
-public class PersonDto {
+public class PersonDto extends AttributeMetaInfoProvider {
 
   public static final String TYPENAME = "person";
 
@@ -42,4 +47,11 @@ public class PersonDto {
   private String familyNames;  
 
   private String[] aliases;
+
+  @JsonInclude(JsonInclude.Include.NON_EMPTY)
+  private List<Identifier> identifiers = new ArrayList<>();
+
+  private String webpage;
+
+  private String remarks;
 }
