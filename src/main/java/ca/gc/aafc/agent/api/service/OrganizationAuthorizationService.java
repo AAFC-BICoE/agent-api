@@ -18,6 +18,11 @@ public class OrganizationAuthorizationService extends PermissionAuthorizationSer
   }
 
   @Override
+  public String getName() {
+    return "OrganizationAuthorizationService";
+  }
+
+  @Override
   public void authorizeCreate(Object entity) {
   }
 
