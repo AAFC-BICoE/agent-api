@@ -2,7 +2,7 @@ package ca.gc.aafc.agent.api.repository;
 
 import ca.gc.aafc.agent.api.dto.PersonDto;
 import ca.gc.aafc.agent.api.entities.Person;
-import ca.gc.aafc.agent.api.service.UpdateDeleteCollectionManagerOnly;
+import ca.gc.aafc.agent.api.service.PersonAuthorizationService;
 import ca.gc.aafc.dina.mapper.DinaMapper;
 import ca.gc.aafc.dina.repository.DinaRepository;
 import ca.gc.aafc.dina.security.DinaAuthenticatedUser;
@@ -22,7 +22,7 @@ public class PersonRepository extends DinaRepository<PersonDto, Person> {
 
   public PersonRepository(
     @NonNull DinaService<Person> dinaService,
-    @NonNull UpdateDeleteCollectionManagerOnly authorizationService,
+    @NonNull PersonAuthorizationService authorizationService,
     Optional<DinaAuthenticatedUser> authenticatedUser,
     @NonNull BuildProperties props,
     @NonNull AuditService auditService

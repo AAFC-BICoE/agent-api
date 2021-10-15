@@ -5,7 +5,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UpdateDeleteCollectionManagerOnly extends PermissionAuthorizationService {
+public class PersonAuthorizationService extends PermissionAuthorizationService {
 
   @Override
   @PreAuthorize("hasDinaRole(@currentUser, 'COLLECTION_MANAGER')")
@@ -15,11 +15,6 @@ public class UpdateDeleteCollectionManagerOnly extends PermissionAuthorizationSe
   @Override
   @PreAuthorize("hasDinaRole(@currentUser, 'COLLECTION_MANAGER')")
   public void authorizeDelete(Object entity) {
-  }
-
-  @Override
-  public String getName() {
-    return "UpdateDeleteCollectionManagerOnly";
   }
 
   @Override
