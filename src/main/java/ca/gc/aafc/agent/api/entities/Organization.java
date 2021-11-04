@@ -1,6 +1,5 @@
 package ca.gc.aafc.agent.api.entities;
 
-import ca.gc.aafc.agent.api.dto.OrganizationDto;
 import ca.gc.aafc.dina.entity.DinaEntity;
 import ca.gc.aafc.dina.service.OnUpdate;
 
@@ -46,7 +45,7 @@ import java.util.UUID;
 @SuppressFBWarnings(
   justification = "ok for Hibernate Entity",
   value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
-  @NaturalIdCache
+@NaturalIdCache
 @TypeDef(
   name = "string-array", 
   typeClass = StringArrayType.class
