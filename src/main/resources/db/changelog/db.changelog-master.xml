@@ -16,4 +16,5 @@
   <include file="db/changelog/migrations/13-Add_webpage_and_remarks_to_person.xml"/>
   <include file="db/changelog/migrations/14-Add_unique_index_on_orcid.xml"/>
   <include file="db/changelog/migrations/15-Remove_person_unique_display_name.xml"/>
+  <include file="db/changelog/migrations/16-Move_organization_names_to_jsonb.xml"/>
 </databaseChangeLog>

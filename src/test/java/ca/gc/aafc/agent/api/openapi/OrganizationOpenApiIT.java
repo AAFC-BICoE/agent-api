@@ -1,7 +1,7 @@
 package ca.gc.aafc.agent.api.openapi;
 
 import ca.gc.aafc.agent.api.entities.Organization;
-import ca.gc.aafc.agent.api.entities.OrganizationNameTranslation;
+import ca.gc.aafc.agent.api.entities.OrganizationName;
 import ca.gc.aafc.dina.testsupport.BaseRestAssuredTest;
 import ca.gc.aafc.dina.testsupport.DatabaseSupportService;
 import ca.gc.aafc.dina.testsupport.PostgresTestContainerInitializer;
@@ -73,7 +73,6 @@ public class OrganizationOpenApiIT extends BaseRestAssuredTest {
 
     // Cleanup:
     UUID uuid = response.extract().jsonPath().getUUID("data.id");
-    databaseSupportService.deleteByProperty(OrganizationNameTranslation.class, "name", "test");
     databaseSupportService.deleteByProperty(Organization.class, "uuid", uuid);
   }
 

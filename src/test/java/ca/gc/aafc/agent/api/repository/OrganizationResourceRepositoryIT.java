@@ -2,9 +2,8 @@ package ca.gc.aafc.agent.api.repository;
 
 import ca.gc.aafc.agent.api.BaseIntegrationTest;
 import ca.gc.aafc.agent.api.dto.OrganizationDto;
-import ca.gc.aafc.agent.api.dto.OrganizationNameTranslationDto;
 import ca.gc.aafc.agent.api.entities.Organization;
-import ca.gc.aafc.agent.api.entities.OrganizationNameTranslation;
+import ca.gc.aafc.agent.api.entities.OrganizationName;
 import ca.gc.aafc.agent.api.service.OrganizationService;
 import ca.gc.aafc.agent.api.testsupport.factories.OrganizationFactory;
 import ca.gc.aafc.dina.testsupport.DatabaseSupportService;
@@ -43,10 +42,9 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
   public void setup() {
     organizationUnderTest = OrganizationFactory.newOrganization().build();
     organizationUnderTest.setUuid(UUID.randomUUID());
+    organizationUnderTest.setNames(Collections.singletonList(
+      OrganizationName.builder().languageCode("le").name("name").build()));
     dService.save(organizationUnderTest);
-    dService.save(OrganizationNameTranslation.builder()
-      .languageCode("le").name("name").organization(organizationUnderTest).build()
-    );
   }
 
   @WithMockKeycloakUser(username = "user", groupRole = {"group 1:staff"})
@@ -54,7 +52,7 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
   public void createOrganization_onSuccess_organizationPersisted() {
     OrganizationDto orgDto = new OrganizationDto();
     orgDto.setNames(Collections.singletonList(
-      OrganizationNameTranslationDto.builder().languageCode("te").name("name").build()));
+      OrganizationName.builder().languageCode("te").name("name").build()));
     orgDto.setAliases(new String[]{"test alias"});
 
     OrganizationDto createdOrganization = organizationRepository.create(orgDto);

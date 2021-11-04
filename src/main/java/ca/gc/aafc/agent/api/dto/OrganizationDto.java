@@ -14,7 +14,7 @@ import org.javers.core.metamodel.annotation.PropertyName;
 import org.javers.core.metamodel.annotation.TypeName;
 
 import ca.gc.aafc.agent.api.entities.Organization;
-import ca.gc.aafc.agent.api.entities.OrganizationNameTranslation;
+import ca.gc.aafc.agent.api.entities.OrganizationName;
 import ca.gc.aafc.dina.dto.RelatedEntity;
 import ca.gc.aafc.dina.mapper.CustomFieldAdapter;
 import ca.gc.aafc.dina.mapper.DinaFieldAdapter;
@@ -46,50 +46,50 @@ public class OrganizationDto {
 
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
   @IgnoreDinaMapping(reason = "custom mapped")
-  private List<OrganizationNameTranslationDto> names;
+  private List<OrganizationName> names;
 
   public static class NamesAdapter
     implements DinaFieldAdapter<
     OrganizationDto,
     Organization,
-    List<OrganizationNameTranslationDto>,
-    List<OrganizationNameTranslation>> {
+    List<OrganizationName>,
+    List<OrganizationName>> {
 
     @Override
-    public List<OrganizationNameTranslationDto> toDTO(List<OrganizationNameTranslation> names) {
+    public List<OrganizationName> toDTO(List<OrganizationName> names) {
       return names == null ? null : names.stream()
-        .map(translation -> OrganizationNameTranslationDto.builder()
+        .map(translation -> OrganizationName.builder()
           .languageCode(translation.getLanguageCode())
           .name(translation.getName()).build())
         .collect(Collectors.toList());
     }
 
     @Override
-    public List<OrganizationNameTranslation> toEntity(List<OrganizationNameTranslationDto> names) {
+    public List<OrganizationName> toEntity(List<OrganizationName> names) {
       return names == null ? null : names.stream()
-        .map(translation -> OrganizationNameTranslation.builder()
+        .map(translation -> OrganizationName.builder()
           .languageCode(translation.getLanguageCode())
           .name(translation.getName()).build())
         .collect(Collectors.toList());
     }
 
     @Override
-    public Consumer<List<OrganizationNameTranslation>> entityApplyMethod(Organization entityRef) {
+    public Consumer<List<OrganizationName>> entityApplyMethod(Organization entityRef) {
       return entityRef::setNames;
     }
 
     @Override
-    public Consumer<List<OrganizationNameTranslationDto>> dtoApplyMethod(OrganizationDto dtoRef) {
+    public Consumer<List<OrganizationName>> dtoApplyMethod(OrganizationDto dtoRef) {
       return dtoRef::setNames;
     }
 
     @Override
-    public Supplier<List<OrganizationNameTranslation>> entitySupplyMethod(Organization entityRef) {
+    public Supplier<List<OrganizationName>> entitySupplyMethod(Organization entityRef) {
       return entityRef::getNames;
     }
 
     @Override
-    public Supplier<List<OrganizationNameTranslationDto>> dtoSupplyMethod(OrganizationDto dtoRef) {
+    public Supplier<List<OrganizationName>> dtoSupplyMethod(OrganizationDto dtoRef) {
       return dtoRef::getNames;
     }
   }
