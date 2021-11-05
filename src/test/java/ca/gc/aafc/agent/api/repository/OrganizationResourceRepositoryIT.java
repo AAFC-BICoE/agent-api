@@ -19,6 +19,7 @@ import org.springframework.security.access.AccessDeniedException;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -78,7 +79,6 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
     assertTrue(actualMessage.contains(expectedMessage));
   }
 
-
   @Test
   @WithMockKeycloakUser(username = "user", groupRole = {"group 1:COLLECTION_MANAGER"})
   public void save_PersistedOrganization_When_User_Possess_CollectionManagerRole_FieldsUpdated() {
@@ -94,6 +94,41 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
 
     Organization result = organizationService.findOne(updatedDto.getUuid(), Organization.class);
     assertArrayEquals(newAliases, result.getAliases());
+  }
+
+  @Test
+  @WithMockKeycloakUser(username = "user", groupRole = {"group 1:COLLECTION_MANAGER"})
+  public void save_add_OrganizationName_FieldsUpdated() {
+    OrganizationDto updatedDto = organizationRepository.findOne(
+      organizationUnderTest.getUuid(),
+      new QuerySpec(OrganizationDto.class)
+    );
+
+    List<OrganizationName> names = updatedDto.getNames();
+    names.add(OrganizationName.builder().languageCode("ne").name("new Val").build());
+    updatedDto.setNames(names);
+
+    organizationRepository.save(updatedDto);
+
+    Organization result = organizationService.findOne(updatedDto.getUuid(), Organization.class);
+    assertEquals(names, result.getNames());
+  }
+
+  @Test
+  @WithMockKeycloakUser(username = "user", groupRole = {"group 1:COLLECTION_MANAGER"})
+  public void save_remove_all_OrganizationName_FieldsUpdated() {
+    OrganizationDto updatedDto = organizationRepository.findOne(
+      organizationUnderTest.getUuid(),
+      new QuerySpec(OrganizationDto.class)
+    );
+    updatedDto.setNames(Collections.emptyList());
+
+    BadRequestException exception = Assertions.assertThrows(BadRequestException.class, ()-> organizationRepository.save(updatedDto));
+
+    String expectedMessage = "An organization must have at least one name";
+    String actualMessage = exception.getMessage();
+
+    assertTrue(actualMessage.contains(expectedMessage));
   }
 
   @Test
