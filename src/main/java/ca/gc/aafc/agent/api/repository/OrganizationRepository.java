@@ -8,12 +8,8 @@ import ca.gc.aafc.dina.repository.DinaRepository;
 import ca.gc.aafc.dina.security.DinaAuthenticatedUser;
 import ca.gc.aafc.dina.service.AuditService;
 import ca.gc.aafc.dina.service.DinaService;
-import io.crnk.core.exception.BadRequestException;
 import lombok.NonNull;
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.boot.info.BuildProperties;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -22,13 +18,11 @@ import java.util.Optional;
 public class OrganizationRepository extends DinaRepository<OrganizationDto, Organization> {
 
   private Optional<DinaAuthenticatedUser> authenticatedUser;
-  private final MessageSource messageSource;
 
   public OrganizationRepository(
     @NonNull DinaService<Organization> dinaService,
     @NonNull OrganizationAuthorizationService authorizationService,
     Optional<DinaAuthenticatedUser> authenticatedUser,
-    MessageSource messageSource,
     @NonNull BuildProperties props,
     @NonNull AuditService auditService
   ) {
@@ -43,7 +37,6 @@ public class OrganizationRepository extends DinaRepository<OrganizationDto, Orga
       null,
       props);
     this.authenticatedUser = authenticatedUser;
-    this.messageSource = messageSource;
   }
 
   @Override

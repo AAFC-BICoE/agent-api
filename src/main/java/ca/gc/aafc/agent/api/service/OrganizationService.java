@@ -18,7 +18,8 @@ public class OrganizationService extends DefaultDinaService<Organization> {
   public OrganizationService(
     @NonNull BaseDAO baseDAO, 
     @NonNull SmartValidator smartValidator,
-    @NonNull OrganizationValidator organizationValidator) {
+    @NonNull OrganizationValidator organizationValidator
+  ) {
     super(baseDAO, smartValidator);
     this.organizationValidator = organizationValidator;
   }
