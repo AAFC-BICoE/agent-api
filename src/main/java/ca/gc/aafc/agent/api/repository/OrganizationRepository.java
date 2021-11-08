@@ -48,10 +48,6 @@ public class OrganizationRepository extends DinaRepository<OrganizationDto, Orga
 
   @Override
   public <S extends OrganizationDto> S create(S resource) {
-    if (CollectionUtils.isEmpty(resource.getNames())) {
-      throw new BadRequestException(messageSource.getMessage(
-        "organization.constraint.required.name", null, LocaleContextHolder.getLocale()));
-    }
     if (authenticatedUser.isPresent()) {
       resource.setCreatedBy(authenticatedUser.get().getUsername());
     }
@@ -60,10 +56,6 @@ public class OrganizationRepository extends DinaRepository<OrganizationDto, Orga
 
   @Override
   public <S extends OrganizationDto> S save(S resource) {
-    if (CollectionUtils.isEmpty(resource.getNames())) {
-      throw new BadRequestException(messageSource.getMessage(
-        "organization.constraint.required.name", null, LocaleContextHolder.getLocale()));
-    }
     return super.save(resource);
   }
 }

@@ -9,7 +9,6 @@ import ca.gc.aafc.agent.api.testsupport.factories.OrganizationFactory;
 import ca.gc.aafc.dina.testsupport.DatabaseSupportService;
 import ca.gc.aafc.dina.testsupport.security.WithMockKeycloakUser;
 import io.crnk.core.queryspec.QuerySpec;
-import io.crnk.core.exception.BadRequestException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +17,8 @@ import org.springframework.security.access.AccessDeniedException;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import javax.validation.ValidationException;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -71,7 +72,7 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
     OrganizationDto orgDto = new OrganizationDto();
     orgDto.setNames(Collections.emptyList());
     orgDto.setAliases(new String[]{"test alias"});
-    BadRequestException exception = Assertions.assertThrows(BadRequestException.class, ()-> organizationRepository.create(orgDto));
+    ValidationException exception = Assertions.assertThrows(ValidationException.class, ()-> organizationRepository.create(orgDto));
 
     String expectedMessage = "An organization must have at least one name";
     String actualMessage = exception.getMessage();
@@ -123,7 +124,7 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
     );
     updatedDto.setNames(Collections.emptyList());
 
-    BadRequestException exception = Assertions.assertThrows(BadRequestException.class, ()-> organizationRepository.save(updatedDto));
+    ValidationException exception = Assertions.assertThrows(ValidationException.class, ()-> organizationRepository.save(updatedDto));
 
     String expectedMessage = "An organization must have at least one name";
     String actualMessage = exception.getMessage();

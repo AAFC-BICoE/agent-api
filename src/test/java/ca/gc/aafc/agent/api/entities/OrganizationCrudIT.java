@@ -11,6 +11,8 @@ import javax.transaction.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Collections;
+
 @Transactional
 public class OrganizationCrudIT extends BaseIntegrationTest {
 
