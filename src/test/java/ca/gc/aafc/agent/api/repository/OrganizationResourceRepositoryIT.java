@@ -8,7 +8,12 @@ import ca.gc.aafc.agent.api.service.OrganizationService;
 import ca.gc.aafc.agent.api.testsupport.factories.OrganizationFactory;
 import ca.gc.aafc.dina.testsupport.DatabaseSupportService;
 import ca.gc.aafc.dina.testsupport.security.WithMockKeycloakUser;
+import io.crnk.core.queryspec.FilterOperator;
+import io.crnk.core.queryspec.FilterSpec;
+import io.crnk.core.queryspec.PathSpec;
 import io.crnk.core.queryspec.QuerySpec;
+import io.crnk.core.resource.list.ResourceList;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -183,6 +188,26 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
     assertNotNull(organizationService.findOne(organizationUnderTest.getUuid(), Organization.class));
     Assertions.assertThrows(AccessDeniedException.class,() -> organizationRepository.delete(persistedOrg.getUuid()));
     assertNotNull(organizationService.findOne(organizationUnderTest.getUuid(), Organization.class));
+  }
+
+  @Test
+  @WithMockKeycloakUser(username = "user", groupRole = {"group 1:staff"})
+  public void findOrganization_by_name() {
+    OrganizationDto orgDto = new OrganizationDto();
+    orgDto.setNames(Collections.singletonList(
+      OrganizationName.builder().languageCode("te").name("test_name").build()));
+    orgDto.setAliases(new String[]{"test alias"});
+
+    OrganizationDto createdOrganization = organizationRepository.create(orgDto);
+    assertEquals(2, organizationRepository.findAll(new QuerySpec(OrganizationDto.class)).size());
+
+    QuerySpec querySpec = new QuerySpec(OrganizationDto.class);
+    querySpec.addFilter(PathSpec.of("names", "name").filter(FilterOperator.EQ, "test_name"));
+
+    ResourceList<OrganizationDto> results = organizationRepository.findAll(querySpec);
+    assertEquals(1, results.size());
+    assertEquals(createdOrganization.getUuid(), results.get(0).getUuid());
+
   }
 
 }

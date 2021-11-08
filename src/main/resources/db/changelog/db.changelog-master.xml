@@ -17,4 +17,6 @@
   <include file="db/changelog/migrations/14-Add_unique_index_on_orcid.xml"/>
   <include file="db/changelog/migrations/15-Remove_person_unique_display_name.xml"/>
   <include file="db/changelog/migrations/16-Move_organization_names_to_jsonb.xml"/>
+  <include file="db/changelog/migrations/17-Add_jsonb_path_exists_varchar.xml"/>
+
 </databaseChangeLog>
