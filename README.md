@@ -22,6 +22,7 @@ The single HTML page will be available at `target/generated-docs/index.html`
 ## To Run
 
 For testing purpose a [Docker Compose](https://docs.docker.com/compose/) and `.env` file are available in the `local` folder.
+PostgreSQL 12 is required and included in docker-compose example.
 
 Create a new `docker-compose` and `.env` file from the example:
 ```
