@@ -9,7 +9,6 @@ import ca.gc.aafc.agent.api.testsupport.factories.OrganizationFactory;
 import ca.gc.aafc.dina.testsupport.DatabaseSupportService;
 import ca.gc.aafc.dina.testsupport.security.WithMockKeycloakUser;
 import io.crnk.core.queryspec.FilterOperator;
-import io.crnk.core.queryspec.FilterSpec;
 import io.crnk.core.queryspec.PathSpec;
 import io.crnk.core.queryspec.QuerySpec;
 import io.crnk.core.resource.list.ResourceList;
