@@ -2,9 +2,9 @@ package ca.gc.aafc.agent.api.repository;
 
 import ca.gc.aafc.agent.api.BaseIntegrationTest;
 import ca.gc.aafc.agent.api.dto.OrganizationDto;
-import ca.gc.aafc.agent.api.dto.OrganizationNameTranslationDto;
 import ca.gc.aafc.agent.api.dto.PersonDto;
 import ca.gc.aafc.agent.api.entities.Organization;
+import ca.gc.aafc.agent.api.entities.OrganizationName;
 import ca.gc.aafc.agent.api.entities.Person;
 import ca.gc.aafc.agent.api.service.PersonService;
 import ca.gc.aafc.agent.api.service.OrganizationService;
@@ -85,7 +85,7 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
 
     OrganizationDto organizationDto = new OrganizationDto();
     organizationDto.setNames(Collections.singletonList(
-      OrganizationNameTranslationDto.builder().languageCode("te").name("name").build()));
+      OrganizationName.builder().languageCode("te").name("name").build()));
     OrganizationDto dto = organizationResourceRepository.create(organizationDto);
 
     personDto.setOrganizations(Collections.singletonList(dto));
