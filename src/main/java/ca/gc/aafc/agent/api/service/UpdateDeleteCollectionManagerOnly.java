@@ -1,19 +1,25 @@
 package ca.gc.aafc.agent.api.service;
 
-import ca.gc.aafc.dina.security.PermissionAuthorizationService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+
+import ca.gc.aafc.dina.security.PermissionAuthorizationService;
 
 @Service
 public class UpdateDeleteCollectionManagerOnly extends PermissionAuthorizationService {
 
   @Override
-  @PreAuthorize("hasDinaRole(@currentUser, 'COLLECTION_MANAGER')")
+  @PreAuthorize("hasMinimumDinaRole(@currentUser, 'STUDENT')")
+  public void authorizeCreate(Object entity) {
+  }
+
+  @Override
+  @PreAuthorize("hasMinimumDinaRole(@currentUser, 'COLLECTION_MANAGER')")
   public void authorizeUpdate(Object entity) {
   }
 
   @Override
-  @PreAuthorize("hasDinaRole(@currentUser, 'COLLECTION_MANAGER')")
+  @PreAuthorize("hasMinimumDinaRole(@currentUser, 'COLLECTION_MANAGER')")
   public void authorizeDelete(Object entity) {
   }
 
@@ -21,9 +27,4 @@ public class UpdateDeleteCollectionManagerOnly extends PermissionAuthorizationSe
   public String getName() {
     return "UpdateDeleteCollectionManagerOnly";
   }
-
-  @Override
-  public void authorizeCreate(Object entity) {
-  }
-
 }
