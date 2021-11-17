@@ -3,7 +3,6 @@ package ca.gc.aafc.agent.api.openapi;
 import ca.gc.aafc.agent.api.dto.PersonDto;
 import ca.gc.aafc.agent.api.entities.Identifier;
 import ca.gc.aafc.agent.api.entities.Organization;
-import ca.gc.aafc.agent.api.entities.OrganizationNameTranslation;
 import ca.gc.aafc.agent.api.entities.Person;
 import ca.gc.aafc.agent.api.entities.Identifier.IdentifierType;
 import ca.gc.aafc.dina.testsupport.BaseRestAssuredTest;
@@ -118,7 +117,6 @@ public class PersonOpenApiIT extends BaseRestAssuredTest {
     // Cleanup:
     UUID uuid = response.extract().jsonPath().getUUID("data.id");
     databaseSupportService.deleteByProperty(Person.class, "uuid", uuid);
-    databaseSupportService.deleteByProperty(OrganizationNameTranslation.class, "name", "test");
     databaseSupportService.deleteByProperty(Organization.class, "uuid", organizationUuid);
   }
 

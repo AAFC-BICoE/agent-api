@@ -1,10 +1,11 @@
 package ca.gc.aafc.agent.api.entities;
 
-import ca.gc.aafc.agent.api.dto.OrganizationDto;
 import ca.gc.aafc.dina.entity.DinaEntity;
 import ca.gc.aafc.dina.service.OnUpdate;
 
 import com.vladmihalcea.hibernate.type.array.StringArrayType;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,7 +21,6 @@ import org.hibernate.annotations.NaturalIdCache;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -28,15 +28,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Entity
-@TypeDef(name = "string-array", typeClass = StringArrayType.class)
 @Getter
 @Setter
 @AllArgsConstructor
@@ -48,6 +46,14 @@ import java.util.stream.Collectors;
   justification = "ok for Hibernate Entity",
   value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 @NaturalIdCache
+@TypeDef(
+  name = "string-array", 
+  typeClass = StringArrayType.class
+)
+@TypeDef(
+  name = "jsonb",
+  typeClass = JsonBinaryType.class
+)
 public class Organization implements DinaEntity {
 
   @Id
@@ -73,19 +79,8 @@ public class Organization implements DinaEntity {
   @ToString.Exclude
   private List<Person> persons;
 
-  @OneToMany(
-    mappedBy = "organization",
-    cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
-    fetch = FetchType.EAGER)
-  @ToString.Exclude
-  private List<OrganizationNameTranslation> names;
+  @Type(type = "jsonb")
+  @Valid
+  private List<OrganizationName> names;
 
-  public static List<OrganizationNameTranslation> nameTranslationsToEntity(OrganizationDto dto) {
-    return dto.getNames() == null ? null : dto.getNames()
-      .stream()
-      .map(translation -> OrganizationNameTranslation.builder()
-        .languageCode(translation.getLanguageCode())
-        .name(translation.getName()).build())
-      .collect(Collectors.toList());
-  }
 }
