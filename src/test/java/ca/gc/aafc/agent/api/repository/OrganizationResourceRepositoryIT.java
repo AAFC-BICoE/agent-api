@@ -197,8 +197,10 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
       OrganizationName.builder().languageCode("te").name("test_name").build()));
     orgDto.setAliases(new String[]{"test alias"});
 
+    Integer totalCreatedOrganization = organizationRepository.findAll(new QuerySpec(OrganizationDto.class)).size();
+
     OrganizationDto createdOrganization = organizationRepository.create(orgDto);
-    assertEquals(2, organizationRepository.findAll(new QuerySpec(OrganizationDto.class)).size());
+    assertEquals(totalCreatedOrganization + 1, organizationRepository.findAll(new QuerySpec(OrganizationDto.class)).size());
 
     QuerySpec querySpec = new QuerySpec(OrganizationDto.class);
     querySpec.addFilter(PathSpec.of("names", "name").filter(FilterOperator.EQ, "test_name"));
