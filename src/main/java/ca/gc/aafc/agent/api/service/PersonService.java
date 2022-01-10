@@ -4,10 +4,10 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 import ca.gc.aafc.agent.api.dto.PersonDto;
-import ca.gc.aafc.dina.search.messaging.producer.MessageProducer;
 
 import ca.gc.aafc.dina.service.MessageProducingService;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import ca.gc.aafc.agent.api.entities.Person;
@@ -18,8 +18,8 @@ import org.springframework.validation.SmartValidator;
 @Service
 public class PersonService extends MessageProducingService<Person> {
 
-  public PersonService(@NonNull BaseDAO baseDAO, @NonNull SmartValidator smartValidator, MessageProducer producer) {
-    super(baseDAO, smartValidator, PersonDto.TYPENAME, producer);
+  public PersonService(@NonNull BaseDAO baseDAO, @NonNull SmartValidator smartValidator, ApplicationEventPublisher eventPublisher) {
+    super(baseDAO, smartValidator, PersonDto.TYPENAME, eventPublisher);
   }
 
   @Override
