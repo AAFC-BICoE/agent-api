@@ -14,6 +14,11 @@ public class OrganizationAuthorizationService extends PermissionAuthorizationSer
   }
 
   @Override
+  public void authorizeRead(Object entity) {
+
+  }
+
+  @Override
   @PreAuthorize("hasMinimumDinaRole(@currentUser, 'COLLECTION_MANAGER')")
   public void authorizeUpdate(Object entity) {
   }
