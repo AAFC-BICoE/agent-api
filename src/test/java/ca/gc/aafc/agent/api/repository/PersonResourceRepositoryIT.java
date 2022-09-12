@@ -30,7 +30,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -43,7 +42,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class PersonResourceRepositoryIT extends BaseIntegrationTest {
   private final static String GIVEN_NAMES = "Anata";
   private final static String FAMILY_NAMES = "Morgans";
-
 
   @Inject
   private PersonRepository personResourceRepository;
@@ -75,7 +73,7 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
   }
 
   @Test
-  @WithMockKeycloakUser(username="user", groupRole = {"group 1:staff"})
+  @WithMockKeycloakUser(username="user", groupRole = {"group 1:USER"})
   public void create_ValidPerson_PersonPersisted() {
     PersonDto personDto = new PersonDto();
     personDto.setDisplayName(TestableEntityFactory.generateRandomNameLettersOnly(10));
@@ -102,8 +100,8 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
   }
 
   @Test
-  @WithMockKeycloakUser(username="user", groupRole = {"group 1:COLLECTION_MANAGER"})
-  public void save_PersistedPerson_When_User_Possess_CollectioManagerRole_FieldsUpdated() {
+  @WithMockKeycloakUser(username="user", groupRole = {"group 1:SUPER_USER"})
+  public void save_PersistedPerson_WhenUserSuperUserRole_FieldsUpdated() {
     String updatedEmail = "Updated_Email@email.com";
     String updatedName = "Updated_Name";
    PersonDto updatedPerson = personResourceRepository.findOne(
@@ -121,8 +119,8 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
   }
 
   @Test
-  @WithMockKeycloakUser(username="user", groupRole = {"group 1: STAFF"})
-  public void save_PersistedPerson_When_User_Has_No_CollectionManager_Role_FieldsUpdate_Denied() {
+  @WithMockKeycloakUser(username="user", groupRole = {"group 1:USER"})
+  public void save_PersistedPerson_WhenNotSuperUserRole_FieldsUpdate_Denied() {
     String updatedEmail = "Updated_Email@email.com";
     String updatedName = "Updated_Name";
 
@@ -175,8 +173,8 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
 
 
   @Test
-  @WithMockKeycloakUser(username="user", groupRole = {"group 1:COLLECTION_MANAGER"})
-  public void remove_PersistedPerson_When_User_Possess_CollectioManagerRole_PersonRemoved() {
+  @WithMockKeycloakUser(username="user", groupRole = {"group 1:SUPER_USER"})
+  public void remove_PersistedPerson_WhenSuperUserRole_PersonRemoved() {
     PersonDto persistedPerson = personResourceRepository.findOne(
       personUnderTest.getUuid(),
       new QuerySpec(PersonDto.class)
@@ -186,12 +184,12 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
 
     assertNotNull(personService.findOne(personUnderTest.getUuid(), Person.class));
     personResourceRepository.delete(persistedPerson.getUuid());
-    assertNull(personService.findOne(personUnderTest.getUuid(), Person.class));
+    Assertions.assertNull(personService.findOne(personUnderTest.getUuid(), Person.class));
   }
 
   @Test
-  @WithMockKeycloakUser(username="user", groupRole = {"group 1:STAFF"})
-  public void remove_PersistedPerson_When_User_Has_No_CollectionManager_Role_PersonRemove_Denied() {
+  @WithMockKeycloakUser(username="user", groupRole = {"group 1:USER"})
+  public void remove_PersistedPerson_WhenNoSuperUserRole_PersonRemove_Denied() {
     PersonDto persistedPerson = personResourceRepository.findOne(
       personUnderTest.getUuid(),
       new QuerySpec(PersonDto.class)
