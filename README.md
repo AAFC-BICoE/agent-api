@@ -6,8 +6,8 @@ See DINA agent module [specification](https://dina-web.github.io/agent-specs/).
 
 ## Required
 
-* Java 11
-* Maven 3.6 (tested)
+* Java 17
+* Maven 3.8 (tested)
 * Docker 19+ (for running integration tests)
 
 ## Documentation
