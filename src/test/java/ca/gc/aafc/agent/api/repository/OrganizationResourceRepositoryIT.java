@@ -86,7 +86,7 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
 
   @Test
   @WithMockKeycloakUser(username = "user", groupRole = {"group 1:SUPER_USER"})
-  public void save_PersistedOrganization_When_User_Possess_CollectionManagerRole_FieldsUpdated() {
+  public void save_PersistedOrganization_WhenSuperUserRole_FieldsUpdated() {
     String[] newAliases = new String[]{"new alias"};
 
     OrganizationDto updatedDto = organizationRepository.findOne(
@@ -138,7 +138,7 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
 
   @Test
   @WithMockKeycloakUser(username = "user", groupRole = {"group 1:USER"})
-  public void save_PersistedOrganization_When_User_Has_No_CollectionManager_Role_FieldsUpdate_Denied() {
+  public void save_PersistedOrganization_WhenNoSuperUserRole_FieldsUpdate_Denied() {
     String[] newAliases = new String[]{"new alias"};
 
     OrganizationDto updatedDto = organizationRepository.findOne(
@@ -178,7 +178,7 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
 
   @Test
   @WithMockKeycloakUser(username = "user", groupRole = {"group 1:USER"})
-  public void remove_PersistedOrganization_When_User_Has_No_CollectionManager_Role_OrganizationRemove_Denied() {
+  public void remove_PersistedOrganization_WhenNoSuperUserRole_OrganizationRemove_Denied() {
     OrganizationDto persistedOrg = organizationRepository.findOne(
       organizationUnderTest.getUuid(),
       new QuerySpec(OrganizationDto.class)
@@ -197,7 +197,7 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
       OrganizationName.builder().languageCode("te").name("test_name").build()));
     orgDto.setAliases(new String[]{"test alias"});
 
-    Integer totalCreatedOrganization = organizationRepository.findAll(new QuerySpec(OrganizationDto.class)).size();
+    int totalCreatedOrganization = organizationRepository.findAll(new QuerySpec(OrganizationDto.class)).size();
 
     OrganizationDto createdOrganization = organizationRepository.create(orgDto);
     assertEquals(totalCreatedOrganization + 1, organizationRepository.findAll(new QuerySpec(OrganizationDto.class)).size());

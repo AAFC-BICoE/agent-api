@@ -30,7 +30,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -121,7 +120,7 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
 
   @Test
   @WithMockKeycloakUser(username="user", groupRole = {"group 1:USER"})
-  public void save_PersistedPerson_When_User_Has_No_CollectionManager_Role_FieldsUpdate_Denied() {
+  public void save_PersistedPerson_WhenNotSuperUserRole_FieldsUpdate_Denied() {
     String updatedEmail = "Updated_Email@email.com";
     String updatedName = "Updated_Name";
 
@@ -175,7 +174,7 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
 
   @Test
   @WithMockKeycloakUser(username="user", groupRole = {"group 1:SUPER_USER"})
-  public void remove_PersistedPerson_When_User_Possess_CollectioManagerRole_PersonRemoved() {
+  public void remove_PersistedPerson_WhenSuperUserRole_PersonRemoved() {
     PersonDto persistedPerson = personResourceRepository.findOne(
       personUnderTest.getUuid(),
       new QuerySpec(PersonDto.class)
@@ -185,12 +184,12 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
 
     assertNotNull(personService.findOne(personUnderTest.getUuid(), Person.class));
     personResourceRepository.delete(persistedPerson.getUuid());
-    assertNull(personService.findOne(personUnderTest.getUuid(), Person.class));
+    Assertions.assertNull(personService.findOne(personUnderTest.getUuid(), Person.class));
   }
 
   @Test
   @WithMockKeycloakUser(username="user", groupRole = {"group 1:USER"})
-  public void remove_PersistedPerson_When_User_Has_No_CollectionManager_Role_PersonRemove_Denied() {
+  public void remove_PersistedPerson_WhenNoSuperUserRole_PersonRemove_Denied() {
     PersonDto persistedPerson = personResourceRepository.findOne(
       personUnderTest.getUuid(),
       new QuerySpec(PersonDto.class)

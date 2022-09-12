@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import ca.gc.aafc.dina.security.PermissionAuthorizationService;
 
 @Service
-public class UpdateDeleteCollectionManagerOnly extends PermissionAuthorizationService {
+public class UpdateDeleteSuperUserOnly extends PermissionAuthorizationService {
 
   @Override
   @PreAuthorize("hasMinimumDinaRole(@currentUser, 'GUEST')")
