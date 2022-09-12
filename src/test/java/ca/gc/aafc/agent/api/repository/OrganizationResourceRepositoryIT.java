@@ -53,7 +53,7 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
     dService.save(organizationUnderTest);
   }
 
-  @WithMockKeycloakUser(username = "user", groupRole = {"group 1:staff"})
+  @WithMockKeycloakUser(username = "user", groupRole = {"group 1:USER"})
   @Test
   public void createOrganization_onSuccess_organizationPersisted() {
     OrganizationDto orgDto = new OrganizationDto();
@@ -71,7 +71,7 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
   }
 
   @Test
-  @WithMockKeycloakUser(username = "user", groupRole = {"group 1:staff"})
+  @WithMockKeycloakUser(username = "user", groupRole = {"group 1:USER"})
   public void createOrganization_When_NameIsNull_throwBadRequestException() {
     OrganizationDto orgDto = new OrganizationDto();
     orgDto.setNames(Collections.emptyList());
@@ -85,7 +85,7 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
   }
 
   @Test
-  @WithMockKeycloakUser(username = "user", groupRole = {"group 1:COLLECTION_MANAGER"})
+  @WithMockKeycloakUser(username = "user", groupRole = {"group 1:SUPER_USER"})
   public void save_PersistedOrganization_When_User_Possess_CollectionManagerRole_FieldsUpdated() {
     String[] newAliases = new String[]{"new alias"};
 
@@ -102,7 +102,7 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
   }
 
   @Test
-  @WithMockKeycloakUser(username = "user", groupRole = {"group 1:COLLECTION_MANAGER"})
+  @WithMockKeycloakUser(username = "user", groupRole = {"group 1:SUPER_USER"})
   public void save_add_OrganizationName_FieldsUpdated() {
     OrganizationDto updatedDto = organizationRepository.findOne(
       organizationUnderTest.getUuid(),
@@ -120,7 +120,7 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
   }
 
   @Test
-  @WithMockKeycloakUser(username = "user", groupRole = {"group 1:COLLECTION_MANAGER"})
+  @WithMockKeycloakUser(username = "user", groupRole = {"group 1:SUPER_USER"})
   public void save_remove_all_OrganizationName_FieldsUpdated() {
     OrganizationDto updatedDto = organizationRepository.findOne(
       organizationUnderTest.getUuid(),
@@ -137,7 +137,7 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
   }
 
   @Test
-  @WithMockKeycloakUser(username = "user", groupRole = {"group 1:STAFF"})
+  @WithMockKeycloakUser(username = "user", groupRole = {"group 1:USER"})
   public void save_PersistedOrganization_When_User_Has_No_CollectionManager_Role_FieldsUpdate_Denied() {
     String[] newAliases = new String[]{"new alias"};
 
@@ -162,8 +162,8 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
   }
 
   @Test
-  @WithMockKeycloakUser(username = "user", groupRole = {"group 1:COLLECTION_MANAGER"})
-  public void remove_PersistedOrganization_When_User_Possess_CollectioManagerRoleOrganizationRemoved() {
+  @WithMockKeycloakUser(username = "user", groupRole = {"group 1:SUPER_USER"})
+  public void remove_PersistedOrganization_WhenSuperUserRole_OrganizationRemoved() {
     OrganizationDto persistedOrg = organizationRepository.findOne(
       organizationUnderTest.getUuid(),
       new QuerySpec(OrganizationDto.class)
@@ -177,7 +177,7 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
   }
 
   @Test
-  @WithMockKeycloakUser(username = "user", groupRole = {"group 1:STAFF"})
+  @WithMockKeycloakUser(username = "user", groupRole = {"group 1:USER"})
   public void remove_PersistedOrganization_When_User_Has_No_CollectionManager_Role_OrganizationRemove_Denied() {
     OrganizationDto persistedOrg = organizationRepository.findOne(
       organizationUnderTest.getUuid(),
@@ -190,7 +190,7 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
   }
 
   @Test
-  @WithMockKeycloakUser(username = "user", groupRole = {"group 1:staff"})
+  @WithMockKeycloakUser(username = "user", groupRole = {"group 1:USER"})
   public void findOrganization_by_name() {
     OrganizationDto orgDto = new OrganizationDto();
     orgDto.setNames(Collections.singletonList(

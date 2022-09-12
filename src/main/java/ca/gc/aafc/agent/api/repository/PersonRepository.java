@@ -2,7 +2,7 @@ package ca.gc.aafc.agent.api.repository;
 
 import ca.gc.aafc.agent.api.dto.PersonDto;
 import ca.gc.aafc.agent.api.entities.Person;
-import ca.gc.aafc.agent.api.service.UpdateDeleteCollectionManagerOnly;
+import ca.gc.aafc.agent.api.security.UpdateDeleteCollectionManagerOnly;
 import ca.gc.aafc.dina.mapper.DinaMapper;
 import ca.gc.aafc.dina.repository.DinaRepository;
 import ca.gc.aafc.dina.security.DinaAuthenticatedUser;
