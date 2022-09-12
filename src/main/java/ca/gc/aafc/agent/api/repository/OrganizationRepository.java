@@ -2,7 +2,7 @@ package ca.gc.aafc.agent.api.repository;
 
 import ca.gc.aafc.agent.api.dto.OrganizationDto;
 import ca.gc.aafc.agent.api.entities.Organization;
-import ca.gc.aafc.agent.api.service.OrganizationAuthorizationService;
+import ca.gc.aafc.agent.api.security.OrganizationAuthorizationService;
 import ca.gc.aafc.dina.mapper.DinaMapper;
 import ca.gc.aafc.dina.repository.DinaRepository;
 import ca.gc.aafc.dina.security.DinaAuthenticatedUser;

@@ -1,4 +1,4 @@
-package ca.gc.aafc.agent.api.service;
+package ca.gc.aafc.agent.api.security;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -9,17 +9,22 @@ import ca.gc.aafc.dina.security.PermissionAuthorizationService;
 public class OrganizationAuthorizationService extends PermissionAuthorizationService {
 
   @Override
-  @PreAuthorize("hasMinimumDinaRole(@currentUser, 'STUDENT')")
+  @PreAuthorize("hasMinimumDinaRole(@currentUser, 'GUEST')")
   public void authorizeCreate(Object entity) {
   }
 
   @Override
-  @PreAuthorize("hasMinimumDinaRole(@currentUser, 'COLLECTION_MANAGER')")
+  public void authorizeRead(Object entity) {
+
+  }
+
+  @Override
+  @PreAuthorize("hasMinimumDinaRole(@currentUser, 'SUPER_USER')")
   public void authorizeUpdate(Object entity) {
   }
 
   @Override
-  @PreAuthorize("hasMinimumDinaRole(@currentUser, 'COLLECTION_MANAGER')")
+  @PreAuthorize("hasMinimumDinaRole(@currentUser, 'SUPER_USER')")
   public void authorizeDelete(Object entity) {
   }
 

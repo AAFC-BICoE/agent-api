@@ -1,9 +1,9 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no" ?>
 <databaseChangeLog
-        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog db/changelog/xsd/dbchangelog-4.4.xsd"
-        context="schema-change">
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://local.xsd/dbchangelog-4.4.xsd"
+    context="schema-change">
 
     <changeSet id="13-Add_webpage_and_remarks_to_person" context="schema-change" author="steven luu">
         <addColumn tableName="person">
