@@ -16,7 +16,8 @@ public class Identifier {
     WIKIDATA;
   }
 
-  private final IdentifierType type ;
+  private final IdentifierType type;
+
   private final URI uri;
 
 }

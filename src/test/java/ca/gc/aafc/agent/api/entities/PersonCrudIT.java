@@ -136,7 +136,7 @@ public class PersonCrudIT extends BaseIntegrationTest {
   private static Identifier getUniqueIdentifier(IdentifierType type) {
     return Identifier.builder()
         .type(type)
-        .uri(URI.create("https://www.ORCID.org/ORCID/" +
+        .uri(URI.create("ABC" +
             TestableEntityFactory.generateRandomName(5)))
         .build();
   }
