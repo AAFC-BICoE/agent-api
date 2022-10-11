@@ -27,7 +27,7 @@
     <checkstyle.version>8.45.1</checkstyle.version>
     <asciidoctor-maven-plugin.version>2.1.0</asciidoctor-maven-plugin.version>
     <asciidoctorj.diagram.version>2.0.2</asciidoctorj.diagram.version>
-    <dina-base-api.version>0.93</dina-base-api.version>
+    <dina-base-api.version>0.95</dina-base-api.version>
     <postgresql.version>42.4.1</postgresql.version>
     <spring-boot-maven-plugin.fork>false</spring-boot-maven-plugin.fork>
   </properties>
@@ -191,6 +191,9 @@
         <groupId>com.github.spotbugs</groupId>
         <artifactId>spotbugs-maven-plugin</artifactId>
         <version>${spotbugs-maven-plugin.version}</version>
+        <configuration>
+          <excludeFilterFile>spotbugs-exclude.xml</excludeFilterFile>
+        </configuration>
         <dependencies>
           <!-- Force SpotBug version to match the annotation -->
           <dependency>

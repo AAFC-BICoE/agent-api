@@ -13,13 +13,11 @@ import org.javers.core.metamodel.annotation.TypeName;
 import ca.gc.aafc.agent.api.entities.Organization;
 import ca.gc.aafc.agent.api.entities.OrganizationName;
 import ca.gc.aafc.dina.dto.RelatedEntity;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.crnk.core.resource.annotations.JsonApiId;
 import io.crnk.core.resource.annotations.JsonApiResource;
 import lombok.Data;
 
 @RelatedEntity(Organization.class)
-@SuppressFBWarnings({"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 @Data
 @JsonApiResource(type = OrganizationDto.TYPENAME)
 @TypeName(OrganizationDto.TYPENAME)
