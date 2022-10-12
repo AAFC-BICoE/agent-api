@@ -1,7 +1,6 @@
 package ca.gc.aafc.agent.api.dto;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
