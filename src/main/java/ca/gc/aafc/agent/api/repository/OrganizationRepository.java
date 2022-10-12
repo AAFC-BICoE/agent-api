@@ -8,6 +8,7 @@ import ca.gc.aafc.dina.repository.DinaRepository;
 import ca.gc.aafc.dina.security.DinaAuthenticatedUser;
 import ca.gc.aafc.dina.service.AuditService;
 import ca.gc.aafc.dina.service.DinaService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NonNull;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.stereotype.Repository;
@@ -20,12 +21,12 @@ public class OrganizationRepository extends DinaRepository<OrganizationDto, Orga
   private Optional<DinaAuthenticatedUser> authenticatedUser;
 
   public OrganizationRepository(
-    @NonNull DinaService<Organization> dinaService,
-    @NonNull OrganizationAuthorizationService authorizationService,
-    Optional<DinaAuthenticatedUser> authenticatedUser,
-    @NonNull BuildProperties props,
-    @NonNull AuditService auditService
-  ) {
+          @NonNull DinaService<Organization> dinaService,
+          @NonNull OrganizationAuthorizationService authorizationService,
+          Optional<DinaAuthenticatedUser> authenticatedUser,
+          @NonNull BuildProperties props,
+          @NonNull AuditService auditService,
+          @NonNull ObjectMapper objMapper) {
     super(
       dinaService,
       authorizationService,
@@ -35,7 +36,7 @@ public class OrganizationRepository extends DinaRepository<OrganizationDto, Orga
       Organization.class,
       null,
       null,
-      props);
+      props, objMapper);
     this.authenticatedUser = authenticatedUser;
   }
 
