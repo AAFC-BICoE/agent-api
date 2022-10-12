@@ -3,10 +3,6 @@ package ca.gc.aafc.agent.api.entities;
 import ca.gc.aafc.dina.entity.DinaEntity;
 import ca.gc.aafc.dina.service.OnUpdate;
 
-import com.vladmihalcea.hibernate.type.array.StringArrayType;
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -19,7 +15,6 @@ import org.hibernate.annotations.GenerationTime;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.NaturalIdCache;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -42,18 +37,7 @@ import java.util.UUID;
 @ToString
 @EqualsAndHashCode
 @Builder
-@SuppressFBWarnings(
-  justification = "ok for Hibernate Entity",
-  value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 @NaturalIdCache
-@TypeDef(
-  name = "string-array", 
-  typeClass = StringArrayType.class
-)
-@TypeDef(
-  name = "jsonb",
-  typeClass = JsonBinaryType.class
-)
 public class Organization implements DinaEntity {
 
   @Id

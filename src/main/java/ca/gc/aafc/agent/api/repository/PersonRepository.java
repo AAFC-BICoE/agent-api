@@ -8,6 +8,7 @@ import ca.gc.aafc.dina.repository.DinaRepository;
 import ca.gc.aafc.dina.security.DinaAuthenticatedUser;
 import ca.gc.aafc.dina.service.AuditService;
 import ca.gc.aafc.dina.service.DinaService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NonNull;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.stereotype.Repository;
@@ -25,7 +26,8 @@ public class PersonRepository extends DinaRepository<PersonDto, Person> {
     @NonNull UpdateDeleteSuperUserOnly authorizationService,
     Optional<DinaAuthenticatedUser> authenticatedUser,
     @NonNull BuildProperties props,
-    @NonNull AuditService auditService
+    @NonNull AuditService auditService,
+    @NonNull ObjectMapper objMapper
   ) {
     super(
       dinaService,
@@ -36,7 +38,7 @@ public class PersonRepository extends DinaRepository<PersonDto, Person> {
       Person.class,
       null,
       null,
-      props);
+      props, objMapper);
     this.authenticatedUser = authenticatedUser;
   }
 

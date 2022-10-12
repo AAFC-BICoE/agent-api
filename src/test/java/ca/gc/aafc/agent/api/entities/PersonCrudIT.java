@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
 import javax.persistence.PersistenceException;
-import java.net.URI;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -136,8 +135,8 @@ public class PersonCrudIT extends BaseIntegrationTest {
   private static Identifier getUniqueIdentifier(IdentifierType type) {
     return Identifier.builder()
         .type(type)
-        .uri(URI.create("https://www.ORCID.org/ORCID/" +
-            TestableEntityFactory.generateRandomName(5)))
+        .uri("https://www.ORCID.org/ORCID/" +
+            TestableEntityFactory.generateRandomName(5))
         .build();
   }
 

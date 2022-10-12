@@ -1,7 +1,6 @@
 package ca.gc.aafc.agent.api.dto;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,14 +14,12 @@ import org.javers.core.metamodel.annotation.TypeName;
 import ca.gc.aafc.agent.api.entities.Identifier;
 import ca.gc.aafc.agent.api.entities.Person;
 import ca.gc.aafc.dina.dto.RelatedEntity;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.crnk.core.resource.annotations.JsonApiId;
 import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.crnk.core.resource.annotations.JsonApiResource;
 import lombok.Data;
 
 @RelatedEntity(Person.class)
-@SuppressFBWarnings({ "EI_EXPOSE_REP", "EI_EXPOSE_REP2" })
 @Data
 @JsonApiResource(type = PersonDto.TYPENAME)
 @TypeName(PersonDto.TYPENAME)
@@ -49,7 +46,7 @@ public class PersonDto extends AttributeMetaInfoProvider {
   private String[] aliases;
 
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
-  private List<Identifier> identifiers = new ArrayList<>();
+  private List<Identifier> identifiers = List.of();
 
   private String webpage;
 

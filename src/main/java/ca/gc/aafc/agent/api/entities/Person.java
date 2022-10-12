@@ -3,10 +3,6 @@ package ca.gc.aafc.agent.api.entities;
 import ca.gc.aafc.dina.entity.DinaEntity;
 import ca.gc.aafc.dina.service.OnUpdate;
 
-import com.vladmihalcea.hibernate.type.array.ListArrayType;
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -19,7 +15,6 @@ import org.hibernate.annotations.GenerationTime;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.NaturalIdCache;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.Column;
@@ -38,7 +33,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -50,16 +44,7 @@ import java.util.UUID;
 @ToString
 @EqualsAndHashCode
 @Builder
-@SuppressFBWarnings(justification = "ok for Hibernate Entity", value = { "EI_EXPOSE_REP", "EI_EXPOSE_REP2" })
 @NaturalIdCache
-@TypeDef(
-  name = "list-array",
-  typeClass = ListArrayType.class
-)
-@TypeDef(
-  name = "jsonb",
-  typeClass = JsonBinaryType.class
-)
 public class Person implements DinaEntity {  
 
   @Id
@@ -101,7 +86,7 @@ public class Person implements DinaEntity {
 
   @Type(type = "jsonb")
   @Valid
-  private List<Identifier> identifiers = new ArrayList<>();
+  private List<Identifier> identifiers = List.of();
 
   @URL
   private String webpage;
