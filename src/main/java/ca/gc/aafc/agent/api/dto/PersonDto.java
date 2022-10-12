@@ -49,7 +49,7 @@ public class PersonDto extends AttributeMetaInfoProvider {
   private String[] aliases;
 
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
-  private List<Identifier> identifiers = new ArrayList<>();
+  private List<Identifier> identifiers = List.of();
 
   private String webpage;
 

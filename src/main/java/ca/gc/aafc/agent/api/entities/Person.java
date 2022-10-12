@@ -89,7 +89,7 @@ public class Person implements DinaEntity {
 
   @Type(type = "jsonb")
   @Valid
-  private List<Identifier> identifiers = new ArrayList<>();
+  private List<Identifier> identifiers = List.of();
 
   @URL
   private String webpage;

@@ -1,10 +1,9 @@
 package ca.gc.aafc.agent.api.entities;
 
-import java.net.URI;
-
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.validator.constraints.URL;
 
 @Getter
 @RequiredArgsConstructor
@@ -18,6 +17,10 @@ public class Identifier {
 
   private final IdentifierType type;
 
-  private final URI uri;
+  /**
+   * uri are url for Orcid and Wikidata, but it may change for a more generic term.
+   */
+  @URL
+  private final String uri;
 
 }

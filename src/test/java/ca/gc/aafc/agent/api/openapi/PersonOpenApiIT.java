@@ -64,7 +64,7 @@ public class PersonOpenApiIT extends BaseRestAssuredTest {
 
     Identifier identifier = Identifier.builder()
       .type(IdentifierType.WIKIDATA)
-      .uri(URI.create("https://www.wikidata.org/wiki/Q51044"))
+      .uri("https://www.wikidata.org/wiki/Q51044")
       .build();
     
     List<Identifier> identifiers = Collections.singletonList(identifier);
