@@ -4,6 +4,7 @@ import ca.gc.aafc.dina.entity.DinaEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
@@ -29,6 +30,7 @@ import java.util.UUID;
 @Setter
 @Builder
 @AllArgsConstructor
+@RequiredArgsConstructor
 @NaturalIdCache
 public class Identifier implements DinaEntity {
 

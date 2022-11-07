@@ -79,30 +79,6 @@ public class PersonCrudIT extends BaseIntegrationTest {
 //    Assertions.assertDoesNotThrow(() -> personService.create(person1));
 //    Assertions.assertDoesNotThrow(() -> personService.create(person2));
 //  }
-//
-//  @Test
-//  public void wikiDataUniqueIndex() {
-//    Identifier wikiId = getUniqueIdentifier(IdentifierType.WIKIDATA);
-//
-//    Person wikiUser = PersonFactory.newPerson().build();
-//    wikiUser.setIdentifiers(Collections.singletonList(wikiId));
-//    Person wikiUser2 = PersonFactory.newPerson().build();
-//    wikiUser2.setIdentifiers(Collections.singletonList(wikiId));
-//    personService.create(wikiUser);
-//    Assertions.assertThrows(PersistenceException.class, () -> personService.create(wikiUser2));
-//  }
-//
-//  @Test
-//  public void orcidUniqueIndex() {
-//    Identifier orcid = getUniqueIdentifier(IdentifierType.ORCID);
-//
-//    Person orcidUser = PersonFactory.newPerson().build();
-//    orcidUser.setIdentifiers(Collections.singletonList(orcid));
-//    Person orcidUser2 = PersonFactory.newPerson().build();
-//    orcidUser2.setIdentifiers(Collections.singletonList(orcid));
-//    personService.create(orcidUser);
-//    Assertions.assertThrows(PersistenceException.class, () -> personService.create(orcidUser2));
-//  }
 
   @Test
   public void testRemove() {
@@ -112,26 +88,16 @@ public class PersonCrudIT extends BaseIntegrationTest {
 
   @Test
   public void testInvalidURLValidation_throwsConstraintValidation() {
-
     Person person = PersonFactory.newPerson()
       .webpage("invalidurl")
       .build();
 
     assertThrows(ConstraintViolationException.class, 
       () -> personService.create(person));
-
   }
 
   private Person getPersonUnderTest() {
     return personService.findOne(personUnderTest.getUuid(), Person.class);
   }
-
-//  private static Identifier getUniqueIdentifier(IdentifierType type) {
-//    return Identifier.builder()
-//        .type(type)
-//        .uri("https://www.ORCID.org/ORCID/" +
-//            TestableEntityFactory.generateRandomName(5))
-//        .build();
-//  }
 
 }
