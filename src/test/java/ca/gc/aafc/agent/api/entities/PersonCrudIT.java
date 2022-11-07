@@ -70,16 +70,6 @@ public class PersonCrudIT extends BaseIntegrationTest {
       fetchedPerson.getOrganizations().iterator().next().getId());
   }
 
-//  @Test
-//  public void whenNoIdentifiers_OperationAllowed() {
-//    Person person1 = PersonFactory.newPerson().build();
-//    person1.setIdentifiers(null);
-//    Person person2 = PersonFactory.newPerson().build();
-//    person2.setIdentifiers(null);
-//    Assertions.assertDoesNotThrow(() -> personService.create(person1));
-//    Assertions.assertDoesNotThrow(() -> personService.create(person2));
-//  }
-
   @Test
   public void testRemove() {
     personService.delete(personUnderTest);
