@@ -1,26 +1,61 @@
 package ca.gc.aafc.agent.api.entities;
 
+import ca.gc.aafc.dina.entity.DinaEntity;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.validator.constraints.URL;
+import lombok.Setter;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
+import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.NaturalIdCache;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.time.OffsetDateTime;
+import java.util.UUID;
+
+/**
+ * Unique index on the combination of person_id, namespace and value
+ */
+@Entity(name = "identifier")
 @Getter
-@RequiredArgsConstructor
+@Setter
 @Builder
-public class Identifier {
-  
-  public enum IdentifierType {
-    ORCID,
-    WIKIDATA;
-  }
+@AllArgsConstructor
+@RequiredArgsConstructor
+@NaturalIdCache
+public class Identifier implements DinaEntity {
 
-  private final IdentifierType type;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
 
-  /**
-   * uri are url for Orcid and Wikidata, but it may change for a more generic term.
-   */
-  @URL
-  private final String uri;
+  @NaturalId
+  @NotNull
+  @Column(name = "uuid", unique = true)
+  private UUID uuid;
+
+  @Size(max = 50)
+  @NotBlank
+  private String namespace;
+
+  @Size(max = 250)
+  @NotBlank
+  private String value;
+
+  @Column(name = "created_by")
+  private String createdBy;
+
+  @Column(name = "created_on", insertable = false, updatable = false)
+  @Generated(value = GenerationTime.INSERT)
+  private OffsetDateTime createdOn;
 
 }

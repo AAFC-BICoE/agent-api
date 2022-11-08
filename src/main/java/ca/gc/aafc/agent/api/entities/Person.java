@@ -26,7 +26,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.validation.Valid;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -84,8 +84,8 @@ public class Person implements DinaEntity {
   @Type(type = "string-array")
   private String[] aliases;
 
-  @Type(type = "jsonb")
-  @Valid
+  @OneToMany(fetch = FetchType.LAZY)
+  @JoinColumn(name = "person_id")
   private List<Identifier> identifiers = List.of();
 
   @URL
@@ -93,4 +93,5 @@ public class Person implements DinaEntity {
 
   @Size(max = 500)
   private String remarks;
+
 }
