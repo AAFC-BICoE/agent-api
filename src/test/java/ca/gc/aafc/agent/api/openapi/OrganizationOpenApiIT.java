@@ -1,6 +1,8 @@
 package ca.gc.aafc.agent.api.openapi;
 
+import ca.gc.aafc.agent.api.dto.OrganizationDto;
 import ca.gc.aafc.agent.api.entities.Organization;
+import ca.gc.aafc.agent.api.testsupport.fixtures.OrganisationTestFixture;
 import ca.gc.aafc.dina.testsupport.BaseRestAssuredTest;
 import ca.gc.aafc.dina.testsupport.DatabaseSupportService;
 import ca.gc.aafc.dina.testsupport.PostgresTestContainerInitializer;
@@ -41,17 +43,12 @@ public class OrganizationOpenApiIT extends BaseRestAssuredTest {
   @Test
   public void post_NewOrganization_ReturnsOkayAndBody() {
     List<String> aliases = List.of("alias1", "alias2");
-
+    OrganizationDto organizationDto = OrganisationTestFixture.newOrganization();
     ValidatableResponse response = super.sendPost(
       "",
       JsonAPITestHelper.toJsonAPIMap(
         "organization",
-        new ImmutableMap.Builder<String, Object>()
-          .put("aliases", aliases)
-          .put("names", Collections.singletonList(ImmutableMap.of(
-            "languageCode", "te",
-            "name", "test")))
-          .build(),
+        JsonAPITestHelper.toAttributeMap(organizationDto),
         null,
         null
       )

@@ -1,11 +1,13 @@
 package ca.gc.aafc.agent.api.openapi;
 
 import ca.gc.aafc.agent.api.dto.IdentifierDto;
+import ca.gc.aafc.agent.api.dto.OrganizationDto;
 import ca.gc.aafc.agent.api.dto.PersonDto;
 import ca.gc.aafc.agent.api.entities.Identifier;
 import ca.gc.aafc.agent.api.entities.Organization;
 import ca.gc.aafc.agent.api.entities.Person;
 import ca.gc.aafc.agent.api.testsupport.fixtures.IdentifierTestFixture;
+import ca.gc.aafc.agent.api.testsupport.fixtures.OrganisationTestFixture;
 import ca.gc.aafc.agent.api.testsupport.fixtures.PersonTestFixture;
 import ca.gc.aafc.dina.testsupport.BaseRestAssuredTest;
 import ca.gc.aafc.dina.testsupport.DatabaseSupportService;
@@ -49,17 +51,12 @@ public class PersonOpenApiIT extends BaseRestAssuredTest {
 
   @Test
   public void post_NewPerson_ReturnsOkayAndBody() {
-
+    OrganizationDto organizationDto = OrganisationTestFixture.newOrganization();
     ValidatableResponse organizationResponse = sendPost(
       API_BASE_PATH_ORGANIZATION, 
       JsonAPITestHelper.toJsonAPIMap(
         "organization",
-        new ImmutableMap.Builder<String, Object>()
-          .put("aliases", List.of("alias1", "alias2"))
-          .put("names", Collections.singletonList(ImmutableMap.of(
-            "languageCode", "te",
-            "name", "test")))
-          .build(),
+        JsonAPITestHelper.toAttributeMap(organizationDto),
         null,
         null
       )
@@ -86,10 +83,10 @@ public class PersonOpenApiIT extends BaseRestAssuredTest {
     );
 
     response
-      .body("data.attributes.displayName", Matchers.equalTo(PersonTestFixture.displayName))
-      .body("data.attributes.email", Matchers.equalTo(PersonTestFixture.email))
-      .body("data.attributes.givenNames", Matchers.equalTo(PersonTestFixture.givenNames))
-      .body("data.attributes.familyNames", Matchers.equalTo(PersonTestFixture.familyNames))
+      .body("data.attributes.displayName", Matchers.equalTo(PersonTestFixture.DISPLAYNAME))
+      .body("data.attributes.email", Matchers.equalTo(PersonTestFixture.EMAIL))
+      .body("data.attributes.givenNames", Matchers.equalTo(PersonTestFixture.GIVENNAMES))
+      .body("data.attributes.familyNames", Matchers.equalTo(PersonTestFixture.FAMILYNAMES))
       .body("data.id", Matchers.notNullValue());
     OpenAPI3Assertions.assertRemoteSchema(AGENT_API_SPECS_URL, SCHEMA_NAME, response.extract().asString());
 
