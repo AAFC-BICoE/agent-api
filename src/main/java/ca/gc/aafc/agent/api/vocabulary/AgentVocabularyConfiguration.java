@@ -13,9 +13,7 @@ import ca.gc.aafc.dina.vocabulary.VocabularyConfiguration;
 @PropertySource(value = "classpath:vocabulary/identifiers.yml", factory = YamlPropertyLoaderFactory.class)
 @ConfigurationProperties
 public class AgentVocabularyConfiguration extends VocabularyConfiguration<VocabularyConfiguration.VocabularyElement> {
-
-    public AgentVocabularyConfiguration(Map<String, List<VocabularyElement>> vocabulary) {
-        super(vocabulary);
-    }
-    
+  public AgentVocabularyConfiguration(Map<String, List<VocabularyElement>> vocabulary) {
+    super(vocabulary);
+  }
 }
