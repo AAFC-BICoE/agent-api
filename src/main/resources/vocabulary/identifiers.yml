@@ -3,10 +3,10 @@ vocabulary:
     - name: ORCID
       term: https://www.wikidata.org/wiki/Q51044
       labels:
-        en: 
-        fr: 
+        en: ORCID
+        fr: ORCID
     - name: WIKIDATA
       term: https://www.wikidata.org/wiki/Q2013
       labels:
-        en: 
-        fr: 
+        en: Wikidata
+        fr: Wikidata
