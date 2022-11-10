@@ -8,7 +8,6 @@ import ca.gc.aafc.dina.testsupport.DatabaseSupportService;
 import ca.gc.aafc.dina.testsupport.PostgresTestContainerInitializer;
 import ca.gc.aafc.dina.testsupport.jsonapi.JsonAPITestHelper;
 import ca.gc.aafc.dina.testsupport.specs.OpenAPI3Assertions;
-import com.google.common.collect.ImmutableMap;
 import io.restassured.response.ValidatableResponse;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -17,7 +16,6 @@ import org.springframework.test.context.TestPropertySource;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
