@@ -12,20 +12,23 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.List;
 import java.util.Optional;
 
 @Component
 public class IdentifierValidator implements Validator {
+
   public static final String IDENTIFIER_NAMESPACE_NOT_IN_VOCABULARY = "validation.constraint.violation.namespaceNotInVocabulary";
-  private final AgentVocabularyConfiguration vocabularyConfiguration;
+
   private final MessageSource messageSource;
+  private final List<VocabularyElement> identifiersVocabulary;
 
   public IdentifierValidator(
     MessageSource messageSource, 
     AgentVocabularyConfiguration vocabularyConfiguration
   ) {
     this.messageSource = messageSource;
-    this.vocabularyConfiguration = vocabularyConfiguration;
+    identifiersVocabulary = vocabularyConfiguration.getVocabulary().get(AgentVocabularyConfiguration.IDENTIFIERS);
   }
 
   @Override
@@ -44,8 +47,7 @@ public class IdentifierValidator implements Validator {
 
   private void validateIdentifierNamespace(Errors errors, Identifier identifier) {
     if (StringUtils.isNotBlank(identifier.getNamespace())) {
-      Optional<VocabularyElement> foundNamespace = vocabularyConfiguration.getVocabulary()
-          .get("namespace")
+      Optional<VocabularyElement> foundNamespace = identifiersVocabulary
           .stream().filter(o -> o.getName().equalsIgnoreCase(identifier.getNamespace())).findFirst();
       if (foundNamespace.isPresent()) {
         identifier.setNamespace(foundNamespace.get().getName());
