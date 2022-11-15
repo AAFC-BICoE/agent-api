@@ -1,12 +1,12 @@
 vocabulary:
   identifiers:
     - name: ORCID
-      term: https://www.wikidata.org/wiki/Q51044
+      term: http://www.wikidata.org/entity/Q51044
       labels:
         en: ORCID
         fr: ORCID
     - name: WIKIDATA
-      term: https://www.wikidata.org/wiki/Q2013
+      term: http://www.wikidata.org/entity/Q2013
       labels:
         en: Wikidata
         fr: Wikidata
