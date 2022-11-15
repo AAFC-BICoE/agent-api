@@ -24,7 +24,12 @@ public class PersonService extends MessageProducingService<Person> {
 
   @Override
   protected void preCreate(Person entity) {
-    entity.setUuid(UUID.randomUUID());
+
+    // allow user provided uuid
+    if (entity.getUuid() == null) {
+      entity.setUuid(UUID.randomUUID());
+    }
+
     normalizeStrings(entity);
   }
 
