@@ -41,8 +41,7 @@ public class IdentifierValidator implements Validator {
     if (!supports(target.getClass())) {
       throw new IllegalArgumentException("IdentifierValidator not supported for class " + target.getClass());
     }
-    Identifier identifier = (Identifier) target;
-    validateIdentifierNamespace(errors, identifier);
+    validateIdentifierNamespace(errors, (Identifier) target);
   }
 
   private void validateIdentifierNamespace(Errors errors, Identifier identifier) {
