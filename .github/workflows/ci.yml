@@ -68,7 +68,7 @@ jobs:
     name: Build Docker Image and Push to DockerHub
     needs: [build]
     runs-on: ubuntu-latest
-    if: ${{ github.ref == 'refs/heads/master' }}
+    if: ${{ github.ref == 'refs/heads/masterdisable' }}
 
     steps:
       - name: Download artifacts from build job
