@@ -403,7 +403,7 @@
       </plugin>
     </plugins>
   </reporting>
-  
+
   <licenses>
     <license>
       <name>MIT License</name>
