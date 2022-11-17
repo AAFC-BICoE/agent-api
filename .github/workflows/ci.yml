@@ -5,7 +5,6 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 17
@@ -40,22 +39,31 @@ jobs:
             target/agent-api-*.jar
             Dockerfile
 
-  build-java17:
+  maven-central:
+    name: Publish artifact to MavenCentral
     runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/master' }}
+    needs: [build]
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK 17
-        uses: actions/setup-java@v2
-        with:
-          distribution: 'adopt'
-          java-version: 17
-      - name: Build with Maven
-        run: mvn verify
-      - name: Run Checkstyle
-        run: mvn checkstyle:check
-      - name: Run SpotBugs
-        run: mvn spotbugs:check
-          
+      - name: Set up for Maven Central deploy (master branch only)
+        uses: actions/setup-java@v3
+        with: # update default settings.xml
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
+          server-id: ossrh
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_CENTRAL_PW
+          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+
+      - name: Publish to Maven Central (master branch only)
+        run: mvn -DsignArtifacts=true --batch-mode javadoc:jar deploy
+        env:
+          MAVEN_USERNAME: aafcbicoe
+          MAVEN_CENTRAL_PW: ${{ secrets.MAVEN_CENTRAL_PW }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+
   push:
     name: Build Docker Image and Push to DockerHub
     needs: [build]

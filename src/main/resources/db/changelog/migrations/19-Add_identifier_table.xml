@@ -1,0 +1,37 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no" ?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://local.xsd/dbchangelog-4.4.xsd"
+        context="schema-change">
+
+    <changeSet id="19-Add_identifier_table" context="schema-change" author="cgendreau">
+        <createTable tableName="identifier">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="pk_identifier_id"/>
+            </column>
+            <column name="uuid" type="uuid">
+                <constraints nullable="false" unique="true"/>
+            </column>
+			<column name="person_id" type="integer">
+				<constraints foreignKeyName="fk_identifier_person_to_person_id" references="person(id)" />
+			</column>
+            <column name="namespace" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+			<column name="value" type="VARCHAR(250)">
+				<constraints nullable="false"/>
+			</column>
+            <column name="created_by" type="varchar(255)"/>
+            <column name="created_on" type="timestamptz" defaultValueComputed="current_timestamp"/>
+        </createTable>
+    </changeSet>
+
+	<changeSet id="19-Add_identifier_table-2_uniqueness" context="schema-change" author="cgendreau">
+		<sql>
+			CREATE UNIQUE INDEX person_unique_identifier
+			ON identifier (person_id, lower(namespace), lower(value))
+			WHERE person_id IS NOT NULL;
+		</sql>
+	</changeSet>
+</databaseChangeLog>

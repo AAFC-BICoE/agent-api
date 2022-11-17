@@ -4,14 +4,12 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
 import ca.gc.aafc.dina.repository.meta.AttributeMetaInfoProvider;
 import org.javers.core.metamodel.annotation.Id;
 import org.javers.core.metamodel.annotation.PropertyName;
+import org.javers.core.metamodel.annotation.ShallowReference;
 import org.javers.core.metamodel.annotation.TypeName;
 
-import ca.gc.aafc.agent.api.entities.Identifier;
 import ca.gc.aafc.agent.api.entities.Person;
 import ca.gc.aafc.dina.dto.RelatedEntity;
 import io.crnk.core.resource.annotations.JsonApiId;
@@ -37,18 +35,18 @@ public class PersonDto extends AttributeMetaInfoProvider {
   private String createdBy;
   private OffsetDateTime createdOn;
 
-  @JsonApiRelation
-  private List<OrganizationDto> organizations;  
-
   private String givenNames;  
-  private String familyNames;  
-
+  private String familyNames;
   private String[] aliases;
-
-  @JsonInclude(JsonInclude.Include.NON_EMPTY)
-  private List<Identifier> identifiers = List.of();
-
   private String webpage;
-
   private String remarks;
+
+  @JsonApiRelation
+  @ShallowReference
+  private List<OrganizationDto> organizations;
+
+  @JsonApiRelation
+  @ShallowReference
+  private List<IdentifierDto> identifiers = List.of();
+
 }
