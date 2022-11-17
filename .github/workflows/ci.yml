@@ -26,7 +26,7 @@ jobs:
 
       - name: Set up for Maven Central deploy (master branch only)
         uses: actions/setup-java@v3
-        if: ${{ github.ref == 'refs/heads/dev' }}
+        if: ${{ github.ref == 'refs/heads/master' }}
         with: # update default settings.xml
           distribution: 'temurin'
           java-version: '17'
@@ -38,7 +38,7 @@ jobs:
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
       - name: Publish to Maven Central (master branch only)
-        if: ${{ github.ref == 'refs/heads/dev' }}
+        if: ${{ github.ref == 'refs/heads/master' }}
         run: mvn -DsignArtifacts=true --batch-mode javadoc:jar deploy
         env:
           MAVEN_USERNAME: aafcbicoe
