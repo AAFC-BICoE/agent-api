@@ -30,7 +30,7 @@
     <asciidoctorj.diagram.version>2.0.2</asciidoctorj.diagram.version>
     <dina-base-api.version>0.95</dina-base-api.version>
     <postgresql.version>42.4.1</postgresql.version>
-    <maven-gpg-plugin.version>1.5</maven-gpg-plugin.version>
+    <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
     <spring-boot-maven-plugin.fork>false</spring-boot-maven-plugin.fork>
     <spring-security.version>5.7.5</spring-security.version>
   </properties>
