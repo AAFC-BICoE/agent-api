@@ -1,12 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>ca.gc.aafc</groupId>
+  <groupId>io.github.aafc-bicoe</groupId>
   <artifactId>agent-api</artifactId>
   <version>0.23-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>Agent API</name>
+  <description>AAFC DINA Agent API Java implementation</description>
   <url>https://github.com/AAFC-BICoE/agent-api</url>
 
   <parent>
@@ -29,6 +30,7 @@
     <asciidoctorj.diagram.version>2.0.2</asciidoctorj.diagram.version>
     <dina-base-api.version>0.95</dina-base-api.version>
     <postgresql.version>42.4.1</postgresql.version>
+    <maven-gpg-plugin.version>1.5</maven-gpg-plugin.version>
     <spring-boot-maven-plugin.fork>false</spring-boot-maven-plugin.fork>
     <spring-security.version>5.7.5</spring-security.version>
   </properties>
@@ -364,23 +366,18 @@
         </configuration>
       </plugin>
 
-      <!-- Required to process lombok annotations -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>${maven-gpg-plugin.version}</version>
         <configuration>
-          <source>${java.version}</source>
-          <target>${java.version}</target>
-          <annotationProcessorPaths>
-            <path>
-              <groupId>org.projectlombok</groupId>
-              <artifactId>lombok</artifactId>
-              <version>${lombok.version}</version>
-            </path>
-          </annotationProcessorPaths>
+          <!-- Prevent gpg from using pinentry programs -->
+          <gpgArguments>
+            <arg>--pinentry-mode</arg>
+            <arg>loopback</arg>
+          </gpgArguments>
         </configuration>
       </plugin>
-
     </plugins>
   </build>
 
@@ -406,4 +403,23 @@
       </plugin>
     </plugins>
   </reporting>
+
+  <licenses>
+    <license>
+      <name>MIT License</name>
+      <url>https://opensource.org/licenses/mit-license</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <distributionManagement>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+  </distributionManagement>
 </project>
