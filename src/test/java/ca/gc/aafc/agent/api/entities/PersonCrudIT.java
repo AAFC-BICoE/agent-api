@@ -84,8 +84,6 @@ public class PersonCrudIT extends BaseIntegrationTest {
    */
   @Test
   public void testFindMultipleRelationships() {
-    Person fetchedPerson = getPersonUnderTest();
-    List<Identifier> a = fetchedPerson.getIdentifiers();
     Identifier identifier = identifierService.create(IdentifierFactory.newIdentifier().build());
     personUnderTest.setIdentifiers(new ArrayList<>(List.of(identifier)));
 
@@ -94,7 +92,8 @@ public class PersonCrudIT extends BaseIntegrationTest {
     final UUID personUUID = personUnderTest.getUuid();
     List<Person> personList = personService.findAll(Person.class,
             (criteriaBuilder, root, em) -> new Predicate[]{criteriaBuilder.equal(root.get("uuid"), personUUID)},
-            null, 1, 1, Set.of(), Set.of("identifiers", "organizations"));
+            null, 0, 1, Set.of(), Set.of("identifiers", "organizations"));
+    assertEquals(1, personList.size());
   }
 
   @Test

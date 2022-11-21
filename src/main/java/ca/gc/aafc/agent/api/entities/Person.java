@@ -27,6 +27,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -73,6 +74,7 @@ public class Person implements DinaEntity {
   @JoinTable(name = "person_organization",
       joinColumns = { @JoinColumn(name = "person_id") },
       inverseJoinColumns = { @JoinColumn(name = "organization_id") } )
+  @OrderColumn(name = "pos")
   private List<Organization> organizations;
 
   @Size(max = 50)
@@ -86,7 +88,7 @@ public class Person implements DinaEntity {
 
   @OneToMany(fetch = FetchType.LAZY)
   @JoinColumn(name = "person_id")
-  private List<Identifier> identifiers = List.of();
+  private List<Identifier> identifiers;
 
   @URL
   private String webpage;
