@@ -1,6 +1,7 @@
 package ca.gc.aafc.agent.api.entities;
 
 import ca.gc.aafc.agent.api.BaseIntegrationTest;
+import ca.gc.aafc.agent.api.testsupport.factories.IdentifierFactory;
 import ca.gc.aafc.agent.api.testsupport.factories.OrganizationFactory;
 import ca.gc.aafc.agent.api.testsupport.factories.PersonFactory;
 import ca.gc.aafc.dina.service.DinaService;
@@ -8,8 +9,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
+import javax.persistence.criteria.Predicate;
 import javax.validation.ConstraintViolationException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,6 +33,9 @@ public class PersonCrudIT extends BaseIntegrationTest {
   @Inject
   private DinaService<Organization> orgService;
 
+  @Inject
+  private DinaService<Identifier> identifierService;
+
   private Person personUnderTest;
   private Organization organizationUnderTest;
 
@@ -36,7 +45,7 @@ public class PersonCrudIT extends BaseIntegrationTest {
     personUnderTest.setGivenNames(GIVEN_NAMES);
     personUnderTest.setFamilyNames(FAMILY_NAMES);
     organizationUnderTest = OrganizationFactory.newOrganization().build();
-    personUnderTest.setOrganizations(Collections.singletonList(organizationUnderTest));
+    personUnderTest.setOrganizations(new ArrayList<>(List.of(organizationUnderTest)));
     orgService.create(organizationUnderTest);
     personService.create(personUnderTest);
   }
@@ -68,6 +77,23 @@ public class PersonCrudIT extends BaseIntegrationTest {
     assertEquals(
       organizationUnderTest.getId(),
       fetchedPerson.getOrganizations().iterator().next().getId());
+  }
+
+  /**
+   * This test is mostly used to test MultipleBagFetchException
+   */
+  @Test
+  public void testFindMultipleRelationships() {
+    Identifier identifier = identifierService.create(IdentifierFactory.newIdentifier().build());
+    personUnderTest.setIdentifiers(new ArrayList<>(List.of(identifier)));
+
+    personService.update(personUnderTest);
+
+    final UUID personUUID = personUnderTest.getUuid();
+    List<Person> personList = personService.findAll(Person.class,
+            (criteriaBuilder, root, em) -> new Predicate[]{criteriaBuilder.equal(root.get("uuid"), personUUID)},
+            null, 0, 1, Set.of(), Set.of("identifiers", "organizations"));
+    assertEquals(1, personList.size());
   }
 
   @Test
