@@ -39,7 +39,7 @@ jobs:
 
       - name: Publish to Maven Central (master branch only)
         if: ${{ github.ref == 'refs/heads/master' }}
-        run: mvn -DsignArtifacts=true --batch-mode javadoc:jar deploy
+        run: mvn -DsignArtifacts=true --batch-mode javadoc:jar source:jar deploy
         env:
           MAVEN_USERNAME: aafcbicoe
           MAVEN_CENTRAL_PW: ${{ secrets.MAVEN_CENTRAL_PW }}
@@ -59,6 +59,8 @@ jobs:
             version.txt
             target/agent-api-*.jar
             Dockerfile
+            !target/agent-api-*sources.jar
+            !target/agent-api-*javadoc.jar
 
   push:
     name: Build Docker Image and Push to DockerHub
