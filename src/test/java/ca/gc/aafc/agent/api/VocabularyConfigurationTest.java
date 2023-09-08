@@ -5,6 +5,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import ca.gc.aafc.agent.api.config.AgentVocabularyConfiguration;
 import ca.gc.aafc.dina.vocabulary.VocabularyElement;
+import ca.gc.aafc.dina.vocabulary.VocabularyElementConfiguration;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -21,7 +22,7 @@ public class VocabularyConfigurationTest extends BaseIntegrationTest {
 
   @Test
   void identifiers() {
-    List<VocabularyElement> coordinateSystem = agentConfiguration.getVocabulary()
+    List<VocabularyElementConfiguration> coordinateSystem = agentConfiguration.getVocabulary()
       .get("identifiers");
     assertEquals(2, coordinateSystem.size());
     coordinateSystem.forEach(assertVocabElement());

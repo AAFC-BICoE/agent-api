@@ -1,6 +1,7 @@
 package ca.gc.aafc.agent.api.dto;
 
 import ca.gc.aafc.dina.vocabulary.VocabularyElement;
+import ca.gc.aafc.dina.vocabulary.VocabularyElementConfiguration;
 
 import io.crnk.core.resource.annotations.JsonApiId;
 import io.crnk.core.resource.annotations.JsonApiResource;
@@ -17,6 +18,6 @@ public class VocabularyDto {
   @JsonApiId
   private final String id;
 
-  private final List<VocabularyElement> vocabularyElements;
+  private final List<VocabularyElementConfiguration> vocabularyElements;
 
 }

@@ -2,7 +2,7 @@ vocabulary:
   identifiers:
     - key: orcid
       name: ORCID
-      term: http://www.wikidata.org/entity/Q51044
+      term: 'http://www.wikidata.org/entity/Q51044'
       multilingualTitle.titles:
         - lang: en
           title: ORCID
@@ -10,10 +10,9 @@ vocabulary:
           title: ORCID
     - key: wikidata
       name: WIKIDATA
-      term: http://www.wikidata.org/entity/Q2013
+      term: 'http://www.wikidata.org/entity/Q2013'
       multilingualTitle.titles:
         - lang: en
           title: Wikidata
         - lang: fr
           title: Wikidata
-          

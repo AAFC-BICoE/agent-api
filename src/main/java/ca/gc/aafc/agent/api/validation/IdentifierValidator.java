@@ -3,6 +3,7 @@ package ca.gc.aafc.agent.api.validation;
 import ca.gc.aafc.agent.api.entities.Identifier;
 import ca.gc.aafc.agent.api.config.AgentVocabularyConfiguration;
 import ca.gc.aafc.dina.vocabulary.VocabularyElement;
+import ca.gc.aafc.dina.vocabulary.VocabularyElementConfiguration;
 
 import lombok.NonNull;
 
@@ -22,7 +23,7 @@ public class IdentifierValidator implements Validator {
   public static final String IDENTIFIER_NAMESPACE_NOT_IN_VOCABULARY = "validation.constraint.violation.namespaceNotInVocabulary";
 
   private final MessageSource messageSource;
-  private final List<VocabularyElement> identifiersVocabulary;
+  private final List<VocabularyElementConfiguration> identifiersVocabulary;
 
   public IdentifierValidator(
     MessageSource messageSource, 
@@ -47,7 +48,7 @@ public class IdentifierValidator implements Validator {
 
   private void validateIdentifierNamespace(Errors errors, Identifier identifier) {
     if (StringUtils.isNotBlank(identifier.getNamespace())) {
-      Optional<VocabularyElement> foundNamespace = identifiersVocabulary
+      Optional<VocabularyElementConfiguration> foundNamespace = identifiersVocabulary
           .stream().filter(o -> o.getName().equalsIgnoreCase(identifier.getNamespace())).findFirst();
       if (foundNamespace.isPresent()) {
         identifier.setNamespace(foundNamespace.get().getName());
