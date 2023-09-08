@@ -2,7 +2,6 @@ package ca.gc.aafc.agent.api.validation;
 
 import ca.gc.aafc.agent.api.entities.Identifier;
 import ca.gc.aafc.agent.api.config.AgentVocabularyConfiguration;
-import ca.gc.aafc.dina.vocabulary.VocabularyElement;
 import ca.gc.aafc.dina.vocabulary.VocabularyElementConfiguration;
 
 import lombok.NonNull;
@@ -46,10 +45,15 @@ public class IdentifierValidator implements Validator {
     validateIdentifierNamespace(errors, (Identifier) target);
   }
 
+  /**
+   * Validate the namespace against the key from the vocabulary.
+   * @param errors
+   * @param identifier
+   */
   private void validateIdentifierNamespace(Errors errors, Identifier identifier) {
     if (StringUtils.isNotBlank(identifier.getNamespace())) {
       Optional<VocabularyElementConfiguration> foundNamespace = identifiersVocabulary
-          .stream().filter(o -> o.getName().equalsIgnoreCase(identifier.getNamespace())).findFirst();
+          .stream().filter(o -> o.getKey().equalsIgnoreCase(identifier.getNamespace())).findFirst();
       if (foundNamespace.isPresent()) {
         identifier.setNamespace(foundNamespace.get().getName());
       } else {

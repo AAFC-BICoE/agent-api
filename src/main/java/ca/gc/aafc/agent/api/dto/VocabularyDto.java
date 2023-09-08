@@ -1,6 +1,5 @@
 package ca.gc.aafc.agent.api.dto;
 
-import ca.gc.aafc.dina.vocabulary.VocabularyElement;
 import ca.gc.aafc.dina.vocabulary.VocabularyElementConfiguration;
 
 import io.crnk.core.resource.annotations.JsonApiId;
