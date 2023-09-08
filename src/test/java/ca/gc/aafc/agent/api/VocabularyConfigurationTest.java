@@ -3,8 +3,9 @@ package ca.gc.aafc.agent.api;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import ca.gc.aafc.agent.api.vocabulary.AgentVocabularyConfiguration;
-import ca.gc.aafc.dina.vocabulary.VocabularyConfiguration;
+import ca.gc.aafc.agent.api.config.AgentVocabularyConfiguration;
+import ca.gc.aafc.dina.vocabulary.VocabularyElement;
+import ca.gc.aafc.dina.vocabulary.VocabularyElementConfiguration;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -21,17 +22,17 @@ public class VocabularyConfigurationTest extends BaseIntegrationTest {
 
   @Test
   void identifiers() {
-    List<VocabularyConfiguration.VocabularyElement> coordinateSystem = agentConfiguration.getVocabulary()
+    List<VocabularyElementConfiguration> coordinateSystem = agentConfiguration.getVocabulary()
       .get("identifiers");
     assertEquals(2, coordinateSystem.size());
     coordinateSystem.forEach(assertVocabElement());
   }
 
-  private static Consumer<VocabularyConfiguration.VocabularyElement> assertVocabElement() {
+  private static Consumer<VocabularyElement> assertVocabElement() {
     return vocabularyElement -> {
       assertNotNull(vocabularyElement.getName());
       assertNotNull(vocabularyElement.getTerm());
-      assertNotNull(vocabularyElement.getLabels());
+      assertNotNull(vocabularyElement.getMultilingualTitle());
     };
   }
 }

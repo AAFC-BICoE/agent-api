@@ -1,6 +1,7 @@
 package ca.gc.aafc.agent.api.dto;
 
-import ca.gc.aafc.dina.vocabulary.VocabularyConfiguration;
+import ca.gc.aafc.dina.vocabulary.VocabularyElementConfiguration;
+
 import io.crnk.core.resource.annotations.JsonApiId;
 import io.crnk.core.resource.annotations.JsonApiResource;
 import lombok.AllArgsConstructor;
@@ -16,6 +17,6 @@ public class VocabularyDto {
   @JsonApiId
   private final String id;
 
-  private final List<VocabularyConfiguration.VocabularyElement> vocabularyElements;
+  private final List<VocabularyElementConfiguration> vocabularyElements;
 
 }
