@@ -2,8 +2,9 @@ package ca.gc.aafc.agent.api.repository;
 
 import ca.gc.aafc.agent.api.BaseIntegrationTest;
 import ca.gc.aafc.agent.api.dto.VocabularyDto;
-import ca.gc.aafc.agent.api.vocabulary.AgentVocabularyConfiguration;
-import ca.gc.aafc.dina.vocabulary.VocabularyConfiguration;
+import ca.gc.aafc.agent.api.config.AgentVocabularyConfiguration;
+import ca.gc.aafc.dina.vocabulary.VocabularyElement;
+
 import io.crnk.core.queryspec.QuerySpec;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -29,7 +30,7 @@ public class VocabularyRepositoryIT extends BaseIntegrationTest {
       vocabularyConfigurationRepository.findAll(new QuerySpec(VocabularyDto.class));
     assertEquals(1, listOfVocabularies.size());
 
-    List<List<VocabularyConfiguration.VocabularyElement>> listOfVocabularyElements = new ArrayList<>();
+    List<List<VocabularyElement>> listOfVocabularyElements = new ArrayList<>();
     for (VocabularyDto vocabularyDto : listOfVocabularies) {
       listOfVocabularyElements.add(vocabularyDto.getVocabularyElements());
     }

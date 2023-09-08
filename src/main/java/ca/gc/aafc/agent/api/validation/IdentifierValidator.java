@@ -1,8 +1,9 @@
 package ca.gc.aafc.agent.api.validation;
 
 import ca.gc.aafc.agent.api.entities.Identifier;
-import ca.gc.aafc.agent.api.vocabulary.AgentVocabularyConfiguration;
-import ca.gc.aafc.dina.vocabulary.VocabularyConfiguration.VocabularyElement;
+import ca.gc.aafc.agent.api.config.AgentVocabularyConfiguration;
+import ca.gc.aafc.dina.vocabulary.VocabularyElement;
+
 import lombok.NonNull;
 
 import org.springframework.context.MessageSource;

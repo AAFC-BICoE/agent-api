@@ -2,7 +2,7 @@ package ca.gc.aafc.agent.api.repository;
 
 import org.springframework.stereotype.Repository;
 
-import ca.gc.aafc.agent.api.vocabulary.AgentVocabularyConfiguration;
+import ca.gc.aafc.agent.api.config.AgentVocabularyConfiguration;
 import ca.gc.aafc.agent.api.dto.VocabularyDto;
 import io.crnk.core.queryspec.QuerySpec;
 import io.crnk.core.repository.ReadOnlyResourceRepositoryBase;

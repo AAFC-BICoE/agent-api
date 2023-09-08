@@ -1,12 +1,19 @@
 vocabulary:
   identifiers:
-    - name: ORCID
+    - key: orcid
+      name: ORCID
       term: http://www.wikidata.org/entity/Q51044
-      labels:
-        en: ORCID
-        fr: ORCID
-    - name: WIKIDATA
+      multilingualTitle.titles:
+        - lang: en
+          title: ORCID
+        - lang: fr
+          title: ORCID
+    - key: wikidata
+      name: WIKIDATA
       term: http://www.wikidata.org/entity/Q2013
-      labels:
-        en: Wikidata
-        fr: Wikidata
+      multilingualTitle.titles:
+        - lang: en
+          title: Wikidata
+        - lang: fr
+          title: Wikidata
+          
