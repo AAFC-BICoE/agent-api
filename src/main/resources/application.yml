@@ -55,5 +55,6 @@ rabbitmq:
   username: guest
   password: guest
   host: ${RABBITMQ_HOSTNAME:localhost}
-messaging:
+
+dina.messaging:
   isProducer: false
