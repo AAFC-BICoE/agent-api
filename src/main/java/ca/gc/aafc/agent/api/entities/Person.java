@@ -93,7 +93,7 @@ public class Person implements DinaEntity {
   @URL
   private String webpage;
 
-  @Size(max = 500)
+  @Size(max = 2048)
   private String remarks;
 
 }
