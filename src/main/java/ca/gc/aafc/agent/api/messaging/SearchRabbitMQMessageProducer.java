@@ -21,8 +21,9 @@ public class SearchRabbitMQMessageProducer extends RabbitMQMessageProducer imple
   DocumentOperationNotificationMessageProducer {
 
   @Autowired
-  public SearchRabbitMQMessageProducer(RabbitTemplate rabbitTemplate, @Named("searchQueueProperties")
-  RabbitMQQueueProperties queueProperties) {
+  public SearchRabbitMQMessageProducer(RabbitTemplate rabbitTemplate,
+                                       @Named("searchQueueProperties")
+                                       RabbitMQQueueProperties queueProperties) {
     super(rabbitTemplate, queueProperties);
   }
 
