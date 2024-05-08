@@ -3,7 +3,7 @@
 
   <groupId>io.github.aafc-bicoe</groupId>
   <artifactId>agent-api</artifactId>
-  <version>0.27</version>
+  <version>0.28-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>Agent API</name>
