@@ -1,8 +1,8 @@
 package ca.gc.aafc.agent.api;
 
 import ca.gc.aafc.dina.DinaBaseApiAutoConfiguration;
-import ca.gc.aafc.dina.search.messaging.producer.LogBasedMessageProducer;
-import ca.gc.aafc.dina.search.messaging.producer.MessageProducer;
+import ca.gc.aafc.dina.messaging.producer.DocumentOperationNotificationMessageProducer;
+import ca.gc.aafc.dina.messaging.producer.LogBasedMessageProducer;
 import ca.gc.aafc.dina.service.JaversDataService;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
@@ -25,7 +25,7 @@ public class MainConfiguration {
 
     @Bean
     @ConditionalOnProperty(name = "dina.messaging.isProducer", havingValue = "false")
-    public MessageProducer init() {
+    public DocumentOperationNotificationMessageProducer init() {
       return new LogBasedMessageProducer();
     }
   }
