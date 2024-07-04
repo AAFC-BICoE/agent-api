@@ -21,7 +21,7 @@
     <javax.interceptor-api>1.2.2</javax.interceptor-api>
     <jcip-annotations.version>1.0</jcip-annotations.version>
     <dependency.check.version>7.3.2</dependency.check.version>
-    <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
+    <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
 
     <spotbugs-maven-plugin.version>4.8.5.0</spotbugs-maven-plugin.version>
     <spotbugs.version>4.8.5</spotbugs.version>
