@@ -52,7 +52,7 @@ jobs:
 
       - name: Store artifacts
         if: ${{ github.ref == 'refs/heads/master' }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: build-artifacts
           path: |
@@ -70,7 +70,7 @@ jobs:
 
     steps:
       - name: Download artifacts from build job
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: build-artifacts
 
