@@ -24,4 +24,5 @@
   <include file="db/changelog/migrations/19-Add_identifier_table.xml"/>
   <include file="db/changelog/migrations/20-Add_pos_to_organization_rel.xml"/>
   <include file="db/changelog/migrations/21-Remove_legacy_identifier_column.xml"/>
+  <include file="db/changelog/migrations/22-Add_identifier_type_table.xml"/>
 </databaseChangeLog>
