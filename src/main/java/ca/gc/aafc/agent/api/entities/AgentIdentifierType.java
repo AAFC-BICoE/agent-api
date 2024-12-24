@@ -9,13 +9,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
 import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.NaturalIdCache;
 import org.hibernate.annotations.Type;
 
 import ca.gc.aafc.dina.entity.IdentifierType;
@@ -25,6 +28,8 @@ import ca.gc.aafc.dina.i18n.MultilingualTitle;
 @Getter
 @Setter
 @SuperBuilder
+@NoArgsConstructor
+@NaturalIdCache
 public class AgentIdentifierType implements IdentifierType {
 
   @Id
@@ -43,18 +48,23 @@ public class AgentIdentifierType implements IdentifierType {
   @Generated(value = GenerationTime.INSERT)
   private OffsetDateTime createdOn;
 
+  @Size(max = 50)
   @Column(name = "key")
   private String key;
 
+  @Size(max = 50)
   private String name;
 
   @Type(type = "list-array")
   private List<String> dinaComponents;
 
+  @Size(max = 100)
   private String uriTemplate;
 
+  @Size(max = 100)
   private String term;
 
   @Type(type = "jsonb")
   private MultilingualTitle multilingualTitle;
+
 }
