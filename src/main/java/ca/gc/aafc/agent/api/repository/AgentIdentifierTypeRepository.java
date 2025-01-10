@@ -149,6 +149,6 @@ public class AgentIdentifierTypeRepository extends DinaRepositoryV2<AgentIdentif
   @Transactional
   public ResponseEntity<RepresentationModel<?>> handleDelete(@PathVariable UUID id) {
     delete(id);
-    return ResponseEntity.ok().build();
+    return ResponseEntity.noContent().build();
   }
 }
