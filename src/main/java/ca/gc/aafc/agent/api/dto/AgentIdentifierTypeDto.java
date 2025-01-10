@@ -8,15 +8,16 @@ import ca.gc.aafc.agent.api.entities.AgentIdentifierType;
 import ca.gc.aafc.dina.dto.RelatedEntity;
 import ca.gc.aafc.dina.i18n.MultilingualTitle;
 
-import io.crnk.core.resource.annotations.JsonApiId;
-import io.crnk.core.resource.annotations.JsonApiResource;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 import lombok.Data;
 
+import com.toedter.spring.hateoas.jsonapi.JsonApiId;
+import com.toedter.spring.hateoas.jsonapi.JsonApiTypeForClass;
+
 @RelatedEntity(AgentIdentifierType.class)
-@JsonApiResource(type = AgentIdentifierTypeDto.TYPENAME)
+@JsonApiTypeForClass(AgentIdentifierTypeDto.TYPENAME)
 @TypeName(AgentIdentifierTypeDto.TYPENAME)
 @Data
 public class AgentIdentifierTypeDto {
