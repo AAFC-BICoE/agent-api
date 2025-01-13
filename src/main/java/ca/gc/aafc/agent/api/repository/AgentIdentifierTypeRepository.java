@@ -22,6 +22,7 @@ import ca.gc.aafc.agent.api.dto.AgentIdentifierTypeDto;
 import ca.gc.aafc.agent.api.entities.AgentIdentifierType;
 import ca.gc.aafc.agent.api.mapper.AgentIdentifierTypeMapper;
 import ca.gc.aafc.dina.dto.JsonApiDto;
+import ca.gc.aafc.dina.exception.ResourceNotFoundException;
 import ca.gc.aafc.dina.jsonapi.JsonApiDocument;
 import ca.gc.aafc.dina.repository.DinaRepositoryV2;
 import ca.gc.aafc.dina.security.DinaAuthenticatedUser;
@@ -66,7 +67,7 @@ public class AgentIdentifierTypeRepository extends DinaRepositoryV2<AgentIdentif
   }
 
   @GetMapping(AgentIdentifierTypeDto.TYPENAME + "/{id}")
-  public ResponseEntity<RepresentationModel<?>> handleFindOne(@PathVariable UUID id, HttpServletRequest req) {
+  public ResponseEntity<RepresentationModel<?>> handleFindOne(@PathVariable UUID id, HttpServletRequest req) throws ResourceNotFoundException {
     String queryString = decodeQueryString(req);
 
     JsonApiDto<AgentIdentifierTypeDto> jsonApiDto = getOne(id, queryString);
@@ -98,7 +99,7 @@ public class AgentIdentifierTypeRepository extends DinaRepositoryV2<AgentIdentif
   @PostMapping(AgentIdentifierTypeDto.TYPENAME)
   @Transactional
   public ResponseEntity<RepresentationModel<?>> handleCreate(@RequestBody
-                                                     EntityModel<AgentIdentifierTypeDto> postedEntity) {
+                                                     EntityModel<AgentIdentifierTypeDto> postedEntity) throws ResourceNotFoundException {
     if(postedEntity.getContent() == null) {
       return ResponseEntity.badRequest().build();
     }
@@ -126,7 +127,7 @@ public class AgentIdentifierTypeRepository extends DinaRepositoryV2<AgentIdentif
   @PatchMapping(AgentIdentifierTypeDto.TYPENAME + "/{id}")
   @Transactional
   public ResponseEntity<RepresentationModel<?>> handleUpdate(@RequestBody JsonApiDocument partialPatchDto,
-                                                             @PathVariable UUID id) {
+                                                             @PathVariable UUID id) throws ResourceNotFoundException {
 
     // Sanity check
     if (!Objects.equals(id, partialPatchDto.getId())) {
@@ -147,7 +148,7 @@ public class AgentIdentifierTypeRepository extends DinaRepositoryV2<AgentIdentif
 
   @DeleteMapping(AgentIdentifierTypeDto.TYPENAME + "/{id}")
   @Transactional
-  public ResponseEntity<RepresentationModel<?>> handleDelete(@PathVariable UUID id) {
+  public ResponseEntity<RepresentationModel<?>> handleDelete(@PathVariable UUID id) throws ResourceNotFoundException {
     delete(id);
     return ResponseEntity.noContent().build();
   }
