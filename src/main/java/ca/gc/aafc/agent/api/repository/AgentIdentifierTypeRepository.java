@@ -129,7 +129,7 @@ public class AgentIdentifierTypeRepository extends DinaRepositoryV2<AgentIdentif
                                                              @PathVariable UUID id) {
 
     // Sanity check
-    if (Objects.equals(id, partialPatchDto.getId())) {
+    if (!Objects.equals(id, partialPatchDto.getId())) {
       return ResponseEntity.badRequest().build();
     }
 
