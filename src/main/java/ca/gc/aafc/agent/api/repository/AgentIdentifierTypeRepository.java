@@ -100,7 +100,7 @@ public class AgentIdentifierTypeRepository extends DinaRepositoryV2<AgentIdentif
   @Transactional
   public ResponseEntity<RepresentationModel<?>> handleCreate(@RequestBody
                                                      EntityModel<AgentIdentifierTypeDto> postedEntity) throws ResourceNotFoundException {
-    if(postedEntity.getContent() == null) {
+    if (postedEntity.getContent() == null) {
       return ResponseEntity.badRequest().build();
     }
 
