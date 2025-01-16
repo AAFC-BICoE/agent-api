@@ -20,10 +20,9 @@ import ca.gc.aafc.dina.security.auth.DinaAdminCUDAuthorizationService;
 
 import ca.gc.aafc.dina.messaging.message.DocumentOperationNotification;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class IndexRefreshRepositoryIT extends BaseIntegrationTest {
-
 
   @Inject
   private PersonService personService;
@@ -45,7 +44,8 @@ public class IndexRefreshRepositoryIT extends BaseIntegrationTest {
     IndexRefreshDto dto = new IndexRefreshDto();
     dto.setDocType(PersonDto.TYPENAME);
     repo.handlePost(EntityModel.of(dto));
-    assertEquals(1, messages.size());
-  }
 
+    // we may get more than 1 message if the database includes records from other tests
+    assertFalse(messages.isEmpty());
+  }
 }
