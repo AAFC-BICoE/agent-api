@@ -48,6 +48,12 @@
       <groupId>io.github.aafc-bicoe</groupId>
       <artifactId>dina-base-api</artifactId>
       <version>${dina-base-api.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.eclipse.persistence</groupId>
+          <artifactId>javax.persistence</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <!-- Spring -->
     <dependency>
