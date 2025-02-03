@@ -3,8 +3,12 @@ package ca.gc.aafc.agent.api.entities;
 import ca.gc.aafc.agent.api.BaseIntegrationTest;
 import ca.gc.aafc.agent.api.service.IdentifierService;
 import ca.gc.aafc.agent.api.service.PersonService;
+import ca.gc.aafc.agent.api.testsupport.factories.AgentIdentifierTypeFactory;
 import ca.gc.aafc.agent.api.testsupport.factories.IdentifierFactory;
 import ca.gc.aafc.agent.api.testsupport.factories.PersonFactory;
+import ca.gc.aafc.dina.entity.IdentifierType;
+import ca.gc.aafc.dina.service.IdentifierTypeService;
+
 import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
@@ -18,6 +22,9 @@ import static org.junit.jupiter.api.Assertions.*;
  * Test suite to validate {@link Identifier} performs as a valid Hibernate Entity.
  */
 public class IdentifierCrudIT extends BaseIntegrationTest {
+
+  @Inject
+  private IdentifierTypeService<AgentIdentifierType> identifierTypeService;
 
   @Inject
   private IdentifierService identifierService;
@@ -35,7 +42,12 @@ public class IdentifierCrudIT extends BaseIntegrationTest {
 
   @Test
   public void testUniqueIndex() {
-    Identifier identifier = IdentifierFactory.newIdentifier().build();
+
+    AgentIdentifierType identifierType = identifierTypeService.create(AgentIdentifierTypeFactory.newAgentIdentifierType().build());
+
+    Identifier identifier = IdentifierFactory.newIdentifier()
+      .agentIdentifierType(identifierType)
+      .build();
     identifierService.create(identifier);
 
     Identifier identifier2 = IdentifierFactory.newIdentifier()

@@ -1,6 +1,10 @@
 package ca.gc.aafc.agent.api.entities;
 
 import ca.gc.aafc.dina.entity.DinaEntity;
+
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -46,6 +50,10 @@ public class Identifier implements DinaEntity {
   @Size(max = 50)
   @NotBlank
   private String namespace;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "identifier_type_id")
+  private AgentIdentifierType agentIdentifierType;
 
   @Size(max = 250)
   @NotBlank

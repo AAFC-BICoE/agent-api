@@ -3,10 +3,12 @@ package ca.gc.aafc.agent.api.dto;
 import ca.gc.aafc.agent.api.entities.Identifier;
 import ca.gc.aafc.dina.dto.RelatedEntity;
 import io.crnk.core.resource.annotations.JsonApiId;
+import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.crnk.core.resource.annotations.JsonApiResource;
 import lombok.Data;
 import org.javers.core.metamodel.annotation.Id;
 import org.javers.core.metamodel.annotation.PropertyName;
+import org.javers.core.metamodel.annotation.ShallowReference;
 import org.javers.core.metamodel.annotation.TypeName;
 
 import java.time.OffsetDateTime;
@@ -25,7 +27,13 @@ public class IdentifierDto {
   @PropertyName("id")
   private UUID uuid;
 
+  //can't mix Crnk and non-Crnk DTOs
+//  @ShallowReference
+//  @JsonApiRelation
+//  private AgentIdentifierTypeDto agentIdentifierType;
+
   private String namespace;
+
   private String value;
   private String createdBy;
   private OffsetDateTime createdOn;
