@@ -110,7 +110,7 @@ public class OrganizationRepositoryV2 extends DinaRepositoryV2<OrganizationDto, 
       return ResponseEntity.badRequest().build();
     }
 
-    UUID uuid = create(postedDocument, (dto) -> {
+    UUID uuid = create(postedDocument, dto -> {
       if (authenticatedUser != null) {
         dto.setCreatedBy(authenticatedUser.getUsername());
       }

@@ -108,7 +108,7 @@ public class PersonRepositoryV2 extends DinaRepositoryV2<PersonDto, Person> {
       return ResponseEntity.badRequest().build();
     }
 
-    UUID uuid = create(postedDocument, (dto) -> {
+    UUID uuid = create(postedDocument, dto -> {
       if (authenticatedUser != null) {
         dto.setCreatedBy(authenticatedUser.getUsername());
       }

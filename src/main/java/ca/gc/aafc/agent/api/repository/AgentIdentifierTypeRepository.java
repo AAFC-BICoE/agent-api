@@ -104,7 +104,7 @@ public class AgentIdentifierTypeRepository extends DinaRepositoryV2<AgentIdentif
       return ResponseEntity.badRequest().build();
     }
 
-    UUID uuid = create(postedDocument, (dto) -> {
+    UUID uuid = create(postedDocument, dto -> {
       if (authenticatedUser != null) {
         dto.setCreatedBy(authenticatedUser.getUsername());
       }
