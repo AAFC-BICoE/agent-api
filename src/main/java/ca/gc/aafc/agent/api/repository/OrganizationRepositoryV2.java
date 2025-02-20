@@ -70,8 +70,8 @@ public class OrganizationRepositoryV2 extends DinaRepositoryV2<OrganizationDto, 
   }
 
   @GetMapping(TYPE + "/{id}")
-  public ResponseEntity<RepresentationModel<?>> handleFindOne(@PathVariable UUID id, HttpServletRequest req) throws
-    ResourceNotFoundException {
+  public ResponseEntity<RepresentationModel<?>> handleFindOne(@PathVariable UUID id, HttpServletRequest req)
+      throws ResourceNotFoundException {
     String queryString = decodeQueryString(req);
 
     JsonApiDto<OrganizationDto> jsonApiDto = getOne(id, queryString);
@@ -102,9 +102,8 @@ public class OrganizationRepositoryV2 extends DinaRepositoryV2<OrganizationDto, 
 
   @PostMapping(TYPE)
   @Transactional
-  public ResponseEntity<RepresentationModel<?>> handleCreate(@RequestBody
-                                                             JsonApiDocument postedDocument)
-    throws ResourceNotFoundException {
+  public ResponseEntity<RepresentationModel<?>> handleCreate(@RequestBody JsonApiDocument postedDocument)
+      throws ResourceNotFoundException {
 
     if (postedDocument == null) {
       return ResponseEntity.badRequest().build();

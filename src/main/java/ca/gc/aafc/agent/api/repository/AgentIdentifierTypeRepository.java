@@ -98,7 +98,7 @@ public class AgentIdentifierTypeRepository extends DinaRepositoryV2<AgentIdentif
   @PostMapping(AgentIdentifierTypeDto.TYPENAME)
   @Transactional
   public ResponseEntity<RepresentationModel<?>> handleCreate(@RequestBody JsonApiDocument postedDocument)
-    throws ResourceNotFoundException {
+      throws ResourceNotFoundException {
 
     if (postedDocument == null) {
       return ResponseEntity.badRequest().build();
