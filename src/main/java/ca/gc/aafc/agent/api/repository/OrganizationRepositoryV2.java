@@ -2,7 +2,6 @@ package ca.gc.aafc.agent.api.repository;
 
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.hateoas.IanaLinkRelations;
-import org.springframework.hateoas.Link;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,17 +16,21 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.toedter.spring.hateoas.jsonapi.JsonApiModelBuilder;
 
-import ca.gc.aafc.agent.api.dto.AgentIdentifierTypeDto;
-import ca.gc.aafc.agent.api.entities.AgentIdentifierType;
-import ca.gc.aafc.agent.api.mapper.AgentIdentifierTypeMapper;
+import ca.gc.aafc.agent.api.dto.OrganizationDto;
+import ca.gc.aafc.agent.api.entities.Organization;
+import ca.gc.aafc.agent.api.mapper.OrganizationMapper;
+import ca.gc.aafc.agent.api.security.UpdateDeleteSuperUserOnly;
 import ca.gc.aafc.dina.dto.JsonApiDto;
 import ca.gc.aafc.dina.exception.ResourceNotFoundException;
 import ca.gc.aafc.dina.jsonapi.JsonApiDocument;
 import ca.gc.aafc.dina.repository.DinaRepositoryV2;
 import ca.gc.aafc.dina.security.DinaAuthenticatedUser;
-import ca.gc.aafc.dina.security.auth.DinaAdminCUDAuthorizationService;
 import ca.gc.aafc.dina.service.AuditService;
 import ca.gc.aafc.dina.service.DinaService;
+
+import static com.toedter.spring.hateoas.jsonapi.MediaTypes.JSON_API_VALUE;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.net.URI;
 import java.util.Objects;
@@ -37,18 +40,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import lombok.NonNull;
 
-import static com.toedter.spring.hateoas.jsonapi.MediaTypes.JSON_API_VALUE;
-
 @RestController
 @RequestMapping(value = "/api/v1", produces = JSON_API_VALUE)
-public class AgentIdentifierTypeRepository extends DinaRepositoryV2<AgentIdentifierTypeDto, AgentIdentifierType> {
+public class OrganizationRepositoryV2 extends DinaRepositoryV2<OrganizationDto, Organization> {
+
+  private static final String TYPE = OrganizationDto.TYPENAME + "v2";
 
   // Bean does not exist with keycloak disabled.
   private final DinaAuthenticatedUser authenticatedUser;
 
-  public AgentIdentifierTypeRepository(
-    @NonNull DinaService<AgentIdentifierType> dinaService,
-    @NonNull DinaAdminCUDAuthorizationService authorizationService,
+  public OrganizationRepositoryV2(
+    @NonNull DinaService<Organization> dinaService,
+    @NonNull UpdateDeleteSuperUserOnly authorizationService,
     Optional<DinaAuthenticatedUser> authenticatedUser,
     @NonNull BuildProperties props,
     @NonNull AuditService auditService,
@@ -58,18 +61,20 @@ public class AgentIdentifierTypeRepository extends DinaRepositoryV2<AgentIdentif
       dinaService,
       authorizationService,
       Optional.of(auditService),
-      AgentIdentifierTypeMapper.INSTANCE,
-      AgentIdentifierTypeDto.class,
-      AgentIdentifierType.class,
+      OrganizationMapper.INSTANCE,
+      OrganizationDto.class,
+      Organization.class,
       props, objMapper);
+
     this.authenticatedUser = authenticatedUser.orElse(null);
   }
 
-  @GetMapping(AgentIdentifierTypeDto.TYPENAME + "/{id}")
-  public ResponseEntity<RepresentationModel<?>> handleFindOne(@PathVariable UUID id, HttpServletRequest req) throws ResourceNotFoundException {
+  @GetMapping(TYPE + "/{id}")
+  public ResponseEntity<RepresentationModel<?>> handleFindOne(@PathVariable UUID id, HttpServletRequest req) throws
+    ResourceNotFoundException {
     String queryString = decodeQueryString(req);
 
-    JsonApiDto<AgentIdentifierTypeDto> jsonApiDto = getOne(id, queryString);
+    JsonApiDto<OrganizationDto> jsonApiDto = getOne(id, queryString);
     if (jsonApiDto == null) {
       return ResponseEntity.notFound().build();
     }
@@ -79,11 +84,11 @@ public class AgentIdentifierTypeRepository extends DinaRepositoryV2<AgentIdentif
     return ResponseEntity.ok(builder.build());
   }
 
-  @GetMapping(AgentIdentifierTypeDto.TYPENAME)
+  @GetMapping(TYPE)
   public ResponseEntity<RepresentationModel<?>> handleFindAll(HttpServletRequest req) {
     String queryString = decodeQueryString(req);
 
-    PagedResource<JsonApiDto<AgentIdentifierTypeDto>> dtos;
+    PagedResource<JsonApiDto<OrganizationDto>> dtos;
     try {
       dtos = getAll(queryString);
     } catch (IllegalArgumentException iaEx) {
@@ -95,9 +100,10 @@ public class AgentIdentifierTypeRepository extends DinaRepositoryV2<AgentIdentif
     return ResponseEntity.ok(builder.build());
   }
 
-  @PostMapping(AgentIdentifierTypeDto.TYPENAME)
+  @PostMapping(TYPE)
   @Transactional
-  public ResponseEntity<RepresentationModel<?>> handleCreate(@RequestBody JsonApiDocument postedDocument)
+  public ResponseEntity<RepresentationModel<?>> handleCreate(@RequestBody
+                                                             JsonApiDocument postedDocument)
     throws ResourceNotFoundException {
 
     if (postedDocument == null) {
@@ -111,22 +117,24 @@ public class AgentIdentifierTypeRepository extends DinaRepositoryV2<AgentIdentif
     });
 
     // reload dto
-    JsonApiDto<AgentIdentifierTypeDto> jsonApiDto = getOne(uuid, null);
+    JsonApiDto<OrganizationDto> jsonApiDto = getOne(uuid, null);
     if (jsonApiDto == null) {
       return ResponseEntity.notFound().build();
     }
     JsonApiModelBuilder builder = createJsonApiModelBuilder(jsonApiDto);
 
+    builder.link(linkTo(methodOn(OrganizationRepositoryV2.class).handleFindOne(jsonApiDto.getDto().getUuid(), null)).withSelfRel());
     RepresentationModel<?> model = builder.build();
-    String uri = model.getLink(IanaLinkRelations.SELF)
-      .map(Link::getHref).orElse("");
 
-    return ResponseEntity.created(URI.create(uri)).body(model);
+    URI uri = model.getRequiredLink(IanaLinkRelations.SELF).toUri();
+
+    return ResponseEntity.created(uri).body(model);
   }
 
-  @PatchMapping(AgentIdentifierTypeDto.TYPENAME + "/{id}")
+  @PatchMapping(TYPE + "/{id}")
   @Transactional
-  public ResponseEntity<RepresentationModel<?>> handleUpdate(@RequestBody JsonApiDocument partialPatchDto,
+  public ResponseEntity<RepresentationModel<?>> handleUpdate(@RequestBody
+                                                             JsonApiDocument partialPatchDto,
                                                              @PathVariable UUID id) throws ResourceNotFoundException {
 
     // Sanity check
@@ -137,7 +145,7 @@ public class AgentIdentifierTypeRepository extends DinaRepositoryV2<AgentIdentif
     update(partialPatchDto);
 
     // reload dto
-    JsonApiDto<AgentIdentifierTypeDto> jsonApiDto = getOne(partialPatchDto.getId(), null);
+    JsonApiDto<OrganizationDto> jsonApiDto = getOne(partialPatchDto.getId(), null);
     if (jsonApiDto == null) {
       return ResponseEntity.notFound().build();
     }
@@ -146,7 +154,7 @@ public class AgentIdentifierTypeRepository extends DinaRepositoryV2<AgentIdentif
     return ResponseEntity.ok().body(builder.build());
   }
 
-  @DeleteMapping(AgentIdentifierTypeDto.TYPENAME + "/{id}")
+  @DeleteMapping(TYPE + "/{id}")
   @Transactional
   public ResponseEntity<RepresentationModel<?>> handleDelete(@PathVariable UUID id) throws ResourceNotFoundException {
     delete(id);

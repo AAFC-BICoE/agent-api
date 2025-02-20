@@ -1,6 +1,5 @@
 package ca.gc.aafc.agent.api.repository;
 
-import java.util.UUID;
 import javax.inject.Inject;
 
 import org.junit.jupiter.api.Test;
@@ -22,7 +21,7 @@ public class IdentifierTypeRepositoryIT extends BaseIntegrationTest {
   private AgentIdentifierTypeRepository agentIdentifierTypeRepository;
 
   @Test
-  @WithMockKeycloakUser(username = "user", groupRole = {"group 1:DINA_ADMIN"})
+  @WithMockKeycloakUser(username = "user", adminRole = {"DINA_ADMIN"})
   public void agentIdentifierTypeRepository_onCreate_noException() {
     AgentIdentifierTypeDto dto = AgentIdentifierTypeTestFixture.newAgentIdentifierType();
 

@@ -4,12 +4,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import ca.gc.aafc.agent.api.BaseIntegrationTest;
 import ca.gc.aafc.agent.api.dto.OrganizationDto;
@@ -32,24 +29,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import io.crnk.core.queryspec.IncludeRelationSpec;
-import io.crnk.core.queryspec.QuerySpec;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javax.inject.Inject;
 
 /**
  * Test suite to validate the {@link PersonRepository} correctly handles
  * CRUD operations for the {@link Person} Entity.
  */
-@ExtendWith(SpringExtension.class)
 @SpringBootTest(properties = {"keycloak.enabled: true"})
 public class PersonResourceRepositoryV2IT extends BaseIntegrationTest {
   private final static String GIVEN_NAMES = "Anata";
@@ -146,21 +137,24 @@ public class PersonResourceRepositoryV2IT extends BaseIntegrationTest {
     assertEquals(updatedEmail, result.getEmail());
   }
 
-//  @Test
-//  @WithMockKeycloakUser(username="user", groupRole = {"group 1:USER"})
-//  public void save_PersistedPerson_WhenNotSuperUserRole_FieldsUpdate_Denied()
-//    throws ResourceNotFoundException {
-//    String updatedEmail = "Updated_Email@email.com";
-//    String updatedName = "Updated_Name";
-//
-//    PersonDto updatedPerson = personResourceRepository.getOne(
-//      personUnderTest.getUuid(), null).getDto();
-//    updatedPerson.setDisplayName(updatedName);
-//    updatedPerson.setEmail(updatedEmail);
-//
-//    Assertions.assertThrows(AccessDeniedException.class,()-> personResourceRepository.update(updatedPerson));
-//
-//  }
+  @Test
+  @WithMockKeycloakUser(username="user", groupRole = {"group 1:USER"})
+  public void save_PersistedPerson_WhenNotSuperUserRole_FieldsUpdate_Denied()
+    throws ResourceNotFoundException {
+    String updatedEmail = "Updated_Email@email.com";
+    String updatedName = "Updated_Name";
+
+    PersonDto updatedPerson = personResourceRepository.getOne(
+      personUnderTest.getUuid(), null).getDto();
+    updatedPerson.setDisplayName(updatedName);
+    updatedPerson.setEmail(updatedEmail);
+
+    JsonApiDocument doc = JsonApiDocuments.createJsonApiDocument(
+      updatedPerson.getUuid(), PersonDto.TYPENAME,
+      JsonAPITestHelper.toAttributeMap(updatedPerson)
+    );
+    Assertions.assertThrows(AccessDeniedException.class,()-> personResourceRepository.update(doc));
+  }
 
   @Test
   public void find_NoFieldsSelected_ReturnsAllFields() throws ResourceNotFoundException {
@@ -176,25 +170,14 @@ public class PersonResourceRepositoryV2IT extends BaseIntegrationTest {
   public void find_PersistedPerson_When_RelationSpec_Specified_ReturnsPersonWithRelations()
     throws ResourceNotFoundException {
 
-    QuerySpec querySpec = new QuerySpec(PersonDto.class);
-    QuerySpec orgSpec = new QuerySpec(OrganizationDto.class);
-
-    List<IncludeRelationSpec> includeRelationSpec = Stream.of("organizations")
-        .map(Arrays::asList)
-        .map(IncludeRelationSpec::new)
-        .collect(Collectors.toList());
-
-    querySpec.setIncludedRelations(includeRelationSpec);
-    querySpec.setNestedSpecs(Collections.singletonList(orgSpec));
     PersonDto result = personResourceRepository.getOne(
-      personUnderTest.getUuid(), null).getDto();
+      personUnderTest.getUuid(), "[include]=organizations").getDto();
 
     assertEquals(personUnderTest.getDisplayName(), result.getDisplayName());
     assertEquals(personUnderTest.getEmail(), result.getEmail());
     assertEquals(personUnderTest.getUuid(), result.getUuid());
-    assertEquals(organizationUnderTest.getAliases()[0], result.getOrganizations().get(0).getAliases()[0]);
+    assertEquals(organizationUnderTest.getAliases()[0], result.getOrganizations().getFirst().getAliases()[0]);
   }
-
 
   @Test
   @WithMockKeycloakUser(username="user", groupRole = {"group 1:SUPER_USER"})

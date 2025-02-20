@@ -4,8 +4,6 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
 import org.javers.core.metamodel.annotation.Id;
 import org.javers.core.metamodel.annotation.PropertyName;
 import org.javers.core.metamodel.annotation.TypeName;
@@ -35,7 +33,6 @@ public class OrganizationDto {
   private String createdBy;
   private OffsetDateTime createdOn;
 
-  @JsonInclude(JsonInclude.Include.NON_EMPTY)
   private List<OrganizationName> names;
 
 }
