@@ -15,17 +15,18 @@ import io.crnk.core.resource.annotations.JsonApiId;
 import io.crnk.core.resource.annotations.JsonApiResource;
 import lombok.Data;
 
-@RelatedEntity(Organization.class)
 @Data
-@JsonApiResource(type = OrganizationDto.TYPENAME)
+@RelatedEntity(Organization.class)
 @TypeName(OrganizationDto.TYPENAME)
+@JsonApiResource(type = OrganizationDto.TYPENAME)
 public class OrganizationDto {
 
   public static final String TYPENAME = "organization";
 
-  @JsonApiId
   @Id
+  @JsonApiId
   @PropertyName("id")
+  @com.toedter.spring.hateoas.jsonapi.JsonApiId
   private UUID uuid;
 
   private String[] aliases;
