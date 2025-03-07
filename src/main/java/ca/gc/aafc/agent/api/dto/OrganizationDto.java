@@ -8,6 +8,9 @@ import org.javers.core.metamodel.annotation.Id;
 import org.javers.core.metamodel.annotation.PropertyName;
 import org.javers.core.metamodel.annotation.TypeName;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.toedter.spring.hateoas.jsonapi.JsonApiTypeForClass;
+
 import ca.gc.aafc.agent.api.entities.Organization;
 import ca.gc.aafc.agent.api.entities.OrganizationName;
 import ca.gc.aafc.dina.dto.RelatedEntity;
@@ -18,8 +21,9 @@ import lombok.Data;
 @Data
 @RelatedEntity(Organization.class)
 @TypeName(OrganizationDto.TYPENAME)
+@JsonApiTypeForClass(PersonDto.TYPENAME)
 @JsonApiResource(type = OrganizationDto.TYPENAME)
-public class OrganizationDto {
+public class OrganizationDto implements ca.gc.aafc.dina.dto.JsonApiResource {
 
   public static final String TYPENAME = "organization";
 
@@ -36,4 +40,15 @@ public class OrganizationDto {
 
   private List<OrganizationName> names;
 
+  @Override
+  @JsonIgnore
+  public String getJsonApiType() {
+    return TYPENAME;
+  }
+
+  @Override
+  @JsonIgnore
+  public UUID getJsonApiId() {
+    return uuid;
+  }
 }

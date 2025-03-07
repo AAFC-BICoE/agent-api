@@ -9,25 +9,42 @@ import org.javers.core.metamodel.annotation.Id;
 import org.javers.core.metamodel.annotation.PropertyName;
 import org.javers.core.metamodel.annotation.TypeName;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.toedter.spring.hateoas.jsonapi.JsonApiTypeForClass;
+
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
-@RelatedEntity(Identifier.class)
-@JsonApiResource(type = IdentifierDto.TYPENAME)
-@TypeName(IdentifierDto.TYPENAME)
 @Data
-public class IdentifierDto {
+@RelatedEntity(Identifier.class)
+@TypeName(IdentifierDto.TYPENAME)
+@JsonApiTypeForClass(IdentifierDto.TYPENAME)
+@JsonApiResource(type = IdentifierDto.TYPENAME)
+public class IdentifierDto implements ca.gc.aafc.dina.dto.JsonApiResource {
 
   public static final String TYPENAME = "identifier";
 
-  @JsonApiId
   @Id
+  @JsonApiId
   @PropertyName("id")
+  @com.toedter.spring.hateoas.jsonapi.JsonApiId
   private UUID uuid;
 
   private String namespace;
   private String value;
   private String createdBy;
   private OffsetDateTime createdOn;
+
+  @Override
+  @JsonIgnore
+  public String getJsonApiType() {
+    return TYPENAME;
+  }
+
+  @Override
+  @JsonIgnore
+  public UUID getJsonApiId() {
+    return uuid;
+  }
 
 }
