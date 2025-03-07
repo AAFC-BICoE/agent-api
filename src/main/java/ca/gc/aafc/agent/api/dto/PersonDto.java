@@ -10,6 +10,9 @@ import org.javers.core.metamodel.annotation.PropertyName;
 import org.javers.core.metamodel.annotation.ShallowReference;
 import org.javers.core.metamodel.annotation.TypeName;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.toedter.spring.hateoas.jsonapi.JsonApiTypeForClass;
+
 import ca.gc.aafc.agent.api.entities.Person;
 import ca.gc.aafc.dina.dto.RelatedEntity;
 import io.crnk.core.resource.annotations.JsonApiId;
@@ -21,11 +24,13 @@ import lombok.Data;
 @Data
 @JsonApiResource(type = PersonDto.TYPENAME)
 @TypeName(PersonDto.TYPENAME)
-public class PersonDto extends AttributeMetaInfoProvider {
+@JsonApiTypeForClass(PersonDto.TYPENAME)
+public class PersonDto extends AttributeMetaInfoProvider implements ca.gc.aafc.dina.dto.JsonApiResource {
 
   public static final String TYPENAME = "person";
 
   @JsonApiId
+  @com.toedter.spring.hateoas.jsonapi.JsonApiId
   @Id
   @PropertyName("id")
   private UUID uuid;
@@ -49,4 +54,15 @@ public class PersonDto extends AttributeMetaInfoProvider {
   @ShallowReference
   private List<IdentifierDto> identifiers = List.of();
 
+  @Override
+  @JsonIgnore
+  public String getJsonApiType() {
+    return TYPENAME;
+  }
+
+  @Override
+  @JsonIgnore
+  public UUID getJsonApiId() {
+    return uuid;
+  }
 }
