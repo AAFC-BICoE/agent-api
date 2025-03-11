@@ -97,7 +97,7 @@ public class PersonResourceRepositoryV2IT extends BaseIntegrationTest {
           .type(OrganizationDto.TYPENAME).build()))
     );
 
-    var created = personResourceRepository.handleCreate(docToCreate);
+    var created = personResourceRepository.onCreate(docToCreate);
     UUID uuid = UUID.fromString(StringUtils.substringAfterLast(created.getBody().getLink(IanaLinkRelations.SELF).get().getHref(), "/"));
 
     Person result = personService.findOne(uuid, Person.class, Set.of("organizations"));

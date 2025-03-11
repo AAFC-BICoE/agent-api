@@ -1,8 +1,7 @@
 package ca.gc.aafc.agent.api.repository;
 
 import org.springframework.boot.info.BuildProperties;
-import org.springframework.hateoas.IanaLinkRelations;
-
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,13 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.toedter.spring.hateoas.jsonapi.JsonApiModelBuilder;
 
 import ca.gc.aafc.agent.api.dto.PersonDto;
 import ca.gc.aafc.agent.api.entities.Person;
 import ca.gc.aafc.agent.api.mapper.PersonMapper;
 import ca.gc.aafc.agent.api.security.UpdateDeleteSuperUserOnly;
-import ca.gc.aafc.dina.dto.JsonApiDto;
 import ca.gc.aafc.dina.exception.ResourceNotFoundException;
 import ca.gc.aafc.dina.jsonapi.JsonApiDocument;
 import ca.gc.aafc.dina.repository.DinaRepositoryV2;
@@ -29,17 +26,15 @@ import ca.gc.aafc.dina.security.DinaAuthenticatedUser;
 import ca.gc.aafc.dina.service.AuditService;
 import ca.gc.aafc.dina.service.DinaService;
 
-import java.net.URI;
-import java.util.Objects;
+import static com.toedter.spring.hateoas.jsonapi.MediaTypes.JSON_API_VALUE;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.util.Optional;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import lombok.NonNull;
-
-import static com.toedter.spring.hateoas.jsonapi.MediaTypes.JSON_API_VALUE;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping(value = "/api/v1", produces = JSON_API_VALUE)
@@ -68,94 +63,48 @@ public class PersonRepositoryV2 extends DinaRepositoryV2<PersonDto, Person> {
     this.authenticatedUser = authenticatedUser.orElse(null);
   }
 
-  @GetMapping(TYPE + "/{id}")
-  public ResponseEntity<RepresentationModel<?>> handleFindOne(@PathVariable UUID id, HttpServletRequest req)
-      throws ResourceNotFoundException {
-    String queryString = decodeQueryString(req);
-
-    JsonApiDto<PersonDto> jsonApiDto = getOne(id, queryString);
-    if (jsonApiDto == null) {
-      return ResponseEntity.notFound().build();
+  @Override
+  protected Link generateLinkToResource(PersonDto dto) {
+    try {
+      return linkTo(methodOn(PersonRepositoryV2.class).onFindOne(dto.getUuid(), null)).withSelfRel();
+    } catch (ResourceNotFoundException e) {
+      throw new RuntimeException(e);
     }
+  }
 
-    JsonApiModelBuilder builder = createJsonApiModelBuilder(jsonApiDto);
-
-    return ResponseEntity.ok(builder.build());
+  @GetMapping(TYPE + "/{id}")
+  public ResponseEntity<RepresentationModel<?>> onFindOne(@PathVariable UUID id, HttpServletRequest req)
+      throws ResourceNotFoundException {
+    return handleFindOne(id, req);
   }
 
   @GetMapping(TYPE)
-  public ResponseEntity<RepresentationModel<?>> handleFindAll(HttpServletRequest req) {
-    String queryString = decodeQueryString(req);
-
-    PagedResource<JsonApiDto<PersonDto>> dtos;
-    try {
-      dtos = getAll(queryString);
-    } catch (IllegalArgumentException iaEx) {
-      return ResponseEntity.badRequest().build();
-    }
-
-    JsonApiModelBuilder builder = createJsonApiModelBuilder(dtos);
-
-    return ResponseEntity.ok(builder.build());
+  public ResponseEntity<RepresentationModel<?>> onFindAll(HttpServletRequest req) {
+    return handleFindAll(req);
   }
 
   @PostMapping(TYPE)
   @Transactional
-  public ResponseEntity<RepresentationModel<?>> handleCreate(@RequestBody JsonApiDocument postedDocument)
+  public ResponseEntity<RepresentationModel<?>> onCreate(@RequestBody JsonApiDocument postedDocument)
       throws ResourceNotFoundException {
 
-    if (postedDocument == null) {
-      return ResponseEntity.badRequest().build();
-    }
-
-    UUID uuid = create(postedDocument, dto -> {
+    return handleCreate(postedDocument, dto -> {
       if (authenticatedUser != null) {
         dto.setCreatedBy(authenticatedUser.getUsername());
       }
     });
-
-    // reload dto
-    JsonApiDto<PersonDto> jsonApiDto = getOne(uuid, null);
-    if (jsonApiDto == null) {
-      return ResponseEntity.notFound().build();
-    }
-    JsonApiModelBuilder builder = createJsonApiModelBuilder(jsonApiDto);
-
-    builder.link(linkTo(methodOn(PersonRepositoryV2.class).handleFindOne(jsonApiDto.getDto().getUuid(), null)).withSelfRel());
-    RepresentationModel<?> model = builder.build();
-
-    URI uri = model.getRequiredLink(IanaLinkRelations.SELF).toUri();
-
-    return ResponseEntity.created(uri).body(model);
   }
 
   @PatchMapping(TYPE + "/{id}")
   @Transactional
-  public ResponseEntity<RepresentationModel<?>> handleUpdate(@RequestBody
-                                                             JsonApiDocument partialPatchDto,
-                                                             @PathVariable UUID id) throws ResourceNotFoundException {
-
-    // Sanity check
-    if (!Objects.equals(id, partialPatchDto.getId())) {
-      return ResponseEntity.badRequest().build();
-    }
-
-    update(partialPatchDto);
-
-    // reload dto
-    JsonApiDto<PersonDto> jsonApiDto = getOne(partialPatchDto.getId(), null);
-    if (jsonApiDto == null) {
-      return ResponseEntity.notFound().build();
-    }
-    JsonApiModelBuilder builder = createJsonApiModelBuilder(jsonApiDto);
-
-    return ResponseEntity.ok().body(builder.build());
+  public ResponseEntity<RepresentationModel<?>> onUpdate(@RequestBody JsonApiDocument partialPatchDto,
+                                                         @PathVariable UUID id) throws ResourceNotFoundException {
+    return handleUpdate(partialPatchDto, id);
   }
 
   @DeleteMapping(TYPE + "/{id}")
   @Transactional
-  public ResponseEntity<RepresentationModel<?>> handleDelete(@PathVariable UUID id) throws ResourceNotFoundException {
-    delete(id);
-    return ResponseEntity.noContent().build();
+  public ResponseEntity<RepresentationModel<?>> onDelete(@PathVariable UUID id) throws ResourceNotFoundException {
+    return handleDelete(id);
   }
 }

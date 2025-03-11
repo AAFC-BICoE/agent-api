@@ -79,7 +79,7 @@ public class OrganizationRepositoryV2IT extends BaseIntegrationTest {
       UUID.randomUUID(), OrganizationDto.TYPENAME,
       JsonAPITestHelper.toAttributeMap(orgDto));
 
-    var created = organizationRepository.handleCreate(docToCreate);
+    var created = organizationRepository.onCreate(docToCreate);
     UUID uuid = UUID.fromString(
       StringUtils.substringAfterLast(created.getBody().getLink(IanaLinkRelations.SELF).get().getHref(), "/"));
 
@@ -100,7 +100,7 @@ public class OrganizationRepositoryV2IT extends BaseIntegrationTest {
       UUID.randomUUID(), OrganizationDto.TYPENAME,
       JsonAPITestHelper.toAttributeMap(orgDto));
 
-    ValidationException exception = Assertions.assertThrows(ValidationException.class, ()-> organizationRepository.handleCreate(docToCreate));
+    ValidationException exception = Assertions.assertThrows(ValidationException.class, ()-> organizationRepository.onCreate(docToCreate));
 
     String expectedMessage = "An organization must have at least one name";
     String actualMessage = exception.getMessage();
@@ -241,7 +241,7 @@ public class OrganizationRepositoryV2IT extends BaseIntegrationTest {
       UUID.randomUUID(), OrganizationDto.TYPENAME,
       JsonAPITestHelper.toAttributeMap(orgDto));
 
-    var created = organizationRepository.handleCreate(docToCreate);
+    var created = organizationRepository.onCreate(docToCreate);
     UUID uuid = UUID.fromString(
       StringUtils.substringAfterLast(
         created.getBody().getLink(IanaLinkRelations.SELF).get().getHref(), "/"));
