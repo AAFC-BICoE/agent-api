@@ -20,6 +20,7 @@ import ca.gc.aafc.agent.api.entities.Person;
 import ca.gc.aafc.agent.api.mapper.PersonMapper;
 import ca.gc.aafc.agent.api.security.UpdateDeleteSuperUserOnly;
 import ca.gc.aafc.dina.exception.ResourceNotFoundException;
+import ca.gc.aafc.dina.jsonapi.JsonApiBulkDocument;
 import ca.gc.aafc.dina.jsonapi.JsonApiDocument;
 import ca.gc.aafc.dina.repository.DinaRepositoryV2;
 import ca.gc.aafc.dina.security.DinaAuthenticatedUser;
@@ -100,6 +101,13 @@ public class PersonRepositoryV2 extends DinaRepositoryV2<PersonDto, Person> {
   public ResponseEntity<RepresentationModel<?>> onUpdate(@RequestBody JsonApiDocument partialPatchDto,
                                                          @PathVariable UUID id) throws ResourceNotFoundException {
     return handleUpdate(partialPatchDto, id);
+  }
+
+  @PatchMapping(path = TYPE, produces = JSON_API_BULK)
+  @Transactional
+  public ResponseEntity<RepresentationModel<?>> onBulkUpdate(@RequestBody JsonApiBulkDocument jsonApiBulkDocument)
+      throws ResourceNotFoundException {
+    return handleBulkUpdate(jsonApiBulkDocument);
   }
 
   @DeleteMapping(TYPE + "/{id}")
