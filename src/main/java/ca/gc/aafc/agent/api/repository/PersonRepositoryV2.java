@@ -96,6 +96,12 @@ public class PersonRepositoryV2 extends DinaRepositoryV2<PersonDto, Person> {
     });
   }
 
+  @PostMapping(path = TYPE, produces = JSON_API_BULK_LOAD)
+  public ResponseEntity<RepresentationModel<?>> onBulkLoad(@RequestBody JsonApiBulkResourceIdentifierDocument jsonApiBulkDocument)
+      throws ResourceNotFoundException {
+    return handleBulkLoad(jsonApiBulkDocument);
+  }
+
   @PostMapping(TYPE)
   @Transactional
   public ResponseEntity<RepresentationModel<?>> onCreate(@RequestBody JsonApiDocument postedDocument)
