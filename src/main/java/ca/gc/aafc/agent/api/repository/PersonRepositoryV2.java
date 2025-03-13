@@ -21,6 +21,7 @@ import ca.gc.aafc.agent.api.mapper.PersonMapper;
 import ca.gc.aafc.agent.api.security.UpdateDeleteSuperUserOnly;
 import ca.gc.aafc.dina.exception.ResourceNotFoundException;
 import ca.gc.aafc.dina.jsonapi.JsonApiBulkDocument;
+import ca.gc.aafc.dina.jsonapi.JsonApiBulkResourceIdentifierDocument;
 import ca.gc.aafc.dina.jsonapi.JsonApiDocument;
 import ca.gc.aafc.dina.repository.DinaRepositoryV2;
 import ca.gc.aafc.dina.security.DinaAuthenticatedUser;
@@ -84,6 +85,17 @@ public class PersonRepositoryV2 extends DinaRepositoryV2<PersonDto, Person> {
     return handleFindAll(req);
   }
 
+  @PostMapping(path = TYPE, produces = JSON_API_BULK)
+  @Transactional
+  public ResponseEntity<RepresentationModel<?>> onBulkCreate(@RequestBody JsonApiBulkDocument jsonApiBulkDocument)
+    throws ResourceNotFoundException {
+    return handleBulkCreate(jsonApiBulkDocument, dto -> {
+      if (authenticatedUser != null) {
+        dto.setCreatedBy(authenticatedUser.getUsername());
+      }
+    });
+  }
+
   @PostMapping(TYPE)
   @Transactional
   public ResponseEntity<RepresentationModel<?>> onCreate(@RequestBody JsonApiDocument postedDocument)
@@ -108,6 +120,14 @@ public class PersonRepositoryV2 extends DinaRepositoryV2<PersonDto, Person> {
   public ResponseEntity<RepresentationModel<?>> onBulkUpdate(@RequestBody JsonApiBulkDocument jsonApiBulkDocument)
       throws ResourceNotFoundException {
     return handleBulkUpdate(jsonApiBulkDocument);
+  }
+
+  @DeleteMapping(path = TYPE, produces = JSON_API_BULK)
+  @Transactional
+  public ResponseEntity<RepresentationModel<?>> onBulkDelete(@RequestBody
+                                                             JsonApiBulkResourceIdentifierDocument jsonApiBulkDocument)
+      throws ResourceNotFoundException {
+    return handleBulkDelete(jsonApiBulkDocument);
   }
 
   @DeleteMapping(TYPE + "/{id}")
