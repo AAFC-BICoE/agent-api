@@ -75,9 +75,10 @@ public class PersonRepositoryV2 extends DinaRepositoryV2<PersonDto, Person> {
   }
 
   @PostMapping(path = TYPE + "/" + DinaRepositoryV2.JSON_API_BULK_LOAD_PATH, consumes = JSON_API_BULK)
-  public ResponseEntity<RepresentationModel<?>> onBulkLoad(@RequestBody JsonApiBulkResourceIdentifierDocument jsonApiBulkDocument)
+  public ResponseEntity<RepresentationModel<?>> onBulkLoad(@RequestBody JsonApiBulkResourceIdentifierDocument jsonApiBulkDocument,
+                                                           HttpServletRequest req)
     throws ResourceNotFoundException {
-    return handleBulkLoad(jsonApiBulkDocument);
+    return handleBulkLoad(jsonApiBulkDocument, req);
   }
 
   @GetMapping(TYPE + "/{id}")
@@ -91,7 +92,7 @@ public class PersonRepositoryV2 extends DinaRepositoryV2<PersonDto, Person> {
     return handleFindAll(req);
   }
 
-  @PostMapping(path = TYPE, consumes = JSON_API_BULK)
+  @PostMapping(path = TYPE + "/" + DinaRepositoryV2.JSON_API_BULK_PATH, consumes = JSON_API_BULK)
   @Transactional
   public ResponseEntity<RepresentationModel<?>> onBulkCreate(@RequestBody JsonApiBulkDocument jsonApiBulkDocument)
     throws ResourceNotFoundException {
@@ -121,14 +122,14 @@ public class PersonRepositoryV2 extends DinaRepositoryV2<PersonDto, Person> {
     return handleUpdate(partialPatchDto, id);
   }
 
-  @PatchMapping(path = TYPE, consumes = JSON_API_BULK)
+  @PatchMapping(path = TYPE + "/" + DinaRepositoryV2.JSON_API_BULK_PATH, consumes = JSON_API_BULK)
   @Transactional
   public ResponseEntity<RepresentationModel<?>> onBulkUpdate(@RequestBody JsonApiBulkDocument jsonApiBulkDocument)
       throws ResourceNotFoundException {
     return handleBulkUpdate(jsonApiBulkDocument);
   }
 
-  @DeleteMapping(path = TYPE, consumes = JSON_API_BULK)
+  @DeleteMapping(path = TYPE + "/" + DinaRepositoryV2.JSON_API_BULK_PATH, consumes = JSON_API_BULK)
   @Transactional
   public ResponseEntity<RepresentationModel<?>> onBulkDelete(@RequestBody
                                                              JsonApiBulkResourceIdentifierDocument jsonApiBulkDocument)
