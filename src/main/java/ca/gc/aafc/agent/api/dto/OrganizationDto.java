@@ -21,7 +21,7 @@ import lombok.Data;
 @Data
 @RelatedEntity(Organization.class)
 @TypeName(OrganizationDto.TYPENAME)
-@JsonApiTypeForClass(PersonDto.TYPENAME)
+@JsonApiTypeForClass(OrganizationDto.TYPENAME)
 @JsonApiResource(type = OrganizationDto.TYPENAME)
 public class OrganizationDto implements ca.gc.aafc.dina.dto.JsonApiResource {
 
