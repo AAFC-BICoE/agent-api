@@ -107,7 +107,7 @@ public class OrganizationRepositoryV2 extends DinaRepositoryV2<OrganizationDto, 
 
   @DeleteMapping(TYPE + "/{id}")
   @Transactional
-  public ResponseEntity<RepresentationModel<?>> onDelete(@PathVariable UUID id) throws ResourceNotFoundException {
+  public ResponseEntity<RepresentationModel<?>> onDelete(@PathVariable UUID id) throws ResourceNotFoundException, ResourceGoneException {
     return handleDelete(id);
   }
 }

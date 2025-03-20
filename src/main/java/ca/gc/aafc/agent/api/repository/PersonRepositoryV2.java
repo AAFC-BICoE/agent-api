@@ -134,13 +134,13 @@ public class PersonRepositoryV2 extends DinaRepositoryV2<PersonDto, Person> {
   @Transactional
   public ResponseEntity<RepresentationModel<?>> onBulkDelete(@RequestBody
                                                              JsonApiBulkResourceIdentifierDocument jsonApiBulkDocument)
-      throws ResourceNotFoundException {
+      throws ResourceNotFoundException, ResourceGoneException {
     return handleBulkDelete(jsonApiBulkDocument);
   }
 
   @DeleteMapping(TYPE + "/{id}")
   @Transactional
-  public ResponseEntity<RepresentationModel<?>> onDelete(@PathVariable UUID id) throws ResourceNotFoundException {
+  public ResponseEntity<RepresentationModel<?>> onDelete(@PathVariable UUID id) throws ResourceNotFoundException, ResourceGoneException {
     return handleDelete(id);
   }
 }

@@ -103,7 +103,7 @@ public class AgentIdentifierTypeRepository extends DinaRepositoryV2<AgentIdentif
 
   @DeleteMapping(AgentIdentifierTypeDto.TYPENAME + "/{id}")
   @Transactional
-  public ResponseEntity<RepresentationModel<?>> onDelete(@PathVariable UUID id) throws ResourceNotFoundException {
+  public ResponseEntity<RepresentationModel<?>> onDelete(@PathVariable UUID id) throws ResourceNotFoundException, ResourceGoneException {
     return handleDelete(id);
   }
 }
