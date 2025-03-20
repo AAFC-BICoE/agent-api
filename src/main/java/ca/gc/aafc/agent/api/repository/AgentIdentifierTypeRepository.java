@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ca.gc.aafc.agent.api.dto.AgentIdentifierTypeDto;
 import ca.gc.aafc.agent.api.entities.AgentIdentifierType;
 import ca.gc.aafc.agent.api.mapper.AgentIdentifierTypeMapper;
+import ca.gc.aafc.dina.exception.ResourceGoneException;
 import ca.gc.aafc.dina.exception.ResourceNotFoundException;
 import ca.gc.aafc.dina.jsonapi.JsonApiDocument;
 import ca.gc.aafc.dina.repository.DinaRepositoryV2;
@@ -66,13 +67,13 @@ public class AgentIdentifierTypeRepository extends DinaRepositoryV2<AgentIdentif
   protected Link generateLinkToResource(AgentIdentifierTypeDto dto) {
     try {
       return linkTo(methodOn(AgentIdentifierTypeRepository.class).onFindOne(dto.getUuid(), null)).withSelfRel();
-    } catch (ResourceNotFoundException e) {
+    } catch (ResourceNotFoundException | ResourceGoneException e) {
       throw new RuntimeException(e);
     }
   }
 
   @GetMapping(AgentIdentifierTypeDto.TYPENAME + "/{id}")
-  public ResponseEntity<RepresentationModel<?>> onFindOne(@PathVariable UUID id, HttpServletRequest req) throws ResourceNotFoundException {
+  public ResponseEntity<RepresentationModel<?>> onFindOne(@PathVariable UUID id, HttpServletRequest req) throws ResourceNotFoundException, ResourceGoneException {
     return handleFindOne(id, req);
   }
 
@@ -84,7 +85,7 @@ public class AgentIdentifierTypeRepository extends DinaRepositoryV2<AgentIdentif
   @PostMapping(AgentIdentifierTypeDto.TYPENAME)
   @Transactional
   public ResponseEntity<RepresentationModel<?>> onCreate(@RequestBody JsonApiDocument postedDocument)
-      throws ResourceNotFoundException {
+      throws ResourceNotFoundException, ResourceGoneException {
 
     return handleCreate(postedDocument, dto -> {
       if (authenticatedUser != null) {
@@ -96,7 +97,7 @@ public class AgentIdentifierTypeRepository extends DinaRepositoryV2<AgentIdentif
   @PatchMapping(AgentIdentifierTypeDto.TYPENAME + "/{id}")
   @Transactional
   public ResponseEntity<RepresentationModel<?>> onUpdate(@RequestBody JsonApiDocument partialPatchDto,
-                                                         @PathVariable UUID id) throws ResourceNotFoundException {
+                                                         @PathVariable UUID id) throws ResourceNotFoundException, ResourceGoneException {
     return handleUpdate(partialPatchDto, id);
   }
 

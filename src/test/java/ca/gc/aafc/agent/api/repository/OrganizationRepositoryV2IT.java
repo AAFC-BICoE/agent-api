@@ -17,6 +17,7 @@ import ca.gc.aafc.agent.api.entities.OrganizationName;
 import ca.gc.aafc.agent.api.service.OrganizationService;
 import ca.gc.aafc.agent.api.testsupport.factories.OrganizationFactory;
 import ca.gc.aafc.dina.dto.JsonApiDto;
+import ca.gc.aafc.dina.exception.ResourceGoneException;
 import ca.gc.aafc.dina.exception.ResourceNotFoundException;
 import ca.gc.aafc.dina.filter.FilterExpression;
 import ca.gc.aafc.dina.filter.QueryComponent;
@@ -69,7 +70,7 @@ public class OrganizationRepositoryV2IT extends BaseIntegrationTest {
 
   @WithMockKeycloakUser(username = "user", groupRole = {"group 1:USER"})
   @Test
-  public void createOrganization_onSuccess_organizationPersisted() throws ResourceNotFoundException {
+  public void createOrganization_onSuccess_organizationPersisted() throws ResourceNotFoundException, ResourceGoneException {
     OrganizationDto orgDto = new OrganizationDto();
     orgDto.setNames(Collections.singletonList(
       OrganizationName.builder().languageCode("te").name("name").build()));
@@ -111,7 +112,7 @@ public class OrganizationRepositoryV2IT extends BaseIntegrationTest {
   @Test
   @WithMockKeycloakUser(username = "user", groupRole = {"group 1:SUPER_USER"})
   public void save_PersistedOrganization_WhenSuperUserRole_FieldsUpdated()
-    throws ResourceNotFoundException {
+    throws ResourceNotFoundException, ResourceGoneException {
 
     String[] newAliases = new String[]{"new alias"};
 
@@ -133,7 +134,7 @@ public class OrganizationRepositoryV2IT extends BaseIntegrationTest {
 
   @Test
   @WithMockKeycloakUser(username = "user", groupRole = {"group 1:SUPER_USER"})
-  public void save_add_OrganizationName_FieldsUpdated() throws ResourceNotFoundException {
+  public void save_add_OrganizationName_FieldsUpdated() throws ResourceNotFoundException, ResourceGoneException {
 
     OrganizationDto updatedDto = organizationRepository.getOne(organizationUnderTest.getUuid(),
       null).getDto();
@@ -154,7 +155,7 @@ public class OrganizationRepositoryV2IT extends BaseIntegrationTest {
 
   @Test
   @WithMockKeycloakUser(username = "user", groupRole = {"group 1:SUPER_USER"})
-  public void save_remove_all_OrganizationName_FieldsUpdated() throws ResourceNotFoundException {
+  public void save_remove_all_OrganizationName_FieldsUpdated() throws ResourceNotFoundException, ResourceGoneException {
     OrganizationDto updatedDto = organizationRepository.getOne(organizationUnderTest.getUuid(),
       null).getDto();
     updatedDto.setNames(Collections.emptyList());
@@ -175,7 +176,7 @@ public class OrganizationRepositoryV2IT extends BaseIntegrationTest {
   @Test
   @WithMockKeycloakUser(username = "user", groupRole = {"group 1:USER"})
   public void save_PersistedOrganization_WhenNoSuperUserRole_FieldsUpdate_Denied()
-    throws ResourceNotFoundException {
+    throws ResourceNotFoundException, ResourceGoneException {
     String[] newAliases = new String[]{"new alias"};
 
     OrganizationDto updatedDto = organizationRepository.getOne(organizationUnderTest.getUuid(),
@@ -192,7 +193,7 @@ public class OrganizationRepositoryV2IT extends BaseIntegrationTest {
 
 
   @Test
-  public void find_NoFieldsSelected_ReturnsAllFields() throws ResourceNotFoundException {
+  public void find_NoFieldsSelected_ReturnsAllFields() throws ResourceNotFoundException, ResourceGoneException {
     OrganizationDto result = organizationRepository.getOne(organizationUnderTest.getUuid(),
       null).getDto();
 
@@ -203,7 +204,7 @@ public class OrganizationRepositoryV2IT extends BaseIntegrationTest {
   @Test
   @WithMockKeycloakUser(username = "user", groupRole = {"group 1:SUPER_USER"})
   public void remove_PersistedOrganization_WhenSuperUserRole_OrganizationRemoved()
-    throws ResourceNotFoundException {
+    throws ResourceNotFoundException, ResourceGoneException {
 
     OrganizationDto persistedOrg = organizationRepository.getOne(organizationUnderTest.getUuid(),
       null).getDto();
@@ -216,7 +217,7 @@ public class OrganizationRepositoryV2IT extends BaseIntegrationTest {
   @Test
   @WithMockKeycloakUser(username = "user", groupRole = {"group 1:USER"})
   public void remove_PersistedOrganization_WhenNoSuperUserRole_OrganizationRemove_Denied()
-    throws ResourceNotFoundException {
+    throws ResourceNotFoundException, ResourceGoneException {
 
     OrganizationDto persistedOrg = organizationRepository.getOne(organizationUnderTest.getUuid(),
       null).getDto();
@@ -228,7 +229,7 @@ public class OrganizationRepositoryV2IT extends BaseIntegrationTest {
 
   @Test
   @WithMockKeycloakUser(username = "user", groupRole = {"group 1:USER"})
-  public void findOrganization_by_name() throws ResourceNotFoundException {
+  public void findOrganization_by_name() throws ResourceNotFoundException, ResourceGoneException {
 
     OrganizationDto orgDto = new OrganizationDto();
     orgDto.setNames(Collections.singletonList(

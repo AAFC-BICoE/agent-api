@@ -18,6 +18,7 @@ import ca.gc.aafc.agent.api.service.OrganizationService;
 import ca.gc.aafc.agent.api.service.PersonService;
 import ca.gc.aafc.agent.api.testsupport.factories.OrganizationFactory;
 import ca.gc.aafc.agent.api.testsupport.factories.PersonFactory;
+import ca.gc.aafc.dina.exception.ResourceGoneException;
 import ca.gc.aafc.dina.exception.ResourceNotFoundException;
 import ca.gc.aafc.dina.jsonapi.JsonApiDocument;
 import ca.gc.aafc.dina.jsonapi.JsonApiDocuments;
@@ -77,7 +78,7 @@ public class PersonResourceRepositoryV2IT extends BaseIntegrationTest {
 
   @Test
   @WithMockKeycloakUser(username="user", groupRole = {"group 1:USER"})
-  public void create_ValidPerson_PersonPersisted() throws ResourceNotFoundException {
+  public void create_ValidPerson_PersonPersisted() throws ResourceNotFoundException, ResourceGoneException {
     PersonDto personDto = new PersonDto();
     personDto.setDisplayName(TestableEntityFactory.generateRandomNameLettersOnly(10));
     personDto.setEmail(TestableEntityFactory.generateRandomNameLettersOnly(5) + "@email.com");
@@ -114,7 +115,7 @@ public class PersonResourceRepositoryV2IT extends BaseIntegrationTest {
   @Test
   @WithMockKeycloakUser(username="user", groupRole = {"group 1:SUPER_USER"})
   public void save_PersistedPerson_WhenUserSuperUserRole_FieldsUpdated()
-    throws ResourceNotFoundException {
+    throws ResourceNotFoundException, ResourceGoneException {
 
     String updatedEmail = "Updated_Email@email.com";
     String updatedName = "Updated_Name";
@@ -140,7 +141,7 @@ public class PersonResourceRepositoryV2IT extends BaseIntegrationTest {
   @Test
   @WithMockKeycloakUser(username="user", groupRole = {"group 1:USER"})
   public void save_PersistedPerson_WhenNotSuperUserRole_FieldsUpdate_Denied()
-    throws ResourceNotFoundException {
+    throws ResourceNotFoundException, ResourceGoneException {
     String updatedEmail = "Updated_Email@email.com";
     String updatedName = "Updated_Name";
 
@@ -157,7 +158,7 @@ public class PersonResourceRepositoryV2IT extends BaseIntegrationTest {
   }
 
   @Test
-  public void find_NoFieldsSelected_ReturnsAllFields() throws ResourceNotFoundException {
+  public void find_NoFieldsSelected_ReturnsAllFields() throws ResourceNotFoundException, ResourceGoneException {
     PersonDto result = personResourceRepository.getOne(
       personUnderTest.getUuid(), null).getDto();
 
@@ -168,7 +169,7 @@ public class PersonResourceRepositoryV2IT extends BaseIntegrationTest {
 
   @Test
   public void find_PersistedPerson_When_RelationSpec_Specified_ReturnsPersonWithRelations()
-    throws ResourceNotFoundException {
+    throws ResourceNotFoundException, ResourceGoneException {
 
     PersonDto result = personResourceRepository.getOne(
       personUnderTest.getUuid(), "[include]=organizations").getDto();
@@ -182,7 +183,7 @@ public class PersonResourceRepositoryV2IT extends BaseIntegrationTest {
   @Test
   @WithMockKeycloakUser(username="user", groupRole = {"group 1:SUPER_USER"})
   public void remove_PersistedPerson_WhenSuperUserRole_PersonRemoved()
-    throws ResourceNotFoundException {
+    throws ResourceNotFoundException, ResourceGoneException {
     PersonDto persistedPerson = personResourceRepository.getOne(
       personUnderTest.getUuid(), null).getDto();
 
@@ -194,7 +195,7 @@ public class PersonResourceRepositoryV2IT extends BaseIntegrationTest {
   @Test
   @WithMockKeycloakUser(username="user", groupRole = {"group 1:USER"})
   public void remove_PersistedPerson_WhenNoSuperUserRole_PersonRemove_Denied()
-    throws ResourceNotFoundException {
+    throws ResourceNotFoundException, ResourceGoneException {
     PersonDto persistedPerson = personResourceRepository.getOne(
       personUnderTest.getUuid(), null).getDto();
 

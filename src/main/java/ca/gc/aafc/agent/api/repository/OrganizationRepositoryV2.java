@@ -19,6 +19,7 @@ import ca.gc.aafc.agent.api.dto.OrganizationDto;
 import ca.gc.aafc.agent.api.entities.Organization;
 import ca.gc.aafc.agent.api.mapper.OrganizationMapper;
 import ca.gc.aafc.agent.api.security.UpdateDeleteSuperUserOnly;
+import ca.gc.aafc.dina.exception.ResourceGoneException;
 import ca.gc.aafc.dina.exception.ResourceNotFoundException;
 import ca.gc.aafc.dina.jsonapi.JsonApiDocument;
 import ca.gc.aafc.dina.repository.DinaRepositoryV2;
@@ -69,14 +70,14 @@ public class OrganizationRepositoryV2 extends DinaRepositoryV2<OrganizationDto, 
   protected Link generateLinkToResource(OrganizationDto dto) {
     try {
       return linkTo(methodOn(OrganizationRepositoryV2.class).onFindOne(dto.getUuid(), null)).withSelfRel();
-    } catch (ResourceNotFoundException e) {
+    } catch (ResourceNotFoundException | ResourceGoneException e) {
       throw new RuntimeException(e);
     }
   }
 
   @GetMapping(TYPE + "/{id}")
   public ResponseEntity<RepresentationModel<?>> onFindOne(@PathVariable UUID id, HttpServletRequest req)
-      throws ResourceNotFoundException {
+      throws ResourceNotFoundException, ResourceGoneException {
     return handleFindOne(id, req);
   }
 
@@ -88,7 +89,7 @@ public class OrganizationRepositoryV2 extends DinaRepositoryV2<OrganizationDto, 
   @PostMapping(TYPE)
   @Transactional
   public ResponseEntity<RepresentationModel<?>> onCreate(@RequestBody JsonApiDocument postedDocument)
-      throws ResourceNotFoundException {
+      throws ResourceNotFoundException, ResourceGoneException {
 
     return handleCreate(postedDocument, dto -> {
       if (authenticatedUser != null) {
@@ -100,7 +101,7 @@ public class OrganizationRepositoryV2 extends DinaRepositoryV2<OrganizationDto, 
   @PatchMapping(TYPE + "/{id}")
   @Transactional
   public ResponseEntity<RepresentationModel<?>> onUpdate(@RequestBody JsonApiDocument partialPatchDto,
-                                                         @PathVariable UUID id) throws ResourceNotFoundException {
+                                                         @PathVariable UUID id) throws ResourceNotFoundException, ResourceGoneException {
     return handleUpdate(partialPatchDto, id);
   }
 
