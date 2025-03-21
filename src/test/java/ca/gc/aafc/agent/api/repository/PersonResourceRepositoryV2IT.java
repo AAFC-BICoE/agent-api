@@ -168,6 +168,8 @@ public class PersonResourceRepositoryV2IT extends BaseIntegrationTest {
     Person result = personService.findOne(updatedPerson.getUuid(), Person.class, Set.of("identifiers"));
     assertNotNull(result.getIdentifiers());
     assertEquals(identifier.getUuid(), result.getIdentifiers().getFirst().getUuid());
+    assertEquals(identifier.getNamespace(), result.getIdentifiers().getFirst().getNamespace());
+    assertEquals(identifier.getValue(), result.getIdentifiers().getFirst().getValue());
   }
 
   @Test
