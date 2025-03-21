@@ -165,7 +165,7 @@ public class PersonResourceRepositoryV2IT extends BaseIntegrationTest {
 
     personResourceRepository.update(doc);
 
-    Person result = personService.findOne(updatedPerson.getUuid(), Person.class, Set.of("identifiers"));
+    PersonDto result = personResourceRepository.getOne(updatedPerson.getUuid(), "include=identifiers").getDto();
     assertNotNull(result.getIdentifiers());
     assertEquals(identifier.getUuid(), result.getIdentifiers().getFirst().getUuid());
     assertEquals(identifier.getNamespace(), result.getIdentifiers().getFirst().getNamespace());
