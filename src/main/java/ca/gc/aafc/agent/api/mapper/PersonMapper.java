@@ -8,8 +8,10 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.factory.Mappers;
 
 import ca.gc.aafc.agent.api.dto.IdentifierDto;
+import ca.gc.aafc.agent.api.dto.OrganizationDto;
 import ca.gc.aafc.agent.api.dto.PersonDto;
 import ca.gc.aafc.agent.api.entities.Identifier;
+import ca.gc.aafc.agent.api.entities.Organization;
 import ca.gc.aafc.agent.api.entities.Person;
 import ca.gc.aafc.dina.mapper.DinaMapperV2;
 
@@ -40,6 +42,10 @@ public interface PersonMapper extends DinaMapperV2<PersonDto, Person> {
     return toIdentifierEntity(dto, provided, "identifiers");
   }
 
+  default Organization toEntity(OrganizationDto dto, @Context Set<String> provided, @Context String scope) {
+    return toOrganizationEntity(dto, provided, "organizations");
+  }
+
   /**
    * Default method to intercept the mapping and set the context to the relationship
    * @param dto
@@ -51,7 +57,13 @@ public interface PersonMapper extends DinaMapperV2<PersonDto, Person> {
     return toIdentifierDto(dto, provided, "identifiers");
   }
 
+  default OrganizationDto toDto(Organization dto, @Context Set<String> provided, @Context String scope) {
+    return toOrganizationDto(dto, provided, "organizations");
+  }
+
   Identifier toIdentifierEntity(IdentifierDto dto, Set<String> provided, String scope);
   IdentifierDto toIdentifierDto(Identifier entity, Set<String> provided, String scope);
 
+  Organization toOrganizationEntity(OrganizationDto dto, Set<String> provided, String scope);
+  OrganizationDto toOrganizationDto(Organization entity, Set<String> provided, String scope);
 }

@@ -95,8 +95,7 @@ public class PersonRepositoryV2 extends DinaRepositoryV2<PersonDto, Person> {
 
   @PostMapping(path = TYPE + "/" + DinaRepositoryV2.JSON_API_BULK_PATH, consumes = JSON_API_BULK)
   @Transactional
-  public ResponseEntity<RepresentationModel<?>> onBulkCreate(@RequestBody JsonApiBulkDocument jsonApiBulkDocument)
-    throws ResourceNotFoundException, ResourceGoneException {
+  public ResponseEntity<RepresentationModel<?>> onBulkCreate(@RequestBody JsonApiBulkDocument jsonApiBulkDocument) {
     return handleBulkCreate(jsonApiBulkDocument, dto -> {
       if (authenticatedUser != null) {
         dto.setCreatedBy(authenticatedUser.getUsername());
@@ -106,9 +105,7 @@ public class PersonRepositoryV2 extends DinaRepositoryV2<PersonDto, Person> {
 
   @PostMapping(TYPE)
   @Transactional
-  public ResponseEntity<RepresentationModel<?>> onCreate(@RequestBody JsonApiDocument postedDocument)
-      throws ResourceNotFoundException, ResourceGoneException {
-
+  public ResponseEntity<RepresentationModel<?>> onCreate(@RequestBody JsonApiDocument postedDocument) {
     return handleCreate(postedDocument, dto -> {
       if (authenticatedUser != null) {
         dto.setCreatedBy(authenticatedUser.getUsername());
