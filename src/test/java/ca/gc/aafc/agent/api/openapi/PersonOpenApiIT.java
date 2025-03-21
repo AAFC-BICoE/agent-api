@@ -93,7 +93,7 @@ public class PersonOpenApiIT extends BaseRestAssuredTest {
       .body("data.attributes.familyNames", Matchers.equalTo(PersonTestFixture.FAMILYNAMES))
       .body("data.id", Matchers.notNullValue());
 
-    // allowAdditionalFields is only used for meta field 
+    // allowAdditionalFields is only used for meta field
     OpenAPI3Assertions.assertRemoteSchema(AGENT_API_SPECS_URL, SCHEMA_NAME, response.extract().asString(),
       ValidationRestrictionOptions.builder().allowAdditionalFields(true).build());
 

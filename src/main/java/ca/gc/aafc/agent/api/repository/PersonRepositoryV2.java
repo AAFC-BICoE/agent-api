@@ -78,7 +78,7 @@ public class PersonRepositoryV2 extends DinaRepositoryV2<PersonDto, Person> {
   @PostMapping(path = TYPE + "/" + DinaRepositoryV2.JSON_API_BULK_LOAD_PATH, consumes = JSON_API_BULK)
   public ResponseEntity<RepresentationModel<?>> onBulkLoad(@RequestBody JsonApiBulkResourceIdentifierDocument jsonApiBulkDocument,
                                                            HttpServletRequest req)
-    throws ResourceNotFoundException, ResourceGoneException {
+      throws ResourceNotFoundException, ResourceGoneException {
     return handleBulkLoad(jsonApiBulkDocument, req);
   }
 
