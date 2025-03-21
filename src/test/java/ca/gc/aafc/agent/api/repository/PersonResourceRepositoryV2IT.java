@@ -9,6 +9,7 @@ import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.security.access.AccessDeniedException;
 
 import ca.gc.aafc.agent.api.BaseIntegrationTest;
+import ca.gc.aafc.agent.api.dto.IdentifierDto;
 import ca.gc.aafc.agent.api.dto.OrganizationDto;
 import ca.gc.aafc.agent.api.dto.PersonDto;
 import ca.gc.aafc.agent.api.entities.Organization;
@@ -18,6 +19,7 @@ import ca.gc.aafc.agent.api.service.OrganizationService;
 import ca.gc.aafc.agent.api.service.PersonService;
 import ca.gc.aafc.agent.api.testsupport.factories.OrganizationFactory;
 import ca.gc.aafc.agent.api.testsupport.factories.PersonFactory;
+import ca.gc.aafc.agent.api.testsupport.fixtures.IdentifierTestFixture;
 import ca.gc.aafc.dina.exception.ResourceGoneException;
 import ca.gc.aafc.dina.exception.ResourceNotFoundException;
 import ca.gc.aafc.dina.jsonapi.JsonApiDocument;
@@ -58,6 +60,9 @@ public class PersonResourceRepositoryV2IT extends BaseIntegrationTest {
 
   @Inject
   private OrganizationService organizationService;
+
+  @Inject
+  private IdentifierRepository identifierRepository;
 
   private Person personUnderTest;
 
@@ -136,6 +141,33 @@ public class PersonResourceRepositoryV2IT extends BaseIntegrationTest {
     Person result = personService.findOne(updatedPerson.getUuid(), Person.class);
     assertEquals(updatedName, result.getDisplayName());
     assertEquals(updatedEmail, result.getEmail());
+  }
+
+  @Test
+  @WithMockKeycloakUser(username="user", groupRole = {"group 1:SUPER_USER"})
+  public void save_PersistedPerson_WhenAddIdentifier_FieldsUpdated()
+    throws ResourceNotFoundException, ResourceGoneException {
+
+    IdentifierDto identifier = identifierRepository
+      .create(IdentifierTestFixture.newIdentifier());
+
+    PersonDto updatedPerson = personResourceRepository.getOne(
+      personUnderTest.getUuid(), null).getDto();
+
+   // updatedPerson.setIdentifiers(List.of(identifier));
+
+    JsonApiDocument doc = JsonApiDocuments.createJsonApiDocumentWithRelToMany(
+      updatedPerson.getUuid(), PersonDto.TYPENAME,
+      JsonAPITestHelper.toAttributeMap(updatedPerson),
+      Map.of("identifiers", List.of(JsonApiDocument.ResourceIdentifier.builder()
+        .type(IdentifierDto.TYPENAME).id(identifier.getUuid()).build()))
+    );
+
+    personResourceRepository.update(doc);
+
+    Person result = personService.findOne(updatedPerson.getUuid(), Person.class, Set.of("identifiers"));
+    assertNotNull(result.getIdentifiers());
+    assertEquals(identifier.getUuid(), result.getIdentifiers().getFirst().getUuid());
   }
 
   @Test

@@ -38,7 +38,7 @@ import javax.transaction.Transactional;
 import lombok.NonNull;
 
 @RestController
-@RequestMapping(value = "/api/v1", produces = JSON_API_VALUE)
+@RequestMapping(value = "${dina.apiPrefix:}", produces = JSON_API_VALUE)
 public class OrganizationRepositoryV2 extends DinaRepositoryV2<OrganizationDto, Organization> {
 
   private static final String TYPE = OrganizationDto.TYPENAME + "v2";
@@ -88,9 +88,7 @@ public class OrganizationRepositoryV2 extends DinaRepositoryV2<OrganizationDto, 
 
   @PostMapping(TYPE)
   @Transactional
-  public ResponseEntity<RepresentationModel<?>> onCreate(@RequestBody JsonApiDocument postedDocument)
-      throws ResourceNotFoundException, ResourceGoneException {
-
+  public ResponseEntity<RepresentationModel<?>> onCreate(@RequestBody JsonApiDocument postedDocument) {
     return handleCreate(postedDocument, dto -> {
       if (authenticatedUser != null) {
         dto.setCreatedBy(authenticatedUser.getUsername());

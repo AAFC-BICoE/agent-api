@@ -38,7 +38,7 @@ import javax.transaction.Transactional;
 import lombok.NonNull;
 
 @RestController
-@RequestMapping(value = "/api/v1", produces = JSON_API_VALUE)
+@RequestMapping(value = "${dina.apiPrefix:}", produces = JSON_API_VALUE)
 public class AgentIdentifierTypeRepository extends DinaRepositoryV2<AgentIdentifierTypeDto, AgentIdentifierType> {
 
   // Bean does not exist with keycloak disabled.
