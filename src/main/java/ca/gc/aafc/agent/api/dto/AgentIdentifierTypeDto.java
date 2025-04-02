@@ -7,7 +7,6 @@ import org.javers.core.metamodel.annotation.TypeName;
 import ca.gc.aafc.agent.api.entities.AgentIdentifierType;
 import ca.gc.aafc.dina.dto.RelatedEntity;
 import ca.gc.aafc.dina.i18n.MultilingualTitle;
-import io.crnk.core.resource.annotations.JsonApiResource;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -22,7 +21,6 @@ import com.toedter.spring.hateoas.jsonapi.JsonApiTypeForClass;
 @RelatedEntity(AgentIdentifierType.class)
 @TypeName(AgentIdentifierTypeDto.TYPENAME)
 @JsonApiTypeForClass(AgentIdentifierTypeDto.TYPENAME)
-@JsonApiResource(type = AgentIdentifierTypeDto.TYPENAME)
 public class AgentIdentifierTypeDto implements ca.gc.aafc.dina.dto.JsonApiResource {
 
   public static final String TYPENAME = "identifier-type";

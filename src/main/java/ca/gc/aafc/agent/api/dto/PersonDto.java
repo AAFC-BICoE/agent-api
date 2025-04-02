@@ -15,22 +15,17 @@ import com.toedter.spring.hateoas.jsonapi.JsonApiTypeForClass;
 
 import ca.gc.aafc.agent.api.entities.Person;
 import ca.gc.aafc.dina.dto.RelatedEntity;
-import io.crnk.core.resource.annotations.JsonApiId;
-import io.crnk.core.resource.annotations.JsonApiRelation;
-import io.crnk.core.resource.annotations.JsonApiResource;
 import lombok.Data;
 
 @Data
 @RelatedEntity(Person.class)
 @TypeName(PersonDto.TYPENAME)
 @JsonApiTypeForClass(PersonDto.TYPENAME)
-@JsonApiResource(type = PersonDto.TYPENAME)
 public class PersonDto extends AttributeMetaInfoProvider implements ca.gc.aafc.dina.dto.JsonApiResource {
 
   public static final String TYPENAME = "person";
 
   @Id
-  @JsonApiId
   @PropertyName("id")
   @com.toedter.spring.hateoas.jsonapi.JsonApiId
   private UUID uuid;
@@ -47,12 +42,10 @@ public class PersonDto extends AttributeMetaInfoProvider implements ca.gc.aafc.d
   private String remarks;
 
   @JsonIgnore
-  @JsonApiRelation
   @ShallowReference
   private List<OrganizationDto> organizations;
 
   @JsonIgnore
-  @JsonApiRelation
   @ShallowReference
   private List<IdentifierDto> identifiers = List.of();
 

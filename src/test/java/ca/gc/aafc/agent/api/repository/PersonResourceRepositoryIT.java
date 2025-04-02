@@ -1,6 +1,5 @@
 package ca.gc.aafc.agent.api.repository;
 
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,12 +44,12 @@ import javax.inject.Inject;
  * CRUD operations for the {@link Person} Entity.
  */
 @SpringBootTest(properties = {"keycloak.enabled: true"})
-public class PersonResourceRepositoryV2IT extends BaseIntegrationTest {
+public class PersonResourceRepositoryIT extends BaseIntegrationTest {
   private final static String GIVEN_NAMES = "Anata";
   private final static String FAMILY_NAMES = "Morgans";
 
   @Inject
-  private PersonRepositoryV2 personResourceRepository;
+  private PersonRepository personResourceRepository;
 
   @Inject
   private OrganizationRepository organizationResourceRepository;
@@ -83,7 +82,7 @@ public class PersonResourceRepositoryV2IT extends BaseIntegrationTest {
 
   @Test
   @WithMockKeycloakUser(username="user", groupRole = {"group 1:USER"})
-  public void create_ValidPerson_PersonPersisted() throws ResourceNotFoundException, ResourceGoneException {
+  public void create_ValidPerson_PersonPersisted() {
     PersonDto personDto = new PersonDto();
     personDto.setDisplayName(TestableEntityFactory.generateRandomNameLettersOnly(10));
     personDto.setEmail(TestableEntityFactory.generateRandomNameLettersOnly(5) + "@email.com");
@@ -93,18 +92,23 @@ public class PersonResourceRepositoryV2IT extends BaseIntegrationTest {
     OrganizationDto organizationDto = new OrganizationDto();
     organizationDto.setNames(Collections.singletonList(
       OrganizationName.builder().languageCode("te").name("name").build()));
-    OrganizationDto dto = organizationResourceRepository.create(organizationDto);
+    JsonApiDocument orgToCreate = JsonApiDocuments.createJsonApiDocument(
+      UUID.randomUUID(), OrganizationDto.TYPENAME,
+      JsonAPITestHelper.toAttributeMap(organizationDto));
+
+    UUID organizationUUID = extractUUIDFromLink(organizationResourceRepository
+      .onCreate(orgToCreate).getBody().getLink(IanaLinkRelations.SELF).orElse(null));
 
     JsonApiDocument docToCreate = JsonApiDocuments.createJsonApiDocumentWithRelToMany(
       UUID.randomUUID(), PersonDto.TYPENAME,
       JsonAPITestHelper.toAttributeMap(personDto),
 
-      Map.of("organizations", List.of(JsonApiDocument.ResourceIdentifier.builder().id(dto.getUuid())
+      Map.of("organizations", List.of(JsonApiDocument.ResourceIdentifier.builder().id(organizationUUID)
           .type(OrganizationDto.TYPENAME).build()))
     );
 
     var created = personResourceRepository.onCreate(docToCreate);
-    UUID uuid = UUID.fromString(StringUtils.substringAfterLast(created.getBody().getLink(IanaLinkRelations.SELF).get().getHref(), "/"));
+    UUID uuid = extractUUIDFromLink(created.getBody().getLink(IanaLinkRelations.SELF).orElse(null));
 
     Person result = personService.findOne(uuid, Person.class, Set.of("organizations"));
     assertEquals(personDto.getDisplayName(), result.getDisplayName());

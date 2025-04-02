@@ -7,11 +7,11 @@ import ca.gc.aafc.dina.testsupport.PostgresTestContainerInitializer;
 import ca.gc.aafc.dina.testsupport.factories.TestableEntityFactory;
 import ca.gc.aafc.dina.testsupport.jsonapi.JsonAPITestHelper;
 import com.google.common.collect.ImmutableMap;
-import io.crnk.core.engine.http.HttpStatus;
 import io.restassured.response.ValidatableResponse;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 
@@ -55,7 +55,7 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
 
     ValidatableResponse response = super.sendPost("", getPostBody(displayName, email, aliases));
 
-    assertValidResponseBodyAndCode(response, displayName, email, aliases, HttpStatus.CREATED_201)
+    assertValidResponseBodyAndCode(response, displayName, email, aliases, HttpStatus.CREATED.value())
       .body("data.id", Matchers.notNullValue());
 
     // Cleanup:
@@ -68,7 +68,7 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
     String displayName = "Albert";
     String email = "AlbertYahoo.com";
 
-    super.sendPost("", getPostBody(displayName, email, List.of("dina user")), HttpStatus.UNPROCESSABLE_ENTITY_422)
+    super.sendPost("", getPostBody(displayName, email, List.of("dina user")), HttpStatus.UNPROCESSABLE_ENTITY.value())
         .body("errors.detail", Matchers.hasItem(EMAIL_ERROR));
   }
 
@@ -82,7 +82,7 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
     super.sendPatch("", id, getPostBody(newName, newEmail, newAliases));
 
     ValidatableResponse response = super.sendGet("", id);
-    assertValidResponseBodyAndCode(response, newName, newEmail, newAliases, HttpStatus.OK_200);
+    assertValidResponseBodyAndCode(response, newName, newEmail, newAliases, HttpStatus.OK.value());
 
     // Cleanup:
     databaseSupportService.deleteByProperty(Person.class, "uuid", UUID.fromString(id));
@@ -96,7 +96,7 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
 
     ValidatableResponse response = super.sendGet("", id);
 
-    assertValidResponseBodyAndCode(response, displayName, email, List.of("dina user"), HttpStatus.OK_200)
+    assertValidResponseBodyAndCode(response, displayName, email, List.of("dina user"), HttpStatus.OK.value())
         .body("data.id", Matchers.equalTo(id));
 
     // Cleanup:
@@ -105,7 +105,7 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
 
   @Test
   public void get_InvalidPerson_ReturnsResourceNotFound() {
-    super.sendGet("", "a8098c1a-f86e-11da-bd1a-00112444be1e", HttpStatus.NOT_FOUND_404);
+    super.sendGet("", "a8098c1a-f86e-11da-bd1a-00112444be1e", HttpStatus.NOT_FOUND.value());
   }
 
   @Test

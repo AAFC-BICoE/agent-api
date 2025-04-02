@@ -46,10 +46,10 @@ import javax.validation.ValidationException;
 
 @SpringBootTest(properties = {"keycloak.enabled: true"})
 @Transactional
-public class OrganizationRepositoryV2IT extends BaseIntegrationTest {
+public class OrganizationRepositoryIT extends BaseIntegrationTest {
 
   @Inject
-  private OrganizationRepositoryV2 organizationRepository;
+  private OrganizationRepository organizationRepository;
 
   @Inject
   private OrganizationService organizationService;
