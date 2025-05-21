@@ -85,7 +85,7 @@ public class IdentifierRepository extends DinaRepositoryV2<IdentifierDto, Identi
   @PostMapping(IdentifierDto.TYPENAME)
   @Transactional
   public ResponseEntity<RepresentationModel<?>> onCreate(@RequestBody JsonApiDocument postedDocument)
-    throws ResourceNotFoundException, ResourceGoneException {
+      throws ResourceNotFoundException, ResourceGoneException {
 
     return handleCreate(postedDocument, dto -> {
       if (authenticatedUser != null) {
