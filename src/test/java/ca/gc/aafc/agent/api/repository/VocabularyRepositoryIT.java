@@ -5,7 +5,6 @@ import ca.gc.aafc.agent.api.dto.VocabularyDto;
 import ca.gc.aafc.agent.api.config.AgentVocabularyConfiguration;
 import ca.gc.aafc.dina.vocabulary.VocabularyElementConfiguration;
 
-import io.crnk.core.queryspec.QuerySpec;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -27,7 +26,7 @@ public class VocabularyRepositoryIT extends BaseIntegrationTest {
   @Test
   public void findAll_VocabularyConfiguration() {
     List<VocabularyDto> listOfVocabularies =
-      vocabularyConfigurationRepository.findAll(new QuerySpec(VocabularyDto.class));
+      vocabularyConfigurationRepository.findAll(null);
     assertEquals(1, listOfVocabularies.size());
 
     List<List<VocabularyElementConfiguration>> listOfVocabularyElements = new ArrayList<>();

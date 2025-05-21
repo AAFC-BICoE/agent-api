@@ -1,35 +1,66 @@
 package ca.gc.aafc.agent.api.repository;
 
-import org.springframework.stereotype.Repository;
-
-import ca.gc.aafc.agent.api.config.AgentVocabularyConfiguration;
-import ca.gc.aafc.agent.api.dto.VocabularyDto;
-import io.crnk.core.queryspec.QuerySpec;
-import io.crnk.core.repository.ReadOnlyResourceRepositoryBase;
-import io.crnk.core.resource.list.ResourceList;
-import lombok.NonNull;
-
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
 
-@Repository
-public class VocabularyRepository extends ReadOnlyResourceRepositoryBase<VocabularyDto, String> {
-  
-  private final List<VocabularyDto> vocabulary;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-  protected VocabularyRepository(
-    @NonNull AgentVocabularyConfiguration collectionVocabularyConfiguration) {
-    super(VocabularyDto.class);
+import com.toedter.spring.hateoas.jsonapi.JsonApiModelBuilder;
 
-    vocabulary = collectionVocabularyConfiguration.getVocabulary()
-        .entrySet()
-        .stream()
-        .map( entry -> new VocabularyDto(entry.getKey(), entry.getValue()))
-        .collect( Collectors.toList());
+import ca.gc.aafc.agent.api.dto.VocabularyDto;
+import ca.gc.aafc.agent.api.service.VocabularyService;
+import ca.gc.aafc.dina.repository.ReadOnlyDinaRepositoryV2;
+
+import static com.toedter.spring.hateoas.jsonapi.JsonApiModelBuilder.jsonApiModel;
+import static com.toedter.spring.hateoas.jsonapi.MediaTypes.JSON_API_VALUE;
+
+@RestController
+@RequestMapping(value = "${dina.apiPrefix:}", produces = JSON_API_VALUE)
+public class VocabularyRepository extends ReadOnlyDinaRepositoryV2<String, VocabularyDto> {
+
+  protected VocabularyRepository(VocabularyService vocabularyService) {
+    super(vocabularyService);
   }
 
-  @Override
-  public ResourceList<VocabularyDto> findAll(QuerySpec querySpec) {
-    return querySpec.apply(vocabulary);
+  @GetMapping("vocabulary/{id}")
+  public ResponseEntity<RepresentationModel<?>> handleFindOne(@PathVariable String id) {
+
+    VocabularyDto dto = findOne(id);
+
+    if (dto == null) {
+      return ResponseEntity.notFound().build();
+    }
+
+    JsonApiModelBuilder builder = jsonApiModel().model(RepresentationModel.of(dto));
+
+    return ResponseEntity.ok(builder.build());
   }
+
+  @GetMapping("vocabulary")
+  public ResponseEntity<RepresentationModel<?>> handleFindAll(HttpServletRequest req) {
+
+    String queryString = StringUtils.isBlank(req.getQueryString()) ? "" :
+      URLDecoder.decode(req.getQueryString(), StandardCharsets.UTF_8);
+
+    List<VocabularyDto> dtos ;
+    try {
+      dtos = findAll(queryString);
+    } catch (IllegalArgumentException iaEx) {
+      return ResponseEntity.badRequest().build();
+    }
+
+    JsonApiModelBuilder builder = jsonApiModel().model(CollectionModel.of(dtos));
+
+    return ResponseEntity.ok(builder.build());
+  }
+
 }

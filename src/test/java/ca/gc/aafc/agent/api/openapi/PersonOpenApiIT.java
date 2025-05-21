@@ -41,7 +41,7 @@ import static ca.gc.aafc.agent.api.openapi.OpenAPIConstants.AGENT_API_SPECS_URL;
 @Transactional
 public class PersonOpenApiIT extends BaseRestAssuredTest {
 
-  public static final String API_BASE_PATH_PERSON = "/api/v1/personv2/";
+  public static final String API_BASE_PATH_PERSON = "/api/v1/person/";
   public static final String API_BASE_PATH_IDENTIFIER = "/api/v1/identifier/";
   public static final String API_BASE_PATH_ORGANIZATION = "/api/v1/organization/";
   private static final String SCHEMA_NAME = "Person";

@@ -53,7 +53,7 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
     String email = "Albert@yahoo.com";
     List<String> aliases = List.of("dina user");
 
-    ValidatableResponse response = super.sendPost("", getPostBody(displayName, email, aliases));
+    ValidatableResponse response = super.sendPost("", getPostBody(displayName, email, aliases, null));
 
     assertValidResponseBodyAndCode(response, displayName, email, aliases, HttpStatus.CREATED.value())
       .body("data.id", Matchers.notNullValue());
@@ -68,18 +68,18 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
     String displayName = "Albert";
     String email = "AlbertYahoo.com";
 
-    super.sendPost("", getPostBody(displayName, email, List.of("dina user")), HttpStatus.UNPROCESSABLE_ENTITY.value())
+    super.sendPost("", getPostBody(displayName, email, List.of("dina user"), null), HttpStatus.UNPROCESSABLE_ENTITY.value())
         .body("errors.detail", Matchers.hasItem(EMAIL_ERROR));
   }
 
   @Test
-  public void Patch_UpdatePerson_ReturnsOkayAndBody() {
+  public void patch_UpdatePerson_ReturnsOkayAndBody() {
     String id = persistPerson("person", "person@agen.ca");
 
     String newName = "Updated Name";
     String newEmail = "Updated@yahoo.nz";
     List<String> newAliases = List.of("dina user");
-    super.sendPatch("", id, getPostBody(newName, newEmail, newAliases));
+    super.sendPatch("", id, getPostBody(newName, newEmail, newAliases, id));
 
     ValidatableResponse response = super.sendGet("", id);
     assertValidResponseBodyAndCode(response, newName, newEmail, newAliases, HttpStatus.OK.value());
@@ -151,12 +151,12 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
    * @param aliases
    * @return - serializable JSON API map
    */
-  private static Map<String, Object> getPostBody(String displayName, String email, List<String> aliases) {
+  private static Map<String, Object> getPostBody(String displayName, String email, List<String> aliases, String id) {
     ImmutableMap.Builder<String, Object> objAttribMap = new ImmutableMap.Builder<>();
     objAttribMap.put("displayName", displayName);
     objAttribMap.put("email", email);
     objAttribMap.put("aliases", aliases);
-    return JsonAPITestHelper.toJsonAPIMap("person", objAttribMap.build(), null, null);
+    return JsonAPITestHelper.toJsonAPIMap("person", objAttribMap.build(), null, id);
   }
 
   /**
@@ -169,7 +169,7 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
    * @return - id of the persisted person
    */
   private String persistPerson(String name, String email) {
-    return super.sendPost("", getPostBody(name, email, List.of("dina user"))).extract().jsonPath().get("data.id");
+    return super.sendPost("", getPostBody(name, email, List.of("dina user"), null)).extract().jsonPath().get("data.id");
   }
 
 }

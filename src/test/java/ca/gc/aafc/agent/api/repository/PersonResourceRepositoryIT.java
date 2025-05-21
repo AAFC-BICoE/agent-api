@@ -152,8 +152,14 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
   public void save_PersistedPerson_WhenAddIdentifier_FieldsUpdated()
     throws ResourceNotFoundException, ResourceGoneException {
 
+    JsonApiDocument identifierDoc = JsonApiDocuments.createJsonApiDocument(
+      null, IdentifierDto.TYPENAME,
+      JsonAPITestHelper.toAttributeMap(IdentifierTestFixture.newIdentifier())
+    );
+
     IdentifierDto identifier = identifierRepository
-      .create(IdentifierTestFixture.newIdentifier());
+      .create(identifierDoc, null).getDto();
+
 
     PersonDto updatedPerson = personResourceRepository.getOne(
       personUnderTest.getUuid(), null).getDto();
