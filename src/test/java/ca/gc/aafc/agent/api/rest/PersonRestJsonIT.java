@@ -1,6 +1,7 @@
 package ca.gc.aafc.agent.api.rest;
 
 import ca.gc.aafc.agent.api.AgentModuleApiLauncher;
+import ca.gc.aafc.agent.api.BaseIntegrationTest;
 import ca.gc.aafc.agent.api.dto.PersonDto;
 import ca.gc.aafc.agent.api.entities.Person;
 import ca.gc.aafc.dina.jsonapi.JsonApiBulkResourceIdentifierDocument;
@@ -19,6 +20,7 @@ import io.restassured.response.ValidatableResponse;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
@@ -41,6 +43,7 @@ import java.util.UUID;
   "spring.config.additional-location=classpath:application-test.yml",
   "dev-user.enabled=true"})
 @ContextConfiguration(initializers = {PostgresTestContainerInitializer.class})
+@Import(BaseIntegrationTest.CollectionModuleTestConfiguration.class)
 @Transactional
 public class PersonRestJsonIT extends BaseRestAssuredTest {
 
@@ -116,7 +119,7 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
     String email = TestableEntityFactory.generateRandomNameLettersOnly(5) + "@email.com";
     String id = persistPerson(displayName, email);
 
-    // to update when base-api 0.142 is available
+    // to update when base-api 0.143 is available
     var request = RestAssured.given().config(RestAssured.config().encoderConfig(
       EncoderConfig.encoderConfig().defaultCharsetForContentType("UTF-8",
         DinaRepositoryV2.JSON_API_BULK)))
@@ -127,6 +130,9 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
       .type(PersonDto.TYPENAME)
       .id(UUID.fromString(id))
       .build());
+
+    // use that function with dina-base 0.143
+    // var response = sendBulkLoad("", bulkLoadDocument.build());
 
     var postRequest = request.body(bulkLoadDocument.build()).post(DinaRepositoryV2.JSON_API_BULK_LOAD_PATH);
 

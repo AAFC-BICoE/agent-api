@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.security.access.AccessDeniedException;
 
 import ca.gc.aafc.agent.api.BaseIntegrationTest;
@@ -23,6 +22,7 @@ import ca.gc.aafc.dina.exception.ResourceGoneException;
 import ca.gc.aafc.dina.exception.ResourceNotFoundException;
 import ca.gc.aafc.dina.jsonapi.JsonApiDocument;
 import ca.gc.aafc.dina.jsonapi.JsonApiDocuments;
+import ca.gc.aafc.dina.repository.JsonApiModelAssistant;
 import ca.gc.aafc.dina.testsupport.factories.TestableEntityFactory;
 import ca.gc.aafc.dina.testsupport.jsonapi.JsonAPITestHelper;
 import ca.gc.aafc.dina.testsupport.security.WithMockKeycloakUser;
@@ -96,8 +96,9 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
       UUID.randomUUID(), OrganizationDto.TYPENAME,
       JsonAPITestHelper.toAttributeMap(organizationDto));
 
-    UUID organizationUUID = extractUUIDFromLink(organizationResourceRepository
-      .onCreate(orgToCreate).getBody().getLink(IanaLinkRelations.SELF).orElse(null));
+    UUID organizationUUID =
+      JsonApiModelAssistant.extractUUIDFromRepresentationModelLink(organizationResourceRepository
+      .onCreate(orgToCreate));
 
     JsonApiDocument docToCreate = JsonApiDocuments.createJsonApiDocumentWithRelToMany(
       UUID.randomUUID(), PersonDto.TYPENAME,
@@ -107,8 +108,8 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
           .type(OrganizationDto.TYPENAME).build()))
     );
 
-    var created = personResourceRepository.onCreate(docToCreate);
-    UUID uuid = extractUUIDFromLink(created.getBody().getLink(IanaLinkRelations.SELF).orElse(null));
+    UUID uuid = JsonApiModelAssistant.extractUUIDFromRepresentationModelLink(
+      personResourceRepository.onCreate(docToCreate));
 
     Person result = personService.findOne(uuid, Person.class, Set.of("organizations"));
     assertEquals(personDto.getDisplayName(), result.getDisplayName());
