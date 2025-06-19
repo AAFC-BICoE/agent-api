@@ -119,7 +119,7 @@ public class IdentifierRepository extends DinaRepositoryV2<IdentifierDto, Identi
   @PatchMapping(path = IdentifierDto.TYPENAME + "/" + DinaRepositoryV2.JSON_API_BULK_PATH, consumes = JSON_API_BULK)
   @Transactional
   public ResponseEntity<RepresentationModel<?>> onBulkUpdate(@RequestBody JsonApiBulkDocument jsonApiBulkDocument)
-    throws ResourceNotFoundException, ResourceGoneException {
+      throws ResourceNotFoundException, ResourceGoneException {
     return handleBulkUpdate(jsonApiBulkDocument);
   }
 
@@ -134,7 +134,7 @@ public class IdentifierRepository extends DinaRepositoryV2<IdentifierDto, Identi
   @Transactional
   public ResponseEntity<RepresentationModel<?>> onBulkDelete(@RequestBody
                                                              JsonApiBulkResourceIdentifierDocument jsonApiBulkDocument)
-    throws ResourceNotFoundException, ResourceGoneException {
+      throws ResourceNotFoundException, ResourceGoneException {
     return handleBulkDelete(jsonApiBulkDocument);
   }
 
