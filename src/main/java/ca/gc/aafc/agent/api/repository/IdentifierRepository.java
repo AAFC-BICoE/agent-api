@@ -21,6 +21,7 @@ import ca.gc.aafc.agent.api.mapper.IdentifierMapper;
 import ca.gc.aafc.agent.api.security.UpdateDeleteSuperUserOnly;
 import ca.gc.aafc.dina.exception.ResourceGoneException;
 import ca.gc.aafc.dina.exception.ResourceNotFoundException;
+import ca.gc.aafc.dina.jsonapi.JsonApiBulkDocument;
 import ca.gc.aafc.dina.jsonapi.JsonApiBulkResourceIdentifierDocument;
 import ca.gc.aafc.dina.jsonapi.JsonApiDocument;
 import ca.gc.aafc.dina.repository.DinaRepositoryV2;
@@ -92,6 +93,17 @@ public class IdentifierRepository extends DinaRepositoryV2<IdentifierDto, Identi
     return handleFindAll(req);
   }
 
+  @PostMapping(path = IdentifierDto.TYPENAME + "/" + DinaRepositoryV2.JSON_API_BULK_PATH, consumes = JSON_API_BULK)
+  @Transactional
+  public ResponseEntity<RepresentationModel<?>> onBulkCreate(@RequestBody
+                                                             JsonApiBulkDocument jsonApiBulkDocument) {
+    return handleBulkCreate(jsonApiBulkDocument, dto -> {
+      if (authenticatedUser != null) {
+        dto.setCreatedBy(authenticatedUser.getUsername());
+      }
+    });
+  }
+
   @PostMapping(IdentifierDto.TYPENAME)
   @Transactional
   public ResponseEntity<RepresentationModel<?>> onCreate(@RequestBody JsonApiDocument postedDocument)
@@ -104,11 +116,26 @@ public class IdentifierRepository extends DinaRepositoryV2<IdentifierDto, Identi
     });
   }
 
+  @PatchMapping(path = IdentifierDto.TYPENAME + "/" + DinaRepositoryV2.JSON_API_BULK_PATH, consumes = JSON_API_BULK)
+  @Transactional
+  public ResponseEntity<RepresentationModel<?>> onBulkUpdate(@RequestBody JsonApiBulkDocument jsonApiBulkDocument)
+    throws ResourceNotFoundException, ResourceGoneException {
+    return handleBulkUpdate(jsonApiBulkDocument);
+  }
+
   @PatchMapping(IdentifierDto.TYPENAME + "/{id}")
   @Transactional
   public ResponseEntity<RepresentationModel<?>> onUpdate(@RequestBody JsonApiDocument partialPatchDto,
                                                          @PathVariable UUID id) throws ResourceNotFoundException, ResourceGoneException {
     return handleUpdate(partialPatchDto, id);
+  }
+
+  @DeleteMapping(path = IdentifierDto.TYPENAME + "/" + DinaRepositoryV2.JSON_API_BULK_PATH, consumes = JSON_API_BULK)
+  @Transactional
+  public ResponseEntity<RepresentationModel<?>> onBulkDelete(@RequestBody
+                                                             JsonApiBulkResourceIdentifierDocument jsonApiBulkDocument)
+    throws ResourceNotFoundException, ResourceGoneException {
+    return handleBulkDelete(jsonApiBulkDocument);
   }
 
   @DeleteMapping(IdentifierDto.TYPENAME + "/{id}")

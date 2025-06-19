@@ -161,7 +161,6 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
     IdentifierDto identifier = identifierRepository
       .create(identifierDoc, null).getDto();
 
-
     PersonDto updatedPerson = personResourceRepository.getOne(
       personUnderTest.getUuid(), null).getDto();
 
