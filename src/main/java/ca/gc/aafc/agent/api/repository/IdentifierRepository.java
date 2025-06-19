@@ -83,7 +83,7 @@ public class IdentifierRepository extends DinaRepositoryV2<IdentifierDto, Identi
   public ResponseEntity<RepresentationModel<?>> onBulkLoad(@RequestBody
                                                            JsonApiBulkResourceIdentifierDocument jsonApiBulkDocument,
                                                            HttpServletRequest req)
-    throws ResourceNotFoundException, ResourceGoneException {
+      throws ResourceNotFoundException, ResourceGoneException {
     return handleBulkLoad(jsonApiBulkDocument, req);
   }
 
