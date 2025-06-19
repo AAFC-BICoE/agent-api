@@ -21,6 +21,7 @@ import ca.gc.aafc.agent.api.mapper.IdentifierMapper;
 import ca.gc.aafc.agent.api.security.UpdateDeleteSuperUserOnly;
 import ca.gc.aafc.dina.exception.ResourceGoneException;
 import ca.gc.aafc.dina.exception.ResourceNotFoundException;
+import ca.gc.aafc.dina.jsonapi.JsonApiBulkResourceIdentifierDocument;
 import ca.gc.aafc.dina.jsonapi.JsonApiDocument;
 import ca.gc.aafc.dina.repository.DinaRepositoryV2;
 import ca.gc.aafc.dina.security.DinaAuthenticatedUser;
@@ -75,6 +76,15 @@ public class IdentifierRepository extends DinaRepositoryV2<IdentifierDto, Identi
   @GetMapping(IdentifierDto.TYPENAME + "/{id}")
   public ResponseEntity<RepresentationModel<?>> onFindOne(@PathVariable UUID id, HttpServletRequest req) throws ResourceNotFoundException, ResourceGoneException {
     return handleFindOne(id, req);
+  }
+
+  @PostMapping(path = IdentifierDto.TYPENAME + "/" + DinaRepositoryV2.JSON_API_BULK_LOAD_PATH,
+    consumes = JSON_API_BULK)
+  public ResponseEntity<RepresentationModel<?>> onBulkLoad(@RequestBody
+                                                           JsonApiBulkResourceIdentifierDocument jsonApiBulkDocument,
+                                                           HttpServletRequest req)
+    throws ResourceNotFoundException, ResourceGoneException {
+    return handleBulkLoad(jsonApiBulkDocument, req);
   }
 
   @GetMapping(IdentifierDto.TYPENAME)
