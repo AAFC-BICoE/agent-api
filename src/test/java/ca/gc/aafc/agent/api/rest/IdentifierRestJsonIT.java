@@ -17,14 +17,11 @@ import ca.gc.aafc.agent.api.testsupport.fixtures.IdentifierTestFixture;
 import ca.gc.aafc.dina.jsonapi.JsonApiBulkResourceIdentifierDocument;
 import ca.gc.aafc.dina.jsonapi.JsonApiDocument;
 import ca.gc.aafc.dina.jsonapi.JsonApiDocuments;
-import ca.gc.aafc.dina.repository.DinaRepositoryV2;
 import ca.gc.aafc.dina.testsupport.BaseRestAssuredTest;
 import ca.gc.aafc.dina.testsupport.DatabaseSupportService;
 import ca.gc.aafc.dina.testsupport.PostgresTestContainerInitializer;
 import ca.gc.aafc.dina.testsupport.jsonapi.JsonAPITestHelper;
 
-import io.restassured.RestAssured;
-import io.restassured.config.EncoderConfig;
 import java.util.UUID;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -63,23 +60,14 @@ public class IdentifierRestJsonIT extends BaseRestAssuredTest {
 
     String id = sendPost("", identifierDoc).extract().jsonPath().get("data.id");
 
-    // to update when base-api 0.143 is available
-    var request = RestAssured.given().config(RestAssured.config().encoderConfig(
-        EncoderConfig.encoderConfig().defaultCharsetForContentType("UTF-8",
-          DinaRepositoryV2.JSON_API_BULK)))
-      .contentType(DinaRepositoryV2.JSON_API_BULK).port(this.testPort).basePath(this.basePath);
-
     var bulkLoadDocument = JsonApiBulkResourceIdentifierDocument.builder();
     bulkLoadDocument.addData(JsonApiDocument.ResourceIdentifier.builder()
       .type(PersonDto.TYPENAME)
       .id(UUID.fromString(id))
       .build());
 
-    // use that function with dina-base 0.143
-    var postRequest = request.body(bulkLoadDocument.build()).post(DinaRepositoryV2.JSON_API_BULK_LOAD_PATH);
-
-    var response = postRequest.then().log().ifValidationFails().statusCode(200);
-    response.body("data[0].id", Matchers.equalTo(id));
+    var postRequest = sendBulkLoad("", bulkLoadDocument.build());
+    postRequest.body("data[0].id", Matchers.equalTo(id));
 
     // Cleanup:
     databaseSupportService.deleteByProperty(Person.class, "uuid", UUID.fromString(id));
