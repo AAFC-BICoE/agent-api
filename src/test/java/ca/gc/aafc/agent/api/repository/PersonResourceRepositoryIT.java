@@ -164,8 +164,6 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
     PersonDto updatedPerson = personResourceRepository.getOne(
       personUnderTest.getUuid(), null).getDto();
 
-   // updatedPerson.setIdentifiers(List.of(identifier));
-
     JsonApiDocument doc = JsonApiDocuments.createJsonApiDocumentWithRelToMany(
       updatedPerson.getUuid(), PersonDto.TYPENAME,
       JsonAPITestHelper.toAttributeMap(updatedPerson),
