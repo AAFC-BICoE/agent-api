@@ -29,4 +29,12 @@
         <notes>No WebFlux</notes>
         <cve>CVE-2024-38821</cve>
     </suppress>
+    <suppress>
+        <notes>Keycloak Server related</notes>
+        <cve>CVE-2023-6787</cve>
+    </suppress>
+    <suppress>
+        <notes>Keycloak Server related</notes>
+        <cve>CVE-2024-1132</cve>
+    </suppress>
 </suppressions>
