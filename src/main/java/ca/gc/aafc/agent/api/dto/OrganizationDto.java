@@ -4,30 +4,29 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
 import org.javers.core.metamodel.annotation.Id;
 import org.javers.core.metamodel.annotation.PropertyName;
 import org.javers.core.metamodel.annotation.TypeName;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.toedter.spring.hateoas.jsonapi.JsonApiTypeForClass;
+
 import ca.gc.aafc.agent.api.entities.Organization;
 import ca.gc.aafc.agent.api.entities.OrganizationName;
 import ca.gc.aafc.dina.dto.RelatedEntity;
-import io.crnk.core.resource.annotations.JsonApiId;
-import io.crnk.core.resource.annotations.JsonApiResource;
 import lombok.Data;
 
-@RelatedEntity(Organization.class)
 @Data
-@JsonApiResource(type = OrganizationDto.TYPENAME)
+@RelatedEntity(Organization.class)
 @TypeName(OrganizationDto.TYPENAME)
-public class OrganizationDto {
+@JsonApiTypeForClass(OrganizationDto.TYPENAME)
+public class OrganizationDto implements ca.gc.aafc.dina.dto.JsonApiResource {
 
   public static final String TYPENAME = "organization";
 
-  @JsonApiId
   @Id
   @PropertyName("id")
+  @com.toedter.spring.hateoas.jsonapi.JsonApiId
   private UUID uuid;
 
   private String[] aliases;
@@ -35,7 +34,17 @@ public class OrganizationDto {
   private String createdBy;
   private OffsetDateTime createdOn;
 
-  @JsonInclude(JsonInclude.Include.NON_EMPTY)
   private List<OrganizationName> names;
 
+  @Override
+  @JsonIgnore
+  public String getJsonApiType() {
+    return TYPENAME;
+  }
+
+  @Override
+  @JsonIgnore
+  public UUID getJsonApiId() {
+    return uuid;
+  }
 }

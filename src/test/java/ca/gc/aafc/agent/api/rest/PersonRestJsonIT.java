@@ -1,17 +1,27 @@
-package ca.gc.aafc.agent.api;
+package ca.gc.aafc.agent.api.rest;
 
+import ca.gc.aafc.agent.api.AgentModuleApiLauncher;
+import ca.gc.aafc.agent.api.BaseIntegrationTest;
+import ca.gc.aafc.agent.api.dto.PersonDto;
 import ca.gc.aafc.agent.api.entities.Person;
+import ca.gc.aafc.dina.jsonapi.JsonApiBulkResourceIdentifierDocument;
+import ca.gc.aafc.dina.jsonapi.JsonApiDocument;
+import ca.gc.aafc.dina.repository.DinaRepositoryV2;
 import ca.gc.aafc.dina.testsupport.BaseRestAssuredTest;
 import ca.gc.aafc.dina.testsupport.DatabaseSupportService;
 import ca.gc.aafc.dina.testsupport.PostgresTestContainerInitializer;
 import ca.gc.aafc.dina.testsupport.factories.TestableEntityFactory;
 import ca.gc.aafc.dina.testsupport.jsonapi.JsonAPITestHelper;
 import com.google.common.collect.ImmutableMap;
-import io.crnk.core.engine.http.HttpStatus;
+
+import io.restassured.RestAssured;
+import io.restassured.config.EncoderConfig;
 import io.restassured.response.ValidatableResponse;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 
@@ -33,6 +43,7 @@ import java.util.UUID;
   "spring.config.additional-location=classpath:application-test.yml",
   "dev-user.enabled=true"})
 @ContextConfiguration(initializers = {PostgresTestContainerInitializer.class})
+@Import(BaseIntegrationTest.CollectionModuleTestConfiguration.class)
 @Transactional
 public class PersonRestJsonIT extends BaseRestAssuredTest {
 
@@ -40,7 +51,6 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
   private DatabaseSupportService databaseSupportService;
 
   public static final String API_BASE_PATH = "/api/v1/person/";
-  private static final String SCHEMA_NAME = "Person";
   public static final String EMAIL_ERROR = "email must be a well-formed email address";
 
   protected PersonRestJsonIT() {
@@ -53,9 +63,9 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
     String email = "Albert@yahoo.com";
     List<String> aliases = List.of("dina user");
 
-    ValidatableResponse response = super.sendPost("", getPostBody(displayName, email, aliases));
+    ValidatableResponse response = super.sendPost("", getPostBody(displayName, email, aliases, null));
 
-    assertValidResponseBodyAndCode(response, displayName, email, aliases, HttpStatus.CREATED_201)
+    assertValidResponseBodyAndCode(response, displayName, email, aliases, HttpStatus.CREATED.value())
       .body("data.id", Matchers.notNullValue());
 
     // Cleanup:
@@ -68,21 +78,21 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
     String displayName = "Albert";
     String email = "AlbertYahoo.com";
 
-    super.sendPost("", getPostBody(displayName, email, List.of("dina user")), HttpStatus.UNPROCESSABLE_ENTITY_422)
+    super.sendPost("", getPostBody(displayName, email, List.of("dina user"), null), HttpStatus.UNPROCESSABLE_ENTITY.value())
         .body("errors.detail", Matchers.hasItem(EMAIL_ERROR));
   }
 
   @Test
-  public void Patch_UpdatePerson_ReturnsOkayAndBody() {
+  public void patch_UpdatePerson_ReturnsOkayAndBody() {
     String id = persistPerson("person", "person@agen.ca");
 
     String newName = "Updated Name";
     String newEmail = "Updated@yahoo.nz";
     List<String> newAliases = List.of("dina user");
-    super.sendPatch("", id, getPostBody(newName, newEmail, newAliases));
+    super.sendPatch("", id, getPostBody(newName, newEmail, newAliases, id));
 
     ValidatableResponse response = super.sendGet("", id);
-    assertValidResponseBodyAndCode(response, newName, newEmail, newAliases, HttpStatus.OK_200);
+    assertValidResponseBodyAndCode(response, newName, newEmail, newAliases, HttpStatus.OK.value());
 
     // Cleanup:
     databaseSupportService.deleteByProperty(Person.class, "uuid", UUID.fromString(id));
@@ -96,7 +106,7 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
 
     ValidatableResponse response = super.sendGet("", id);
 
-    assertValidResponseBodyAndCode(response, displayName, email, List.of("dina user"), HttpStatus.OK_200)
+    assertValidResponseBodyAndCode(response, displayName, email, List.of("dina user"), HttpStatus.OK.value())
         .body("data.id", Matchers.equalTo(id));
 
     // Cleanup:
@@ -104,8 +114,38 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
   }
 
   @Test
+  public void loadBatch_PersistedPerson_ReturnsOkayAndBody() {
+    String displayName = TestableEntityFactory.generateRandomNameLettersOnly(10);
+    String email = TestableEntityFactory.generateRandomNameLettersOnly(5) + "@email.com";
+    String id = persistPerson(displayName, email);
+
+    // to update when base-api 0.143 is available
+    var request = RestAssured.given().config(RestAssured.config().encoderConfig(
+      EncoderConfig.encoderConfig().defaultCharsetForContentType("UTF-8",
+        DinaRepositoryV2.JSON_API_BULK)))
+      .contentType(DinaRepositoryV2.JSON_API_BULK).port(this.testPort).basePath(this.basePath);
+
+    var bulkLoadDocument = JsonApiBulkResourceIdentifierDocument.builder();
+    bulkLoadDocument.addData(JsonApiDocument.ResourceIdentifier.builder()
+      .type(PersonDto.TYPENAME)
+      .id(UUID.fromString(id))
+      .build());
+
+    // use that function with dina-base 0.143
+    // var response = sendBulkLoad("", bulkLoadDocument.build());
+
+    var postRequest = request.body(bulkLoadDocument.build()).post(DinaRepositoryV2.JSON_API_BULK_LOAD_PATH);
+
+    var response = postRequest.then().log().ifValidationFails().statusCode(200);
+    response.body("data[0].attributes.displayName", Matchers.equalTo(displayName));
+
+    // Cleanup:
+    databaseSupportService.deleteByProperty(Person.class, "uuid", UUID.fromString(id));
+  }
+
+  @Test
   public void get_InvalidPerson_ReturnsResourceNotFound() {
-    super.sendGet("", "a8098c1a-f86e-11da-bd1a-00112444be1e", HttpStatus.NOT_FOUND_404);
+    super.sendGet("", "a8098c1a-f86e-11da-bd1a-00112444be1e", HttpStatus.NOT_FOUND.value());
   }
 
   @Test
@@ -151,12 +191,12 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
    * @param aliases
    * @return - serializable JSON API map
    */
-  private static Map<String, Object> getPostBody(String displayName, String email, List<String> aliases) {
+  private static Map<String, Object> getPostBody(String displayName, String email, List<String> aliases, String id) {
     ImmutableMap.Builder<String, Object> objAttribMap = new ImmutableMap.Builder<>();
     objAttribMap.put("displayName", displayName);
     objAttribMap.put("email", email);
     objAttribMap.put("aliases", aliases);
-    return JsonAPITestHelper.toJsonAPIMap("person", objAttribMap.build(), null, null);
+    return JsonAPITestHelper.toJsonAPIMap("person", objAttribMap.build(), null, id);
   }
 
   /**
@@ -169,7 +209,7 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
    * @return - id of the persisted person
    */
   private String persistPerson(String name, String email) {
-    return super.sendPost("", getPostBody(name, email, List.of("dina user"))).extract().jsonPath().get("data.id");
+    return super.sendPost("", getPostBody(name, email, List.of("dina user"), null)).extract().jsonPath().get("data.id");
   }
 
 }

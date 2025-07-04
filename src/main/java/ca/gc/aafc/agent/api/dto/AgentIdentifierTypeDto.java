@@ -13,19 +13,20 @@ import java.util.List;
 import java.util.UUID;
 import lombok.Data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.toedter.spring.hateoas.jsonapi.JsonApiId;
 import com.toedter.spring.hateoas.jsonapi.JsonApiTypeForClass;
 
-@RelatedEntity(AgentIdentifierType.class)
-@JsonApiTypeForClass(AgentIdentifierTypeDto.TYPENAME)
-@TypeName(AgentIdentifierTypeDto.TYPENAME)
 @Data
-public class AgentIdentifierTypeDto {
+@RelatedEntity(AgentIdentifierType.class)
+@TypeName(AgentIdentifierTypeDto.TYPENAME)
+@JsonApiTypeForClass(AgentIdentifierTypeDto.TYPENAME)
+public class AgentIdentifierTypeDto implements ca.gc.aafc.dina.dto.JsonApiResource {
 
   public static final String TYPENAME = "identifier-type";
 
-  @JsonApiId
   @Id
+  @JsonApiId
   @PropertyName("id")
   private UUID uuid;
 
@@ -39,4 +40,15 @@ public class AgentIdentifierTypeDto {
   private String createdBy;
   private OffsetDateTime createdOn;
 
+  @Override
+  @JsonIgnore
+  public String getJsonApiType() {
+    return TYPENAME;
+  }
+
+  @Override
+  @JsonIgnore
+  public UUID getJsonApiId() {
+    return uuid;
+  }
 }
