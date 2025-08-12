@@ -1,22 +1,5 @@
 package ca.gc.aafc.agent.api.rest;
 
-import ca.gc.aafc.agent.api.AgentModuleApiLauncher;
-import ca.gc.aafc.agent.api.BaseIntegrationTest;
-import ca.gc.aafc.agent.api.dto.PersonDto;
-import ca.gc.aafc.agent.api.entities.Person;
-import ca.gc.aafc.dina.jsonapi.JsonApiBulkResourceIdentifierDocument;
-import ca.gc.aafc.dina.jsonapi.JsonApiDocument;
-import ca.gc.aafc.dina.repository.DinaRepositoryV2;
-import ca.gc.aafc.dina.testsupport.BaseRestAssuredTest;
-import ca.gc.aafc.dina.testsupport.DatabaseSupportService;
-import ca.gc.aafc.dina.testsupport.PostgresTestContainerInitializer;
-import ca.gc.aafc.dina.testsupport.factories.TestableEntityFactory;
-import ca.gc.aafc.dina.testsupport.jsonapi.JsonAPITestHelper;
-import com.google.common.collect.ImmutableMap;
-
-import io.restassured.RestAssured;
-import io.restassured.config.EncoderConfig;
-import io.restassured.response.ValidatableResponse;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,11 +8,26 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 
-import javax.inject.Inject;
-import javax.transaction.Transactional;
+import com.google.common.collect.ImmutableMap;
+
+import ca.gc.aafc.agent.api.AgentModuleApiLauncher;
+import ca.gc.aafc.agent.api.BaseIntegrationTest;
+import ca.gc.aafc.agent.api.dto.PersonDto;
+import ca.gc.aafc.agent.api.entities.Person;
+import ca.gc.aafc.dina.jsonapi.JsonApiBulkResourceIdentifierDocument;
+import ca.gc.aafc.dina.jsonapi.JsonApiDocument;
+import ca.gc.aafc.dina.testsupport.BaseRestAssuredTest;
+import ca.gc.aafc.dina.testsupport.DatabaseSupportService;
+import ca.gc.aafc.dina.testsupport.PostgresTestContainerInitializer;
+import ca.gc.aafc.dina.testsupport.factories.TestableEntityFactory;
+import ca.gc.aafc.dina.testsupport.jsonapi.JsonAPITestHelper;
+
+import io.restassured.response.ValidatableResponse;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 /**
  * Test suite to validate correct HTTP and JSON API responses for {@link Person}
@@ -119,24 +117,13 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
     String email = TestableEntityFactory.generateRandomNameLettersOnly(5) + "@email.com";
     String id = persistPerson(displayName, email);
 
-    // to update when base-api 0.143 is available
-    var request = RestAssured.given().config(RestAssured.config().encoderConfig(
-      EncoderConfig.encoderConfig().defaultCharsetForContentType("UTF-8",
-        DinaRepositoryV2.JSON_API_BULK)))
-      .contentType(DinaRepositoryV2.JSON_API_BULK).port(this.testPort).basePath(this.basePath);
-
     var bulkLoadDocument = JsonApiBulkResourceIdentifierDocument.builder();
     bulkLoadDocument.addData(JsonApiDocument.ResourceIdentifier.builder()
       .type(PersonDto.TYPENAME)
       .id(UUID.fromString(id))
       .build());
 
-    // use that function with dina-base 0.143
-    // var response = sendBulkLoad("", bulkLoadDocument.build());
-
-    var postRequest = request.body(bulkLoadDocument.build()).post(DinaRepositoryV2.JSON_API_BULK_LOAD_PATH);
-
-    var response = postRequest.then().log().ifValidationFails().statusCode(200);
+    var response = sendBulkLoad("", bulkLoadDocument.build());
     response.body("data[0].attributes.displayName", Matchers.equalTo(displayName));
 
     // Cleanup:
