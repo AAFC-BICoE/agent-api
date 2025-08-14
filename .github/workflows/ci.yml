@@ -13,6 +13,9 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
           cache: 'maven'
+          server-id: 'nvd'
+          server-password: NVD_API_KEY
+
       - name: Build with Maven
         run: mvn -B -q verify
       - name: Run Checkstyle
