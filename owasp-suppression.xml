@@ -41,4 +41,8 @@
         <notes>Keycloak Server related</notes>
         <cve>CVE-2024-1132</cve>
     </suppress>
+        <suppress>
+        <notes>JMS related</notes>
+        <cve>CVE-2025-48913</cve>
+    </suppress>
 </suppressions>
