@@ -26,27 +26,8 @@ jobs:
       - name: Run OWASP dependency-check (only on dev)
         run: mvn -q org.owasp:dependency-check-maven:check
         if: ${{ github.ref == 'refs/heads/dev' }}
-
-      - name: Set up for Maven Central deploy (master branch only)
-        uses: actions/setup-java@v3
-        if: ${{ github.ref == 'refs/heads/master-SKIP' }}
-        with: # update default settings.xml
-          distribution: 'temurin'
-          java-version: '17'
-          cache: 'maven'
-          server-id: ossrh
-          server-username: MAVEN_USERNAME
-          server-password: MAVEN_CENTRAL_PW
-          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
-          gpg-passphrase: MAVEN_GPG_PASSPHRASE
-
-      - name: Publish to Maven Central (master branch only)
-        if: ${{ github.ref == 'refs/heads/master-SKIP' }}
-        run: mvn -DsignArtifacts=true --batch-mode javadoc:jar source:jar deploy
         env:
-          MAVEN_USERNAME: aafcbicoe
-          MAVEN_CENTRAL_PW: ${{ secrets.MAVEN_CENTRAL_PW }}
-          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
 
       - name: Extract Version
         if: ${{ github.ref == 'refs/heads/master' }}
