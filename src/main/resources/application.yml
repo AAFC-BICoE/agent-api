@@ -11,6 +11,11 @@ spring:
     open-in-view: false
   # Allow grace timeout period for 20 seconds
   lifecycle.timeout-per-shutdown-phase: 20s
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://keycloak-server/auth/realms/your-realm
 crnk:
   pathPrefix: /api/v1
   domainName: ""
