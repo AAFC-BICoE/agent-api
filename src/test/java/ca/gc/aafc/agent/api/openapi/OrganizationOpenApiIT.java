@@ -14,8 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 
-import javax.inject.Inject;
-import javax.transaction.Transactional;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,7 +28,7 @@ import static ca.gc.aafc.agent.api.openapi.OpenAPIConstants.AGENT_API_SPECS_URL;
 @Transactional
 public class OrganizationOpenApiIT extends BaseRestAssuredTest {
 
-  public static final String API_BASE_PATH = "/api/v1/organization/";
+  public static final String API_BASE_PATH = "/api/v1/organization";
   private static final String SCHEMA_NAME = "Organization";
 
   @Inject

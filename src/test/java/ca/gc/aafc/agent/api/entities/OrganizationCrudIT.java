@@ -6,8 +6,8 @@ import ca.gc.aafc.dina.service.DinaService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.inject.Inject;
-import javax.transaction.Transactional;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
 

@@ -1,6 +1,6 @@
 package ca.gc.aafc.agent.api.validation;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import ca.gc.aafc.agent.api.BaseIntegrationTest;
 import ca.gc.aafc.agent.api.entities.Identifier;

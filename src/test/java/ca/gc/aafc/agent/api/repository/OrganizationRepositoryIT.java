@@ -34,15 +34,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import io.crnk.core.queryspec.FilterOperator;
-import io.crnk.core.queryspec.PathSpec;
-import io.crnk.core.queryspec.QuerySpec;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-import javax.validation.ValidationException;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
+import jakarta.validation.ValidationException;
 
 @SpringBootTest(properties = {"keycloak.enabled: true"})
 @Transactional
@@ -250,9 +247,6 @@ public class OrganizationRepositoryIT extends BaseIntegrationTest {
 
     assertEquals(totalCreatedOrganization + 1,
       organizationRepository.getAll(QueryComponent.EMPTY).totalCount());
-
-    QuerySpec querySpec = new QuerySpec(OrganizationDto.class);
-    querySpec.addFilter(PathSpec.of("names", "name").filter(FilterOperator.EQ, "test_name"));
 
     QueryComponent qc = QueryComponent.builder()
       .filters(new FilterExpression("names.name", Ops.EQ, "test_name")).build();

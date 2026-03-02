@@ -7,8 +7,8 @@ import ca.gc.aafc.agent.api.testsupport.factories.IdentifierFactory;
 import ca.gc.aafc.agent.api.testsupport.factories.PersonFactory;
 import org.junit.jupiter.api.Test;
 
-import javax.inject.Inject;
-import javax.persistence.PersistenceException;
+import jakarta.inject.Inject;
+import jakarta.persistence.PersistenceException;
 import java.util.ArrayList;
 import java.util.List;
 

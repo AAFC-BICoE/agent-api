@@ -9,7 +9,7 @@ import ca.gc.aafc.agent.api.testsupport.factories.AgentIdentifierTypeFactory;
 import ca.gc.aafc.dina.vocabulary.VocabularyElementConfiguration;
 
 import java.util.List;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 public class AgentIdentifierTypeServiceIT extends BaseIntegrationTest {
 

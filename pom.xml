@@ -31,9 +31,8 @@
 
     <asciidoctor-maven-plugin.version>2.1.0</asciidoctor-maven-plugin.version>
     <asciidoctorj.diagram.version>2.0.2</asciidoctorj.diagram.version>
-    <dina-base-api.version>0.160-SNAPSHOT</dina-base-api.version>
+    <dina-base-api.version>0.161-SNAPSHOT</dina-base-api.version>
     <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
-    <spring-boot-maven-plugin.fork>false</spring-boot-maven-plugin.fork>
 
     <org.mapstruct.version>1.6.3</org.mapstruct.version>
     <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
@@ -148,10 +147,6 @@
             </goals>
           </execution>
         </executions>
-        <configuration>
-          <includeSystemScope>true</includeSystemScope>
-          <fork>${spring-boot-maven-plugin.fork}</fork>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
