@@ -2,7 +2,7 @@ package ca.gc.aafc.agent.api.entities;
 
 import ca.gc.aafc.dina.entity.DinaEntity;
 import ca.gc.aafc.dina.service.OnUpdate;
-
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -12,10 +12,9 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
-import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.NaturalIdCache;
-import org.hibernate.type.SqlTypes;
+import org.hibernate.annotations.Type;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -64,7 +63,7 @@ public class Organization implements DinaEntity {
   @ToString.Exclude
   private List<Person> persons;
 
-  @JdbcTypeCode(SqlTypes.JSON)
+  @Type(JsonType.class)
   @Column(columnDefinition = "jsonb")
   @Valid
   private List<OrganizationName> names;

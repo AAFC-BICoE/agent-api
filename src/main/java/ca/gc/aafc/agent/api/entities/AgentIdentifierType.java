@@ -17,13 +17,13 @@ import lombok.experimental.SuperBuilder;
 
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
-import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.NaturalIdCache;
-import org.hibernate.type.SqlTypes;
+import org.hibernate.annotations.Type;
 
 import ca.gc.aafc.dina.entity.IdentifierType;
 import ca.gc.aafc.dina.i18n.MultilingualTitle;
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 
 @Entity(name = "identifier_type")
 @Getter
@@ -65,7 +65,7 @@ public class AgentIdentifierType implements IdentifierType {
   @Size(max = 100)
   private String term;
 
-  @JdbcTypeCode(SqlTypes.JSON)
+  @Type(JsonType.class)
   @Column(columnDefinition = "jsonb")
   private MultilingualTitle multilingualTitle;
 
