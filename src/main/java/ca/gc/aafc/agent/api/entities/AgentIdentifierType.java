@@ -1,5 +1,6 @@
 package ca.gc.aafc.agent.api.entities;
 
+import io.hypersistence.utils.hibernate.type.array.ListArrayType;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -56,7 +57,8 @@ public class AgentIdentifierType implements IdentifierType {
   @Size(max = 50)
   private String name;
 
-  //@Type(type = "list-array")
+  @Type(ListArrayType.class)
+  @Column(columnDefinition = "text[]")
   private List<String> dinaComponents;
 
   @Size(max = 100)

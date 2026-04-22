@@ -35,6 +35,7 @@ public class AgentIdentifierTypeServiceIT extends BaseIntegrationTest {
       .key(element.getKey())
       .name(element.getName())
       .term(element.getTerm())
+      .dinaComponents(List.of("a", "b"))
       .multilingualTitle(element.getMultilingualTitle())
       .build();
     agentIdentifierTypeService.create(identifierType);

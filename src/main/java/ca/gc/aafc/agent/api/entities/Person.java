@@ -3,6 +3,7 @@ package ca.gc.aafc.agent.api.entities;
 import ca.gc.aafc.dina.entity.DinaEntity;
 import ca.gc.aafc.dina.service.OnUpdate;
 
+import io.hypersistence.utils.hibernate.type.array.StringArrayType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -81,9 +82,10 @@ public class Person implements DinaEntity {
   private String givenNames;  
 
   @Size(max = 50)
-  private String familyNames;  
-  
-  //@Type(type = "string-array")
+  private String familyNames;
+
+  @Type(StringArrayType.class)
+  @Column(columnDefinition = "text[]")
   private String[] aliases;
 
   @OneToMany(fetch = FetchType.LAZY)

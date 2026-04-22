@@ -2,6 +2,8 @@ package ca.gc.aafc.agent.api.entities;
 
 import ca.gc.aafc.dina.entity.DinaEntity;
 import ca.gc.aafc.dina.service.OnUpdate;
+
+import io.hypersistence.utils.hibernate.type.array.StringArrayType;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -49,7 +51,8 @@ public class Organization implements DinaEntity {
   @Column(name = "uuid", unique = true)
   private UUID uuid;
 
-  //@Type(type = "string-array")
+  @Type(StringArrayType.class)
+  @Column(columnDefinition = "text[]")
   private String[] aliases;
 
   @Column(name = "created_by")
