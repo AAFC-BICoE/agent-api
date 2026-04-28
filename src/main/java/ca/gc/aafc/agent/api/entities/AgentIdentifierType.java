@@ -1,15 +1,16 @@
 package ca.gc.aafc.agent.api.entities;
 
+import io.hypersistence.utils.hibernate.type.array.ListArrayType;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,6 +24,7 @@ import org.hibernate.annotations.Type;
 
 import ca.gc.aafc.dina.entity.IdentifierType;
 import ca.gc.aafc.dina.i18n.MultilingualTitle;
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 
 @Entity(name = "identifier_type")
 @Getter
@@ -55,7 +57,8 @@ public class AgentIdentifierType implements IdentifierType {
   @Size(max = 50)
   private String name;
 
-  @Type(type = "list-array")
+  @Type(ListArrayType.class)
+  @Column(columnDefinition = "text[]")
   private List<String> dinaComponents;
 
   @Size(max = 100)
@@ -64,7 +67,8 @@ public class AgentIdentifierType implements IdentifierType {
   @Size(max = 100)
   private String term;
 
-  @Type(type = "jsonb")
+  @Type(JsonType.class)
+  @Column(columnDefinition = "jsonb")
   private MultilingualTitle multilingualTitle;
 
 }

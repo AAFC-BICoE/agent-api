@@ -4,7 +4,6 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import ca.gc.aafc.dina.repository.meta.AttributeMetaInfoProvider;
 import org.javers.core.metamodel.annotation.Id;
 import org.javers.core.metamodel.annotation.PropertyName;
 import org.javers.core.metamodel.annotation.ShallowReference;
@@ -14,6 +13,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.toedter.spring.hateoas.jsonapi.JsonApiTypeForClass;
 
 import ca.gc.aafc.agent.api.entities.Person;
+import ca.gc.aafc.dina.dto.JsonApiResource;
 import ca.gc.aafc.dina.dto.RelatedEntity;
 import lombok.Data;
 
@@ -21,7 +21,7 @@ import lombok.Data;
 @RelatedEntity(Person.class)
 @TypeName(PersonDto.TYPENAME)
 @JsonApiTypeForClass(PersonDto.TYPENAME)
-public class PersonDto extends AttributeMetaInfoProvider implements ca.gc.aafc.dina.dto.JsonApiResource {
+public class PersonDto implements JsonApiResource {
 
   public static final String TYPENAME = "person";
 

@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 /**
  * Test suite to validate the {@link PersonRepository} correctly handles

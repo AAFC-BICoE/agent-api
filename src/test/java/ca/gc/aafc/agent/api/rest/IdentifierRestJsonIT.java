@@ -23,8 +23,8 @@ import ca.gc.aafc.dina.testsupport.PostgresTestContainerInitializer;
 import ca.gc.aafc.dina.testsupport.jsonapi.JsonAPITestHelper;
 
 import java.util.UUID;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 
 /**
  * Test suite to validate correct HTTP and JSON API responses for {@link Identifier}
@@ -45,7 +45,7 @@ public class IdentifierRestJsonIT extends BaseRestAssuredTest {
   @Inject
   private DatabaseSupportService databaseSupportService;
 
-  public static final String API_BASE_PATH = "/api/v1/identifier/";
+  public static final String API_BASE_PATH = "/api/v1/identifier";
 
   protected IdentifierRestJsonIT() {
     super(API_BASE_PATH);

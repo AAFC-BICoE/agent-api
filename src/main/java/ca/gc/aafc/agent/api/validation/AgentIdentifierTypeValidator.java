@@ -1,7 +1,7 @@
 package ca.gc.aafc.agent.api.validation;
 
 
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;

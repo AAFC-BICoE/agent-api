@@ -7,7 +7,7 @@ import ca.gc.aafc.agent.api.config.AgentVocabularyConfiguration;
 import ca.gc.aafc.dina.vocabulary.VocabularyElement;
 import ca.gc.aafc.dina.vocabulary.VocabularyElementConfiguration;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 import java.util.function.Consumer;
 

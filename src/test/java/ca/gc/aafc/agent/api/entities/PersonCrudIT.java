@@ -8,9 +8,9 @@ import ca.gc.aafc.dina.service.DinaService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.inject.Inject;
-import javax.persistence.criteria.Predicate;
-import javax.validation.ConstraintViolationException;
+import jakarta.inject.Inject;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

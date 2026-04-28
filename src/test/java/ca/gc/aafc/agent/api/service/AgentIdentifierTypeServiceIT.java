@@ -9,7 +9,7 @@ import ca.gc.aafc.agent.api.testsupport.factories.AgentIdentifierTypeFactory;
 import ca.gc.aafc.dina.vocabulary.VocabularyElementConfiguration;
 
 import java.util.List;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 public class AgentIdentifierTypeServiceIT extends BaseIntegrationTest {
 
@@ -35,6 +35,7 @@ public class AgentIdentifierTypeServiceIT extends BaseIntegrationTest {
       .key(element.getKey())
       .name(element.getName())
       .term(element.getTerm())
+      .dinaComponents(List.of("a", "b"))
       .multilingualTitle(element.getMultilingualTitle())
       .build();
     agentIdentifierTypeService.create(identifierType);

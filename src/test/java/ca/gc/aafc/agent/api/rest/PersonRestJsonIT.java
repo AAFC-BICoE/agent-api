@@ -26,8 +26,8 @@ import io.restassured.response.ValidatableResponse;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 
 /**
  * Test suite to validate correct HTTP and JSON API responses for {@link Person}
@@ -48,7 +48,7 @@ public class PersonRestJsonIT extends BaseRestAssuredTest {
   @Inject
   private DatabaseSupportService databaseSupportService;
 
-  public static final String API_BASE_PATH = "/api/v1/person/";
+  public static final String API_BASE_PATH = "/api/v1/person";
   public static final String EMAIL_ERROR = "email must be a well-formed email address";
 
   protected PersonRestJsonIT() {
