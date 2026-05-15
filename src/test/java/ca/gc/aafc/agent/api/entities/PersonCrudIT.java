@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import jakarta.inject.Inject;
 import jakarta.persistence.criteria.Predicate;
+import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Test suite to validate {@link Person} performs as a valid Hibernate Entity.
  */
+@Transactional
 public class PersonCrudIT extends BaseIntegrationTest {
 
   private final static String GIVEN_NAMES = "Anata";

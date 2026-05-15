@@ -8,9 +8,11 @@ import ca.gc.aafc.agent.api.entities.AgentIdentifierType;
 import ca.gc.aafc.agent.api.testsupport.factories.AgentIdentifierTypeFactory;
 import ca.gc.aafc.dina.vocabulary.VocabularyElementConfiguration;
 
+import jakarta.transaction.Transactional;
 import java.util.List;
 import jakarta.inject.Inject;
 
+@Transactional
 public class AgentIdentifierTypeServiceIT extends BaseIntegrationTest {
 
   @Inject
