@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
+import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Test suite to validate {@link Identifier} performs as a valid Hibernate Entity.
  */
+@Transactional
 public class IdentifierCrudIT extends BaseIntegrationTest {
 
   @Inject

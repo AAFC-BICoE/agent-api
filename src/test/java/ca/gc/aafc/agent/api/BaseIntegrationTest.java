@@ -11,11 +11,9 @@ import org.springframework.test.context.TestPropertySource;
 import ca.gc.aafc.dina.testsupport.PostgresTestContainerInitializer;
 
 import java.util.Properties;
-import jakarta.transaction.Transactional;
 
 @SpringBootTest(classes = AgentModuleApiLauncher.class)
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
-@Transactional
 @ContextConfiguration(initializers = { PostgresTestContainerInitializer.class })
 @Import(BaseIntegrationTest.CollectionModuleTestConfiguration.class)
 public abstract class BaseIntegrationTest {

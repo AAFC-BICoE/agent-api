@@ -31,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -44,6 +45,7 @@ import jakarta.inject.Inject;
  * CRUD operations for the {@link Person} Entity.
  */
 @SpringBootTest(properties = {"keycloak.enabled: true"})
+@Transactional
 public class PersonResourceRepositoryIT extends BaseIntegrationTest {
   private final static String GIVEN_NAMES = "Anata";
   private final static String FAMILY_NAMES = "Morgans";

@@ -10,8 +10,10 @@ import org.junit.jupiter.api.Test;
 import ca.gc.aafc.agent.api.BaseIntegrationTest;
 import ca.gc.aafc.agent.api.entities.Person;
 
+import jakarta.transaction.Transactional;
 import java.util.UUID;
 
+@Transactional
 public class PersonServiceIT extends BaseIntegrationTest {
 
   @Inject

@@ -1,5 +1,6 @@
 package ca.gc.aafc.agent.api.repository;
 
+import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import jakarta.inject.Inject;
@@ -34,6 +35,7 @@ public class IndexRefreshRepositoryIT extends BaseIntegrationTest {
   private DinaAdminCUDAuthorizationService dinaAdminCUDAuthorizationService;
 
   @Test
+  @Transactional
   public void indexRefreshRepository_onRefreshAll_messageSent() {
     // we are not using beans to avoid the RabbitMQ part
     List<DocumentOperationNotification> messages = new ArrayList<>();
