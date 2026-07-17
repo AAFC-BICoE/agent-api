@@ -17,6 +17,7 @@ import ca.gc.aafc.agent.api.entities.OrganizationName;
 import ca.gc.aafc.agent.api.service.OrganizationService;
 import ca.gc.aafc.agent.api.testsupport.factories.OrganizationFactory;
 import ca.gc.aafc.dina.dto.JsonApiDto;
+import ca.gc.aafc.dina.exception.ConflictException;
 import ca.gc.aafc.dina.exception.ResourceGoneException;
 import ca.gc.aafc.dina.exception.ResourceNotFoundException;
 import ca.gc.aafc.dina.filter.FilterExpression;
@@ -109,7 +110,7 @@ public class OrganizationRepositoryIT extends BaseIntegrationTest {
   @Test
   @WithMockKeycloakUser(username = "user", groupRole = {"group 1:SUPER_USER"})
   public void save_PersistedOrganization_WhenSuperUserRole_FieldsUpdated()
-    throws ResourceNotFoundException, ResourceGoneException {
+    throws ResourceNotFoundException, ResourceGoneException, ConflictException {
 
     String[] newAliases = new String[]{"new alias"};
 
@@ -131,7 +132,8 @@ public class OrganizationRepositoryIT extends BaseIntegrationTest {
 
   @Test
   @WithMockKeycloakUser(username = "user", groupRole = {"group 1:SUPER_USER"})
-  public void save_add_OrganizationName_FieldsUpdated() throws ResourceNotFoundException, ResourceGoneException {
+  public void save_add_OrganizationName_FieldsUpdated()
+    throws ResourceNotFoundException, ResourceGoneException, ConflictException {
 
     OrganizationDto updatedDto = organizationRepository.getOne(organizationUnderTest.getUuid(),
       null).getDto();

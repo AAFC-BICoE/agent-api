@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ca.gc.aafc.agent.api.dto.AgentIdentifierTypeDto;
 import ca.gc.aafc.agent.api.entities.AgentIdentifierType;
 import ca.gc.aafc.agent.api.mapper.AgentIdentifierTypeMapper;
+import ca.gc.aafc.dina.exception.ConflictException;
 import ca.gc.aafc.dina.exception.ResourceGoneException;
 import ca.gc.aafc.dina.exception.ResourceNotFoundException;
 import ca.gc.aafc.dina.jsonapi.JsonApiDocument;
@@ -97,7 +98,8 @@ public class AgentIdentifierTypeRepository extends DinaRepositoryV2<AgentIdentif
   @PatchMapping(AgentIdentifierTypeDto.TYPENAME + "/{id}")
   @Transactional
   public ResponseEntity<RepresentationModel<?>> onUpdate(@RequestBody JsonApiDocument partialPatchDto,
-                                                         @PathVariable UUID id) throws ResourceNotFoundException, ResourceGoneException {
+                                                         @PathVariable UUID id)
+      throws ResourceNotFoundException, ResourceGoneException, ConflictException {
     return handleUpdate(partialPatchDto, id);
   }
 

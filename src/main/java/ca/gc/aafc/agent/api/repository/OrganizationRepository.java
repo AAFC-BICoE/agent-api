@@ -19,6 +19,7 @@ import ca.gc.aafc.agent.api.dto.OrganizationDto;
 import ca.gc.aafc.agent.api.entities.Organization;
 import ca.gc.aafc.agent.api.mapper.OrganizationMapper;
 import ca.gc.aafc.agent.api.security.UpdateDeleteSuperUserOnly;
+import ca.gc.aafc.dina.exception.ConflictException;
 import ca.gc.aafc.dina.exception.ResourceGoneException;
 import ca.gc.aafc.dina.exception.ResourceNotFoundException;
 import ca.gc.aafc.dina.jsonapi.JsonApiDocument;
@@ -99,7 +100,8 @@ public class OrganizationRepository extends DinaRepositoryV2<OrganizationDto, Or
   @PatchMapping(TYPE + "/{id}")
   @Transactional
   public ResponseEntity<RepresentationModel<?>> onUpdate(@RequestBody JsonApiDocument partialPatchDto,
-                                                         @PathVariable UUID id) throws ResourceNotFoundException, ResourceGoneException {
+                                                         @PathVariable UUID id)
+      throws ResourceNotFoundException, ResourceGoneException, ConflictException {
     return handleUpdate(partialPatchDto, id);
   }
 

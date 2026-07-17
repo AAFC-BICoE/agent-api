@@ -19,6 +19,7 @@ import ca.gc.aafc.agent.api.dto.PersonDto;
 import ca.gc.aafc.agent.api.entities.Person;
 import ca.gc.aafc.agent.api.mapper.PersonMapper;
 import ca.gc.aafc.agent.api.security.UpdateDeleteSuperUserOnly;
+import ca.gc.aafc.dina.exception.ConflictException;
 import ca.gc.aafc.dina.exception.ResourceGoneException;
 import ca.gc.aafc.dina.exception.ResourceNotFoundException;
 import ca.gc.aafc.dina.exception.ResourcesGoneException;
@@ -118,14 +119,15 @@ public class PersonRepository extends DinaRepositoryV2<PersonDto, Person> {
   @PatchMapping(TYPE + "/{id}")
   @Transactional
   public ResponseEntity<RepresentationModel<?>> onUpdate(@RequestBody JsonApiDocument partialPatchDto,
-                                                         @PathVariable UUID id) throws ResourceNotFoundException, ResourceGoneException {
+                                                         @PathVariable UUID id)
+      throws ResourceNotFoundException, ResourceGoneException, ConflictException {
     return handleUpdate(partialPatchDto, id);
   }
 
   @PatchMapping(path = TYPE + "/" + DinaRepositoryV2.JSON_API_BULK_PATH, consumes = JSON_API_BULK)
   @Transactional
   public ResponseEntity<RepresentationModel<?>> onBulkUpdate(@RequestBody JsonApiBulkDocument jsonApiBulkDocument)
-      throws ResourceNotFoundException, ResourceGoneException {
+      throws ResourceNotFoundException, ResourceGoneException, ConflictException {
     return handleBulkUpdate(jsonApiBulkDocument);
   }
 
