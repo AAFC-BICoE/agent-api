@@ -18,6 +18,7 @@ import ca.gc.aafc.agent.api.service.PersonService;
 import ca.gc.aafc.agent.api.testsupport.factories.OrganizationFactory;
 import ca.gc.aafc.agent.api.testsupport.factories.PersonFactory;
 import ca.gc.aafc.agent.api.testsupport.fixtures.IdentifierTestFixture;
+import ca.gc.aafc.dina.exception.ConflictException;
 import ca.gc.aafc.dina.exception.ResourceGoneException;
 import ca.gc.aafc.dina.exception.ResourceNotFoundException;
 import ca.gc.aafc.dina.jsonapi.JsonApiDocument;
@@ -127,7 +128,7 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
   @Test
   @WithMockKeycloakUser(username="user", groupRole = {"group 1:SUPER_USER"})
   public void save_PersistedPerson_WhenUserSuperUserRole_FieldsUpdated()
-    throws ResourceNotFoundException, ResourceGoneException {
+    throws ResourceNotFoundException, ResourceGoneException, ConflictException {
 
     String updatedEmail = "Updated_Email@email.com";
     String updatedName = "Updated_Name";
@@ -153,7 +154,7 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
   @Test
   @WithMockKeycloakUser(username="user", groupRole = {"group 1:SUPER_USER"})
   public void save_PersistedPerson_WhenAddIdentifier_FieldsUpdated()
-    throws ResourceNotFoundException, ResourceGoneException {
+    throws ResourceNotFoundException, ResourceGoneException, ConflictException {
 
     JsonApiDocument identifierDoc = JsonApiDocuments.createJsonApiDocument(
       null, IdentifierDto.TYPENAME,
