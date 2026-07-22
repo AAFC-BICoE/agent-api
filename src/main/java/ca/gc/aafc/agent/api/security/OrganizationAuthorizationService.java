@@ -14,6 +14,7 @@ public class OrganizationAuthorizationService extends PermissionAuthorizationSer
   }
 
   @Override
+  @PreAuthorize("hasMinimumDinaRole(@currentUser, 'READ_ONLY')")
   public void authorizeRead(Object entity) {
 
   }
@@ -32,5 +33,4 @@ public class OrganizationAuthorizationService extends PermissionAuthorizationSer
   public String getName() {
     return "OrganizationAuthorizationService";
   }
-
 }

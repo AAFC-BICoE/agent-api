@@ -14,6 +14,7 @@ public class UpdateDeleteSuperUserOnly extends PermissionAuthorizationService {
   }
 
   @Override
+  @PreAuthorize("hasMinimumDinaRole(@currentUser, 'READ_ONLY')")
   public void authorizeRead(Object entity) {
 
   }
@@ -30,6 +31,6 @@ public class UpdateDeleteSuperUserOnly extends PermissionAuthorizationService {
 
   @Override
   public String getName() {
-    return "UpdateDeleteCollectionManagerOnly";
+    return "UpdateDeleteSuperUserOnly";
   }
 }

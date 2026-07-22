@@ -192,6 +192,7 @@ public class OrganizationRepositoryIT extends BaseIntegrationTest {
 
 
   @Test
+  @WithMockKeycloakUser(username = "user", groupRole = {"group 1:USER"})
   public void find_NoFieldsSelected_ReturnsAllFields() throws ResourceNotFoundException, ResourceGoneException {
     OrganizationDto result = organizationRepository.getOne(organizationUnderTest.getUuid(),
       null).getDto();
