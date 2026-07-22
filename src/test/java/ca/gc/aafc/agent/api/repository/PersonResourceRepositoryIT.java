@@ -203,6 +203,7 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
   }
 
   @Test
+  @WithMockKeycloakUser(username="user", groupRole = {"group 1:USER"})
   public void find_NoFieldsSelected_ReturnsAllFields() throws ResourceNotFoundException, ResourceGoneException {
     PersonDto result = personResourceRepository.getOne(
       personUnderTest.getUuid(), null).getDto();
@@ -213,6 +214,7 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
   }
 
   @Test
+  @WithMockKeycloakUser(username="user", groupRole = {"group 1:USER"})
   public void find_PersistedPerson_When_RelationSpec_Specified_ReturnsPersonWithRelations()
     throws ResourceNotFoundException, ResourceGoneException {
 
