@@ -54,9 +54,7 @@ public class AgentPermissionCheckRepositoryIT extends BaseIntegrationTest {
       null, PersonDto.TYPENAME,
       JsonAPITestHelper.toAttributeMap(dto)
     );
-
-    //agentPermissionCheckRepository.onCreate(doc);
-
+    
     var response = mockMvc.perform(
       post(apiPrefix + "/" + PermissionCheckDto.TYPE_NAME)
           .contentType(JSON_API_VALUE).
