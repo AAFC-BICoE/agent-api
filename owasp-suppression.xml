@@ -49,4 +49,8 @@
         <notes>Spring Security 5</notes>
         <cve>CVE-2018-1258</cve>
     </suppress>
+    <suppress>
+        <notes>Eclipse GlassFish related. Not jaxb-core</notes>
+        <cve>CVE-2026-2587</cve>
+    </suppress>
 </suppressions>

@@ -39,6 +39,7 @@
 
     <!-- versions override-->
     <tomcat.version>10.1.57</tomcat.version>
+    <postgresql.version>42.7.12</postgresql.version>
   </properties>
 
   <dependencies>
