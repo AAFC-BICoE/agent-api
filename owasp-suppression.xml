@@ -10,10 +10,6 @@
         <cve>CVE-2016-1000027</cve>
     </suppress>
     <suppress>
-        <notes>AuthenticatedVoter no used</notes>
-        <cve>CVE-2024-22257</cve>
-    </suppress>
-    <suppress>
         <notes>no UriComponentsBuilder</notes>
         <cve>CVE-2024-22243</cve>
     </suppress>
@@ -52,5 +48,9 @@
     <suppress>
         <notes>Eclipse GlassFish related. Not jaxb-core</notes>
         <cve>CVE-2026-2587</cve>
+    </suppress>
+    <suppress>
+        <notes>Eclipse GlassFish related. Not jaxb-core</notes>
+        <cve>CVE-2026-2586</cve>
     </suppress>
 </suppressions>
