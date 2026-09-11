@@ -5,7 +5,7 @@ import ca.gc.aafc.dina.testsupport.factories.TestableEntityFactory;
 
 public class IdentifierFactory implements TestableEntityFactory<Identifier> {
 
-  public static final String TEST_NAMESPACE = "ORCID";
+  public static final String TEST_NAMESPACE = "ORCID".toLowerCase();
 
   @Override
   public Identifier getEntityInstance() {
