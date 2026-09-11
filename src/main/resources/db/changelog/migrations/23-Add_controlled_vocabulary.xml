@@ -86,4 +86,8 @@
                 constraintName="unique_key_per_controlled_vocabulary_per_component"
                 tableName="controlled_vocabulary_item"/>
     </changeSet>
+
+    <changeSet id="23-Add_controlled_vocabulary_remove_identifier_type_table" context="schema-change" author="cgendreau">
+      <dropTable tableName="identifier_type"/>
+    </changeSet>
 </databaseChangeLog>
