@@ -6,7 +6,7 @@ public final class AgentControlledVocabularyConfiguration {
 
   public static final UUID IDENTIFIER_TYPE_VOCAB_UUID = UUID.fromString("bff566b9-4044-4e0c-a9cd-0ab22c6f0e5b");
 
-  AgentControlledVocabularyConfiguration() {
+  private AgentControlledVocabularyConfiguration() {
     // no-op
   }
 
