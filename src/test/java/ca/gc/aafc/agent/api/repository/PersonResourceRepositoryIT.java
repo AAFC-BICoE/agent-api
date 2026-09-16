@@ -75,6 +75,7 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
     personUnderTest = PersonFactory.newPerson().build();
     personUnderTest.setGivenNames(GIVEN_NAMES);
     personUnderTest.setFamilyNames(FAMILY_NAMES);
+    personUnderTest.setAllowDuplicateName(true);
     organizationUnderTest = OrganizationFactory.newOrganization().build();
     personUnderTest.setOrganizations(new ArrayList<>(List.of(organizationUnderTest)));
     organizationUnderTest.setUuid(UUID.randomUUID());
