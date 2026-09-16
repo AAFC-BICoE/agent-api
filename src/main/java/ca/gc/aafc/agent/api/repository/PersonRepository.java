@@ -19,6 +19,7 @@ import ca.gc.aafc.agent.api.dto.PersonDto;
 import ca.gc.aafc.agent.api.entities.Person;
 import ca.gc.aafc.agent.api.mapper.PersonMapper;
 import ca.gc.aafc.agent.api.security.UpdateDeleteSuperUserOnly;
+import ca.gc.aafc.agent.api.service.PersonService;
 import ca.gc.aafc.dina.exception.ConflictException;
 import ca.gc.aafc.dina.exception.ResourceGoneException;
 import ca.gc.aafc.dina.exception.ResourceNotFoundException;
@@ -30,7 +31,6 @@ import ca.gc.aafc.dina.jsonapi.JsonApiDocument;
 import ca.gc.aafc.dina.repository.DinaRepositoryV2;
 import ca.gc.aafc.dina.security.DinaAuthenticatedUser;
 import ca.gc.aafc.dina.service.AuditService;
-import ca.gc.aafc.dina.service.DinaService;
 
 import static com.toedter.spring.hateoas.jsonapi.MediaTypes.JSON_API_VALUE;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -51,7 +51,7 @@ public class PersonRepository extends DinaRepositoryV2<PersonDto, Person> {
   private static final String TYPE = PersonDto.TYPENAME;
 
   public PersonRepository(
-    @NonNull DinaService<Person> dinaService,
+    @NonNull PersonService dinaService,
     @NonNull UpdateDeleteSuperUserOnly authorizationService,
     Optional<DinaAuthenticatedUser> authenticatedUser,
     @NonNull BuildProperties props,
