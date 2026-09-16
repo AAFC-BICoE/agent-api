@@ -17,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import ca.gc.aafc.agent.api.entities.Person;
+import ca.gc.aafc.dina.exception.DuplicateResourceException;
 import ca.gc.aafc.dina.jpa.BaseDAO;
 import lombok.NonNull;
 import org.springframework.validation.SmartValidator;
@@ -93,9 +94,7 @@ public class PersonService extends MessageProducingService<Person> {
         1);
 
     if (!duplicates.isEmpty()) {
-      throw new IllegalStateException("Potential duplicate person found: " + duplicates.getFirst().getUuid());
+      throw DuplicateResourceException.create(PersonDto.TYPENAME, duplicates.getFirst().getUuid(), "familyNames");
     }
-
   }
-
 }

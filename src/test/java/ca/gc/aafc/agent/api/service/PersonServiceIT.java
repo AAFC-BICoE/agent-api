@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import ca.gc.aafc.agent.api.BaseIntegrationTest;
 import ca.gc.aafc.agent.api.entities.Person;
-
+import ca.gc.aafc.dina.exception.DuplicateResourceException;
 import jakarta.transaction.Transactional;
 import java.util.UUID;
 
@@ -45,7 +45,7 @@ public class PersonServiceIT extends BaseIntegrationTest {
         .givenNames("Given Names")
         .displayName("Display Name")
         .build();
-    assertThrows(IllegalStateException.class, () -> personService.create(person2));
+    assertThrows(DuplicateResourceException.class, () -> personService.create(person2));
 
     // make sure we can accept the duplicate
     Person person3 = Person.builder()

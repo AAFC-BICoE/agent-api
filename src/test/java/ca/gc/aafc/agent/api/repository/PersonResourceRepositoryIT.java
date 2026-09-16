@@ -91,7 +91,8 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
     personDto.setDisplayName(TestableEntityFactory.generateRandomNameLettersOnly(10));
     personDto.setEmail(TestableEntityFactory.generateRandomNameLettersOnly(5) + "@email.com");
     personDto.setGivenNames(GIVEN_NAMES);
-    personDto.setFamilyNames(FAMILY_NAMES); 
+    personDto.setFamilyNames(FAMILY_NAMES);
+    personDto.setAllowDuplicateName(true);
 
     OrganizationDto organizationDto = new OrganizationDto();
     organizationDto.setNames(Collections.singletonList(
