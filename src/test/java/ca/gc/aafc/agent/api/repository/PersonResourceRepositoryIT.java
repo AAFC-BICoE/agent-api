@@ -75,6 +75,7 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
     personUnderTest = PersonFactory.newPerson().build();
     personUnderTest.setGivenNames(GIVEN_NAMES);
     personUnderTest.setFamilyNames(FAMILY_NAMES);
+    personUnderTest.setAllowDuplicateName(true);
     organizationUnderTest = OrganizationFactory.newOrganization().build();
     personUnderTest.setOrganizations(new ArrayList<>(List.of(organizationUnderTest)));
     organizationUnderTest.setUuid(UUID.randomUUID());
@@ -90,7 +91,8 @@ public class PersonResourceRepositoryIT extends BaseIntegrationTest {
     personDto.setDisplayName(TestableEntityFactory.generateRandomNameLettersOnly(10));
     personDto.setEmail(TestableEntityFactory.generateRandomNameLettersOnly(5) + "@email.com");
     personDto.setGivenNames(GIVEN_NAMES);
-    personDto.setFamilyNames(FAMILY_NAMES); 
+    personDto.setFamilyNames(FAMILY_NAMES);
+    personDto.setAllowDuplicateName(true);
 
     OrganizationDto organizationDto = new OrganizationDto();
     organizationDto.setNames(Collections.singletonList(

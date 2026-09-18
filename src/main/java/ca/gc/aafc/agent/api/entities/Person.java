@@ -29,6 +29,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderColumn;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -97,5 +98,9 @@ public class Person implements DinaEntity {
 
   @Size(max = 2048)
   private String remarks;
+
+  // not saved, only used to indicate that we are aware that there is a duplicate and we want to proceed anyway
+  @Transient 
+  private Boolean allowDuplicateName;
 
 }

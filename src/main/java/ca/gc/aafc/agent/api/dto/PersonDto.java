@@ -49,6 +49,8 @@ public class PersonDto implements JsonApiResource {
   @ShallowReference
   private List<IdentifierDto> identifiers = List.of();
 
+  private Boolean allowDuplicateName;
+
   @Override
   @JsonIgnore
   public String getJsonApiType() {
