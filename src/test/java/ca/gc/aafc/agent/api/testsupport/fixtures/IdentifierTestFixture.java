@@ -7,7 +7,7 @@ public class IdentifierTestFixture {
 
   public static IdentifierDto newIdentifier() {
     IdentifierDto identifierDto = new IdentifierDto();
-    identifierDto.setNamespace("ORCID");
+    identifierDto.setNamespace("ORCID".toLowerCase());
     identifierDto.setValue(TestableEntityFactory.generateRandomName(5));
     return identifierDto;
   }
