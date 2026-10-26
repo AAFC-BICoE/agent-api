@@ -1,8 +1,8 @@
 package ca.gc.aafc.agent.api.service;
 
-import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import jakarta.inject.Inject;
 
