@@ -2,6 +2,7 @@ package ca.gc.aafc.agent.api.repository;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Map;
 import java.util.UUID;
@@ -87,8 +88,9 @@ public class AgentControlledVocabularyItemRepositoryIT extends AgentModuleBaseRe
     var created = repo.onCreate(docToCreate);
     UUID uuid = JsonApiModelAssistant.extractUUIDFromRepresentationModelLink(created);
 
-    // try get by uuid
-    sendGet(uuid.toString());
+    // try get by uuid, multilingualTitle is a JSON column so this also checks it round-trips
+    String expectedTitle = dto.getMultilingualTitle().getTitles().getFirst().getTitle();
+    assertTrue(sendGet(uuid.toString()).getResponse().getContentAsString().contains(expectedTitle));
 
     // try get be key
     sendGet("identifier_type.dina_attribute_12.PERSON");
