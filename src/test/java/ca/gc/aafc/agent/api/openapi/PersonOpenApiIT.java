@@ -30,7 +30,7 @@ import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 
 import static ca.gc.aafc.agent.api.openapi.OpenAPIConstants.AGENT_API_SPECS_URL;
 
@@ -54,7 +54,7 @@ public class PersonOpenApiIT extends BaseRestAssuredTest {
   }
 
   @Test
-  public void post_NewPerson_ReturnsOkayAndBody() throws JsonProcessingException {
+  public void post_NewPerson_ReturnsOkayAndBody() throws JacksonException {
     OrganizationDto organizationDto = OrganisationTestFixture.newOrganization();
     ValidatableResponse organizationResponse = sendPost(
       API_BASE_PATH_ORGANIZATION, 
